@@ -39,6 +39,7 @@ public static class MauiProgram
 
         services.AddSingleton(httpClient);
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<IUserSessionService, UserSessionService>();
         services.AddSingleton<IStadsLensApiService, StadsLensApiService>();
     }
 

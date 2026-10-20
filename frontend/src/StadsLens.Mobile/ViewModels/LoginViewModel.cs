@@ -11,14 +11,16 @@ public partial class LoginViewModel : BaseViewModel
 {
     private readonly IStadsLensApiService _apiService;
     private readonly INavigationService _navigationService;
+    private readonly IUserSessionService _userSession;
 
     [ObservableProperty]
     private string name = string.Empty;
 
-    public LoginViewModel(IStadsLensApiService apiService, INavigationService navigationService)
+    public LoginViewModel(IStadsLensApiService apiService, INavigationService navigationService, IUserSessionService userSession)
     {
         _apiService = apiService;
         _navigationService = navigationService;
+        _userSession = userSession;
         Title = "StadsLens";
     }
 
@@ -33,10 +35,18 @@ public partial class LoginViewModel : BaseViewModel
             IsBusy = true;
             var user = await _apiService.CreateUserAsync(Name, "nl");
             if (user is null)
+            {
+                await Shell.Current.DisplayAlertAsync("Fout", "Gebruiker aanmaken is mislukt.", "OK");
                 return;
+            }
 
+            _userSession.SetUser(user);
             WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(user));
             await _navigationService.NavigateToAsync(PageRoutes.Routes);
+        }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex);
         }
         finally
         {

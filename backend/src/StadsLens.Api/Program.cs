@@ -1,5 +1,6 @@
 using StadsLens.Application;
 using StadsLens.Infrastructure;
+using StadsLens.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,6 +18,11 @@ var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
 {
+    using (var scope = app.Services.CreateScope())
+    {
+        await DbSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<StadsLensDbContext>());
+    }
+
     app.MapOpenApi();
     app.UseSwaggerUI(options => options.SwaggerEndpoint("/openapi/v1.json", "StadsLens API"));
 }

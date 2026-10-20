@@ -4,9 +4,17 @@ namespace StadsLens.Mobile.Views;
 
 public partial class RoutesPage : ContentPage
 {
+    private readonly RoutesViewModel _viewModel;
+
     public RoutesPage(RoutesViewModel viewModel)
     {
         InitializeComponent();
-        BindingContext = viewModel;
+        BindingContext = _viewModel = viewModel;
+    }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        _viewModel.LoadRoutesCommand.Execute(null);
     }
 }

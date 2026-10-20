@@ -46,6 +46,10 @@ public partial class RouteDetailViewModel : BaseViewModel, IQueryAttributable
             foreach (var landmark in await _apiService.GetLandmarksByRouteAsync(SelectedRoute.Id))
                 Landmarks.Add(landmark);
         }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex);
+        }
         finally
         {
             IsBusy = false;
