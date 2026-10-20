@@ -1,3 +1,6 @@
 <Solution>
-  <Project Path="StadLens_backend/StadLens_backend.csproj" />
+  <Project Path="Stadlens_backend.Contracts/Stadlens_backend.Contracts.csproj" Id="36b40cf1-7e1e-461d-ae96-af736c836c2c" />
+  <Project Path="StadLens_backend.Domain/StadLens_backend.Domain.csproj" Id="50795799-1e5c-4fa5-9905-01f564d0072d" />
+  <Project Path="StadLens_backend.Infrastructure/StadLens_backend.Infrastructure.csproj" Id="69997129-1f74-4e21-a42c-5fc80f99abfe" />
+  <Project Path="StadLens_backend/StadLens_backend.API.csproj" />
 </Solution>
