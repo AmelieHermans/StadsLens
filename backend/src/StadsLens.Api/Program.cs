@@ -4,6 +4,9 @@ using StadsLens.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
+LoadDotEnv(builder.Environment.ContentRootPath);
+builder.Configuration.AddEnvironmentVariables();
+
 var connectionString = builder.Configuration.GetConnectionString("StadsLensDb")
     ?? throw new InvalidOperationException("Connection string 'StadsLensDb' ontbreekt.");
 
@@ -20,7 +23,9 @@ if (app.Environment.IsDevelopment())
 {
     using (var scope = app.Services.CreateScope())
     {
-        await DbSeeder.SeedAsync(scope.ServiceProvider.GetRequiredService<StadsLensDbContext>());
+        var dbContext = scope.ServiceProvider.GetRequiredService<StadsLensDbContext>();
+        await dbContext.Database.EnsureCreatedAsync();
+        await DbSeeder.SeedAsync(dbContext);
     }
 
     app.MapOpenApi();
@@ -34,3 +39,25 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+static void LoadDotEnv(string contentRootPath)
+{
+    var path = Path.Combine(contentRootPath, ".env");
+    if (!File.Exists(path))
+        return;
+
+    foreach (var line in File.ReadLines(path))
+    {
+        var trimmed = line.Trim();
+        if (string.IsNullOrWhiteSpace(trimmed) || trimmed.StartsWith('#'))
+            continue;
+
+        var separator = trimmed.IndexOf('=');
+        if (separator <= 0)
+            continue;
+
+        var name = trimmed[..separator].Trim();
+        var value = trimmed[(separator + 1)..].Trim().Trim('"');
+        Environment.SetEnvironmentVariable(name, value);
+    }
+}

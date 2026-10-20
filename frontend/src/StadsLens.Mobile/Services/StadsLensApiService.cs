@@ -22,6 +22,12 @@ public class StadsLensApiService : IStadsLensApiService
         return await _httpClient.GetFromJsonAsync<List<Landmark>>($"api/routes/{routeId}/landmarks") ?? [];
     }
 
+    public async Task<RoutePlan?> PlanRouteAsync(int routeId, double distanceKm, double? startLatitude, double? startLongitude)
+    {
+        var response = await _httpClient.PostAsJsonAsync("api/routes/plan", new { routeId, distanceKm, startLatitude, startLongitude });
+        return response.IsSuccessStatusCode ? await response.Content.ReadFromJsonAsync<RoutePlan>() : null;
+    }
+
     public async Task<Landmark?> GetLandmarkByTagAsync(string tag)
     {
         var response = await _httpClient.GetAsync($"api/landmarks/by-tag/{Uri.EscapeDataString(tag)}");
