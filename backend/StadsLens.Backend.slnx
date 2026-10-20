@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/StadsLens.Api/StadsLens.Api.csproj" />
+    <Project Path="src/StadsLens.Application/StadsLens.Application.csproj" />
+    <Project Path="src/StadsLens.Contracts/StadsLens.Contracts.csproj" />
+    <Project Path="src/StadsLens.Domain/StadsLens.Domain.csproj" />
+    <Project Path="src/StadsLens.Infrastructure/StadsLens.Infrastructure.csproj" />
+  </Folder>
+</Solution>

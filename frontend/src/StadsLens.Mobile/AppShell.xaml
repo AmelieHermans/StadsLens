@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell
+    x:Class="StadsLens.Mobile.AppShell"
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:views="clr-namespace:StadsLens.Mobile.Views"
+    Title="StadsLens"
+    Shell.FlyoutBehavior="Disabled">
+
+    <ShellContent
+        Route="login"
+        ContentTemplate="{DataTemplate views:LoginPage}" />
+
+    <TabBar Route="main">
+        <ShellContent
+            Title="Routes"
+            Route="routes"
+            ContentTemplate="{DataTemplate views:RoutesPage}" />
+        <ShellContent
+            Title="Bezoeken"
+            Route="visits"
+            ContentTemplate="{DataTemplate views:VisitsPage}" />
+        <ShellContent
+            Title="Instellingen"
+            Route="settings"
+            ContentTemplate="{DataTemplate views:SettingsPage}" />
+    </TabBar>
+
+</Shell>
