@@ -7,10 +7,10 @@
              x:DataType="vm:RoutesViewModel"
              Title="{Binding Title}">
 
-    <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsBusy}">
+    <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsRefreshing}">
         <CollectionView ItemsSource="{Binding Routes}" SelectionMode="None">
             <CollectionView.EmptyView>
-                <Label Text="Trek naar beneden om de routes te laden." HorizontalOptions="Center" Margin="24" />
+                <Label Text="Geen routes gevonden." HorizontalOptions="Center" Margin="24" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Route">

@@ -33,9 +33,14 @@ public partial class RoutesViewModel : BaseViewModel
             foreach (var route in await _apiService.GetRoutesAsync())
                 Routes.Add(route);
         }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex);
+        }
         finally
         {
             IsBusy = false;
+            IsRefreshing = false;
         }
     }
 

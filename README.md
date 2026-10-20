@@ -74,4 +74,9 @@ dotnet run --project src/StadsLens.Api --launch-profile http
 ngrok http 5158
 ```
 
-Zet daarna de Ngrok-URL in `frontend/src/StadsLens.Mobile/Constants/ApiSettings.cs`.
+In Development vult de API een lege database automatisch met een voorbeeldroute (`DbSeeder`).
+
+De app kiest de API-URL in `frontend/src/StadsLens.Mobile/Constants/ApiSettings.cs`:
+
+- `NgrokUrl` leeg → lokale API: `http://localhost:5158` (Windows) of `http://10.0.2.2:5158` (Android-emulator).
+- `NgrokUrl` ingevuld → die tunnel (nodig voor een echt toestel).
