@@ -15,10 +15,8 @@ public class Landmark
     public string CustomVisionTag { get; set; } = string.Empty;
 
     public string? ImageUrl { get; set; }
-    public int OrderInRoute { get; set; }
 
-    public int RouteId { get; set; }
-    public Route Route { get; set; } = null!;
+    public ICollection<RouteLandmark> RouteLandmarks { get; set; } = new List<RouteLandmark>();
 
     public ICollection<Visit> Visits { get; set; } = new List<Visit>();
 }

@@ -11,6 +11,7 @@ public class StadsLensDbContext : DbContext
 
     public DbSet<Route> Routes => Set<Route>();
     public DbSet<Landmark> Landmarks => Set<Landmark>();
+    public DbSet<RouteLandmark> RouteLandmarks => Set<RouteLandmark>();
     public DbSet<User> Users => Set<User>();
     public DbSet<Visit> Visits => Set<Visit>();
 

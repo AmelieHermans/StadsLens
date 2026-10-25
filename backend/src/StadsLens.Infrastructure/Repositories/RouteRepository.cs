@@ -17,7 +17,7 @@ public class RouteRepository : IRouteRepository
     public async Task<IEnumerable<Route>> GetAllAsync()
     {
         return await _context.Routes
-            .Include(r => r.Landmarks)
+            .Include(r => r.RouteLandmarks)
             .AsNoTracking()
             .ToListAsync();
     }
@@ -25,7 +25,7 @@ public class RouteRepository : IRouteRepository
     public async Task<Route?> GetByIdAsync(int id)
     {
         return await _context.Routes
-            .Include(r => r.Landmarks)
+            .Include(r => r.RouteLandmarks)
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.Id == id);
     }

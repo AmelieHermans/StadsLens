@@ -9,8 +9,12 @@ public class Landmark
     public double Longitude { get; set; }
     public string CustomVisionTag { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
-    public int OrderInRoute { get; set; }
-    public int RouteId { get; set; }
+
+    // Enkel ingevuld wanneer de landmark via een route opgehaald wordt.
+    public int? OrderInRoute { get; set; }
+
+    // Alle routes waarin deze landmark voorkomt.
+    public List<int> RouteIds { get; set; } = [];
 
     // Enkel in de app: wordt ingevuld op basis van de bezoeken van de gebruiker.
     public bool IsVisited { get; set; }

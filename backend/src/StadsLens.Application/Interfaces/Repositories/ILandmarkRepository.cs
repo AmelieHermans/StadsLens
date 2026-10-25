@@ -4,7 +4,8 @@ namespace StadsLens.Application.Interfaces.Repositories;
 
 public interface ILandmarkRepository
 {
-    Task<IEnumerable<Landmark>> GetByRouteIdAsync(int routeId);
+    // Geeft de koppelingen terug (met Landmark ingeladen) zodat de volgorde binnen de route mee komt.
+    Task<IEnumerable<RouteLandmark>> GetByRouteIdAsync(int routeId);
     Task<Landmark?> GetByIdAsync(int id);
     Task<Landmark?> GetByCustomVisionTagAsync(string tag);
 }

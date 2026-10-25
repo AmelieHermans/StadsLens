@@ -48,22 +48,22 @@ public class RouteService : IRouteService
 
         var start = request.StartLatitude.HasValue && request.StartLongitude.HasValue
             ? (Latitude: request.StartLatitude.Value, Longitude: request.StartLongitude.Value)
-            : (landmarks[0].Latitude, landmarks[0].Longitude);
-        var nearestIndex = landmarks.Select((landmark, index) => (index, distance: DistanceMeters(start.Latitude, start.Longitude, landmark.Latitude, landmark.Longitude))).OrderBy(x => x.distance).First().index;
-        var selected = new List<StadsLens.Domain.Entities.Landmark>();
+            : (landmarks[0].Landmark.Latitude, landmarks[0].Landmark.Longitude);
+        var nearestIndex = landmarks.Select((landmark, index) => (index, distance: DistanceMeters(start.Latitude, start.Longitude, landmark.Landmark.Latitude, landmark.Landmark.Longitude))).OrderBy(x => x.distance).First().index;
+        var selected = new List<StadsLens.Domain.Entities.RouteLandmark>();
         var budgetMeters = request.DistanceKm * 1000;
         var estimatedMeters = 0d;
         var previous = start;
         foreach (var landmark in landmarks.Skip(nearestIndex))
         {
-            var leg = DistanceMeters(previous.Latitude, previous.Longitude, landmark.Latitude, landmark.Longitude) * 1.25;
+            var leg = DistanceMeters(previous.Latitude, previous.Longitude, landmark.Landmark.Latitude, landmark.Landmark.Longitude) * 1.25;
             if (selected.Count > 0 && estimatedMeters + leg > budgetMeters) break;
             selected.Add(landmark);
             estimatedMeters += leg;
-            previous = (landmark.Latitude, landmark.Longitude);
+            previous = (landmark.Landmark.Latitude, landmark.Landmark.Longitude);
         }
 
-        var waypoints = new[] { start }.Concat(selected.Select(x => (x.Latitude, x.Longitude))).ToList();
+        var waypoints = new[] { start }.Concat(selected.Select(x => (x.Landmark.Latitude, x.Landmark.Longitude))).ToList();
         var orsResult = await GetOrsRouteAsync(waypoints, cancellationToken);
         var geometry = orsResult?.Geometry ?? waypoints.Select(x => new RouteCoordinateResponse { Latitude = x.Latitude, Longitude = x.Longitude }).ToList();
         var distance = orsResult?.DistanceMeters ?? estimatedMeters;
@@ -73,7 +73,7 @@ public class RouteService : IRouteService
             DistanceMeters = distance, DurationSeconds = orsResult?.DurationSeconds ?? distance / 1.4,
             StartLatitude = start.Latitude, StartLongitude = start.Longitude, IsEstimated = orsResult is null,
             Geometry = geometry,
-            Landmarks = selected.Select(x => new RouteLandmarkResponse { Id = x.Id, Name = x.Name, Latitude = x.Latitude, Longitude = x.Longitude, OrderInRoute = x.OrderInRoute }).ToList()
+            Landmarks = selected.Select(x => new RouteLandmarkResponse { Id = x.LandmarkId, Name = x.Landmark.Name, Latitude = x.Landmark.Latitude, Longitude = x.Landmark.Longitude, OrderInRoute = x.OrderInRoute }).ToList()
         };
     }
 
