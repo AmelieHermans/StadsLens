@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using StadsLens.Application;
 using StadsLens.Infrastructure;
 using StadsLens.Infrastructure.Data;
@@ -24,7 +25,8 @@ if (app.Environment.IsDevelopment())
     using (var scope = app.Services.CreateScope())
     {
         var dbContext = scope.ServiceProvider.GetRequiredService<StadsLensDbContext>();
-        await dbContext.Database.EnsureCreatedAsync();
+        // Past openstaande migrations toe (maakt de database aan als die nog niet bestaat).
+        await dbContext.Database.MigrateAsync();
         await DbSeeder.SeedAsync(dbContext);
     }
 
