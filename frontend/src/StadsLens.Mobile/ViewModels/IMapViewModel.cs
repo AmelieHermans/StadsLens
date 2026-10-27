@@ -1,0 +1,17 @@
+using System.Windows.Input;
+using StadsLens.Mobile.Models;
+
+namespace StadsLens.Mobile.ViewModels;
+
+public interface IMapViewModel : IBaseViewModel
+{
+    Route? SelectedRoute { get; set; }
+    string DistanceKm { get; set; }
+    string StartLatitude { get; set; }
+    string StartLongitude { get; set; }
+    WebViewSource MapSource { get; set; }
+    string ResultSummary { get; set; }
+
+    ICommand UseCurrentLocationCommand { get; set; }
+    ICommand CreateRouteCommand { get; set; }
+}

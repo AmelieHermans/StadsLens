@@ -1,6 +1,6 @@
 namespace StadsLens.Mobile.ViewModels;
 
-public partial class SettingsViewModel : BaseViewModel
+public class SettingsViewModel : BaseViewModel, ISettingsViewModel
 {
     public SettingsViewModel()
     {

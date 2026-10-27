@@ -4,7 +4,7 @@ namespace StadsLens.Mobile.Views;
 
 public partial class ScanPage : ContentPage
 {
-    public ScanPage(ScanViewModel viewModel)
+    public ScanPage(IScanViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

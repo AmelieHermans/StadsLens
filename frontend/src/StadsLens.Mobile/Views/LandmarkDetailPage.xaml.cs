@@ -4,7 +4,7 @@ namespace StadsLens.Mobile.Views;
 
 public partial class LandmarkDetailPage : ContentPage
 {
-    public LandmarkDetailPage(LandmarkDetailViewModel viewModel)
+    public LandmarkDetailPage(ILandmarkDetailViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

@@ -3,7 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              x:Class="StadsLens.Mobile.Views.SettingsPage"
-             x:DataType="vm:SettingsViewModel"
+             x:DataType="vm:ISettingsViewModel"
              Title="{Binding Title}">
 
     <VerticalStackLayout Padding="16" Spacing="12">
