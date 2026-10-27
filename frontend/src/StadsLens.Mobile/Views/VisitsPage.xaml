@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.VisitsPage"
-             x:DataType="vm:VisitsViewModel"
+             x:DataType="vm:IVisitsViewModel"
              Title="{Binding Title}">
 
     <RefreshView Command="{Binding LoadVisitsCommand}" IsRefreshing="{Binding IsRefreshing}">

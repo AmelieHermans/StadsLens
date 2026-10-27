@@ -1,57 +1,145 @@
 using System.Globalization;
 using System.Text.Json;
-using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using Microsoft.Maui.Controls;
 using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
 
-public partial class MapViewModel : BaseViewModel, IQueryAttributable
+public class MapViewModel : BaseViewModel, IMapViewModel, IQueryAttributable
 {
     private readonly IRouteDataService _routeDataService;
-    [ObservableProperty] private Route? selectedRoute;
-    [ObservableProperty] private string distanceKm = "2";
-    [ObservableProperty] private string startLatitude = string.Empty;
-    [ObservableProperty] private string startLongitude = string.Empty;
-    [ObservableProperty] private WebViewSource mapSource = new HtmlWebViewSource { Html = CreateEmptyMapHtml() };
-    [ObservableProperty] private string resultSummary = string.Empty;
 
-    public MapViewModel(IRouteDataService routeDataService) { _routeDataService = routeDataService; Title = "Route maken"; }
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    private Route? selectedRoute;
+
+    public Route? SelectedRoute
     {
-        if (query.TryGetValue(nameof(Route), out var value) && value is Route route) { SelectedRoute = route; Title = $"Route maken: {route.Name}"; }
+        get => selectedRoute;
+        set => SetProperty(ref selectedRoute, value);
     }
 
-    [RelayCommand]
+    private string distanceKm = "2";
+
+    public string DistanceKm
+    {
+        get => distanceKm;
+        set => SetProperty(ref distanceKm, value);
+    }
+
+    private string startLatitude = string.Empty;
+
+    public string StartLatitude
+    {
+        get => startLatitude;
+        set => SetProperty(ref startLatitude, value);
+    }
+
+    private string startLongitude = string.Empty;
+
+    public string StartLongitude
+    {
+        get => startLongitude;
+        set => SetProperty(ref startLongitude, value);
+    }
+
+    private WebViewSource mapSource = new HtmlWebViewSource { Html = CreateEmptyMapHtml() };
+
+    public WebViewSource MapSource
+    {
+        get => mapSource;
+        set => SetProperty(ref mapSource, value);
+    }
+
+    private string resultSummary = string.Empty;
+
+    public string ResultSummary
+    {
+        get => resultSummary;
+        set => SetProperty(ref resultSummary, value);
+    }
+
+    public ICommand UseCurrentLocationCommand { get; set; } = null!;
+    public ICommand CreateRouteCommand { get; set; } = null!;
+
+    public MapViewModel(IRouteDataService routeDataService)
+    {
+        _routeDataService = routeDataService;
+        Title = "Route maken";
+
+        BindCommands();
+    }
+
+    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    {
+        if (query.TryGetValue(nameof(Route), out var value) && value is Route route)
+        {
+            SelectedRoute = route;
+            Title = $"Route maken: {route.Name}";
+        }
+    }
+
     private async Task UseCurrentLocationAsync()
     {
         try
         {
             var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
-            if (location is null) { await Shell.Current.DisplayAlertAsync("Locatie", "Je huidige locatie kon niet worden bepaald.", "OK"); return; }
-            StartLatitude = location.Latitude.ToString(CultureInfo.InvariantCulture); StartLongitude = location.Longitude.ToString(CultureInfo.InvariantCulture);
+            if (location is null)
+            {
+                await Shell.Current.DisplayAlertAsync("Locatie", "Je huidige locatie kon niet worden bepaald.", "OK");
+                return;
+            }
+
+            StartLatitude = location.Latitude.ToString(CultureInfo.InvariantCulture);
+            StartLongitude = location.Longitude.ToString(CultureInfo.InvariantCulture);
         }
-        catch (Exception ex) { await ShowErrorAsync(ex); }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex);
+        }
     }
 
-    [RelayCommand]
     private async Task CreateRouteAsync()
     {
-        if (SelectedRoute is null || !double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.InvariantCulture, out var distance) || distance <= 0) { await Shell.Current.DisplayAlertAsync("Route", "Geef een geldige afstand in kilometers op.", "OK"); return; }
-        if (!TryCoordinate(StartLatitude, out var latitude) || !TryCoordinate(StartLongitude, out var longitude)) { latitude = longitude = null; }
+        if (SelectedRoute is null || !double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.InvariantCulture, out var distance) || distance <= 0)
+        {
+            await Shell.Current.DisplayAlertAsync("Route", "Geef een geldige afstand in kilometers op.", "OK");
+            return;
+        }
+
+        if (!TryCoordinate(StartLatitude, out var latitude) || !TryCoordinate(StartLongitude, out var longitude))
+        {
+            latitude = longitude = null;
+        }
+
         try
         {
             IsBusy = true;
             var plan = await _routeDataService.PlanRouteAsync(SelectedRoute.Id, distance, latitude, longitude);
-            if (plan is null) { await Shell.Current.DisplayAlertAsync("Route", "De route kon niet worden gemaakt.", "OK"); return; }
+            if (plan is null)
+            {
+                await Shell.Current.DisplayAlertAsync("Route", "De route kon niet worden gemaakt.", "OK");
+                return;
+            }
+
             ResultSummary = $"{plan.DistanceMeters / 1000:0.0} km · {TimeSpan.FromSeconds(plan.DurationSeconds):hh\\:mm} · {plan.Landmarks.Count} landmarks" + (plan.IsEstimated ? " (schatting)" : string.Empty);
             MapSource = new HtmlWebViewSource { Html = BuildMapHtml(plan) };
         }
-        catch (Exception ex) { await ShowErrorAsync(ex); }
-        finally { IsBusy = false; }
+        catch (Exception ex)
+        {
+            await ShowErrorAsync(ex);
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private void BindCommands()
+    {
+        UseCurrentLocationCommand = new AsyncRelayCommand(UseCurrentLocationAsync);
+        CreateRouteCommand = new AsyncRelayCommand(CreateRouteAsync);
     }
 
     private static bool TryCoordinate(string value, out double? result) { if (double.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out var parsed)) { result = parsed; return true; } result = null; return false; }

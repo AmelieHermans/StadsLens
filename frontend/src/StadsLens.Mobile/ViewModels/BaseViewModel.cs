@@ -2,20 +2,38 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace StadsLens.Mobile.ViewModels;
 
-public partial class BaseViewModel : ObservableObject
+public class BaseViewModel : ObservableObject, IBaseViewModel
 {
-    [ObservableProperty]
-    [NotifyPropertyChangedFor(nameof(IsNotBusy))]
-    private bool isBusy;
-
-    // Apart van IsBusy: een RefreshView zet dit zelf op true vóór het command loopt.
-    [ObservableProperty]
-    private bool isRefreshing;
-
-    [ObservableProperty]
     private string title = string.Empty;
 
+    public string Title
+    {
+        get => title;
+        set => SetProperty(ref title, value);
+    }
+
+    private bool isBusy;
+
+    public bool IsBusy
+    {
+        get => isBusy;
+        set
+        {
+            if (SetProperty(ref isBusy, value))
+                OnPropertyChanged(nameof(IsNotBusy));
+        }
+    }
+
     public bool IsNotBusy => !IsBusy;
+
+    // Apart van IsBusy: een RefreshView zet dit zelf op true vóór het command loopt.
+    private bool isRefreshing;
+
+    public bool IsRefreshing
+    {
+        get => isRefreshing;
+        set => SetProperty(ref isRefreshing, value);
+    }
 
     // Toont een melding wanneer de API niet bereikbaar is of een fout teruggeeft.
     protected static Task ShowErrorAsync(Exception exception)

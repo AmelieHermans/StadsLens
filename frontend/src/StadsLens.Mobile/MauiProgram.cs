@@ -59,20 +59,15 @@ public static class MauiProgram
 
     private static void RegisterViewModels(IServiceCollection services)
     {
-        services.AddTransient<LoginViewModel>();
-        services.AddTransient<RoutesViewModel>();
-        services.AddTransient<RouteDetailViewModel>();
-
-        // Bestaande pagina's
-        services.AddTransient<MapViewModel>();
-
-        // Nieuwe pagina Route maken
-        services.AddTransient<RouteCreateViewModel>();
-
-        services.AddTransient<ScanViewModel>();
-        services.AddTransient<LandmarkDetailViewModel>();
-        services.AddTransient<VisitsViewModel>();
-        services.AddTransient<SettingsViewModel>();
+        services.AddTransient<ILoginViewModel, LoginViewModel>();
+        services.AddTransient<IRoutesViewModel, RoutesViewModel>();
+        services.AddTransient<IRouteDetailViewModel, RouteDetailViewModel>();
+        services.AddTransient<IMapViewModel, MapViewModel>();
+        services.AddTransient<IScanViewModel, ScanViewModel>();
+        services.AddTransient<ILandmarkDetailViewModel, LandmarkDetailViewModel>();
+        services.AddTransient<IVisitsViewModel, VisitsViewModel>();
+        services.AddTransient<ISettingsViewModel, SettingsViewModel>();
+        services.AddTransient<IRouteCreateViewModel, RouteCreateViewModel>();
     }
 
     private static void RegisterViews(IServiceCollection services)
