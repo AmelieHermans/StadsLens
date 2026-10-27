@@ -24,10 +24,12 @@ public class LocationSearchService : ILocationSearchService
         if (string.IsNullOrWhiteSpace(query) || query.Trim().Length < 3)
             return new();
 
+        // Photon (OpenStreetMap) kent geen "nl"; "default" geeft de lokale (Nederlandstalige) namen.
+        // De bbox beperkt de resultaten tot België.
         var url =
             "https://photon.komoot.io/api/?q=" +
             Uri.EscapeDataString(query.Trim()) +
-            "&limit=5&lang=nl";
+            "&limit=8&lang=default&bbox=2.5,49.4,6.5,51.6";
 
         using var request = new HttpRequestMessage(HttpMethod.Get, url);
         request.Headers.Accept.ParseAdd("application/json");
@@ -68,7 +70,6 @@ public class LocationSearchService : ILocationSearchService
             Add("street");
             Add("postcode");
             Add("city");
-            Add("country");
 
             void Add(string key)
             {
@@ -85,17 +86,19 @@ public class LocationSearchService : ILocationSearchService
                 }
             }
 
-            if (parts.Count == 0)
+            // Dezelfde straat komt soms meerdere keren terug (één per stuk weg).
+            var label = string.Join(", ", parts);
+            if (parts.Count == 0 || suggestions.Any(s => s.Label == label))
                 continue;
 
             suggestions.Add(new LocationSuggestion
             {
-                Label = string.Join(", ", parts),
+                Label = label,
                 Latitude = latitude,
                 Longitude = longitude
             });
         }
 
-        return suggestions;
+        return suggestions.Take(5).ToList();
     }
 }
