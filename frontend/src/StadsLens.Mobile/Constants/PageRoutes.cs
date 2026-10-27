@@ -12,5 +12,6 @@ public static class PageRoutes
     public const string RouteDetail = "routedetail";
     public const string Map = "map";
     public const string Scan = "scan";
-    public const string LandmarkDetail = "landmarkdetail";
+
+    // LandmarkDetail gebruikt NavigationService.NavigateToLandmarkDetailPageAsync (PushAsync).
 }

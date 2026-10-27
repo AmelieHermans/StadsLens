@@ -36,6 +36,8 @@ public class MappingProfile : Profile
         CreateMap<CreateUserRequest, User>();
 
         // LandmarkName wordt automatisch gevuld via Landmark.Name (flattening).
-        CreateMap<Visit, VisitResponse>();
+        // VisitedAt is UTC; SQL Server bewaart dat niet, dus expliciet aanduiden (JSON krijgt dan een "Z").
+        CreateMap<Visit, VisitResponse>()
+            .ForMember(dest => dest.VisitedAt, opt => opt.MapFrom(src => DateTime.SpecifyKind(src.VisitedAt, DateTimeKind.Utc)));
     }
 }

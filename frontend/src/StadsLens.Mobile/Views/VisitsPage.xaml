@@ -17,7 +17,7 @@
                     <Border Margin="16,8" Padding="16">
                         <VerticalStackLayout Spacing="4">
                             <Label Text="{Binding LandmarkName}" FontAttributes="Bold" FontSize="18" />
-                            <Label Text="{Binding VisitedAt, StringFormat='{0:dd/MM/yyyy HH:mm}'}" FontSize="12" />
+                            <Label Text="{Binding VisitedAtLocal, StringFormat='{0:dd/MM/yyyy HH:mm}'}" FontSize="12" />
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>
