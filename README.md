@@ -25,13 +25,13 @@ StadsLens/
 │       ├── StadsLens.Contracts/        → Request/response-DTO's voor de app
 │       │   ├── Routes/  Landmarks/  Users/  Visits/
 │       ├── StadsLens.Domain/           → Entiteiten, geen afhankelijkheden
-│       │   └── Entities/               (Route, Landmark, User, Visit)
+│       │   └── Entities/               (Route, Landmark, RouteLandmark, User, Visit)
 │       └── StadsLens.Infrastructure/   → EF Core + SQL Server
 │           ├── Data/
 │           │   ├── StadsLensDbContext.cs
-│           │   └── Configurations/     (Fluent API per entiteit)
+│           │   ├── Configurations/     (Fluent API per entiteit)
+│           │   └── Migrations/         (EF Core-migrations)
 │           ├── Repositories/           (RouteRepository, ...)
-│           ├── Migrations/             (na eerste `dotnet ef migrations add`)
 │           └── DependencyInjection.cs  (AddInfrastructure)
 └── frontend/
     ├── StadsLens.Frontend.slnx
@@ -59,22 +59,29 @@ Api ──► Application ──► Domain
 
 Request-flow: `Controller → Service → Repository → DbContext`.
 
-Relaties: `Route 1→n Landmark`, `User 1→n Visit`, `Landmark 1→n Visit`.
+Relaties: `Route n↔n Landmark` (via `RouteLandmark`, met `OrderInRoute` per route), `User 1→n Visit`, `Landmark 1→n Visit`.
 
 ## Starten
 
 ```bash
-# database aanmaken
-cd backend
-dotnet ef migrations add InitialCreate -p src/StadsLens.Infrastructure -s src/StadsLens.Api
-dotnet ef database update -p src/StadsLens.Infrastructure -s src/StadsLens.Api
-
 # API draaien + tunnel
+cd backend
 dotnet run --project src/StadsLens.Api --launch-profile http
 ngrok http 5158
 ```
 
-In Development vult de API een lege database automatisch met een voorbeeldroute (`DbSeeder`).
+In Development past de API bij het opstarten automatisch alle openstaande migrations toe en vult een lege database met voorbeeldroutes (`DbSeeder`).
+
+### Het datamodel aanpassen
+
+Na een wijziging aan een entiteit of configuratie maak je een nieuwe migration en commit je die mee:
+
+```bash
+cd backend
+dotnet ef migrations add <KorteNaam> -p src/StadsLens.Infrastructure -s src/StadsLens.Api -o Data/Migrations -- --environment Development
+```
+
+Bij de volgende start van de API wordt elke lokale database automatisch bijgewerkt.
 
 De app kiest de API-URL in `frontend/src/StadsLens.Mobile/Constants/ApiSettings.cs`:
 

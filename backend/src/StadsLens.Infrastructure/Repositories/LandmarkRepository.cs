@@ -14,18 +14,22 @@ public class LandmarkRepository : ILandmarkRepository
         _context = context;
     }
 
-    public async Task<IEnumerable<Landmark>> GetByRouteIdAsync(int routeId)
+    public async Task<IEnumerable<RouteLandmark>> GetByRouteIdAsync(int routeId)
     {
-        return await _context.Landmarks
-            .Where(l => l.RouteId == routeId)
-            .OrderBy(l => l.OrderInRoute)
-            .AsNoTracking()
+        return await _context.RouteLandmarks
+            .Where(rl => rl.RouteId == routeId)
+            .Include(rl => rl.Landmark)
+                .ThenInclude(l => l.RouteLandmarks)
+            .OrderBy(rl => rl.OrderInRoute)
+            // Include loopt terug naar RouteLandmark (voor RouteIds); gewone AsNoTracking staat die cyclus niet toe.
+            .AsNoTrackingWithIdentityResolution()
             .ToListAsync();
     }
 
     public async Task<Landmark?> GetByIdAsync(int id)
     {
         return await _context.Landmarks
+            .Include(l => l.RouteLandmarks)
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.Id == id);
     }
@@ -33,6 +37,7 @@ public class LandmarkRepository : ILandmarkRepository
     public async Task<Landmark?> GetByCustomVisionTagAsync(string tag)
     {
         return await _context.Landmarks
+            .Include(l => l.RouteLandmarks)
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.CustomVisionTag == tag);
     }

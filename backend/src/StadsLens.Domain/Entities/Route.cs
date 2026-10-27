@@ -8,5 +8,5 @@ public class Route
     public string City { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
 
-    public ICollection<Landmark> Landmarks { get; set; } = new List<Landmark>();
+    public ICollection<RouteLandmark> RouteLandmarks { get; set; } = new List<RouteLandmark>();
 }

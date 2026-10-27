@@ -10,6 +10,28 @@ Accept: application/json
 
 ###
 
+# Landmark in meerdere routes: het stadhuis zit in route 1 (stop 2) en route 2 (stop 1).
+GET {{StadsLens_Api_HostAddress}}/api/routes/2/landmarks
+Accept: application/json
+
+###
+
+# RouteIds toont alle routes waarin de landmark zit.
+GET {{StadsLens_Api_HostAddress}}/api/landmarks/by-tag/stadhuis
+Accept: application/json
+
+###
+
+POST {{StadsLens_Api_HostAddress}}/api/routes/plan
+Content-Type: application/json
+
+{
+  "routeId": 2,
+  "distanceKm": 5
+}
+
+###
+
 POST {{StadsLens_Api_HostAddress}}/api/users
 Content-Type: application/json
 

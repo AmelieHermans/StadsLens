@@ -57,7 +57,7 @@ public partial class RouteDetailViewModel : BaseViewModel, IQueryAttributable
     }
 
     [RelayCommand]
-    private Task GoToMapAsync() => _navigationService.NavigateToAsync(PageRoutes.Map);
+    private Task GoToMapAsync() => _navigationService.NavigateToAsync(PageRoutes.Map, new Dictionary<string, object> { { nameof(Route), SelectedRoute! } });
 
     [RelayCommand]
     private Task GoToScanAsync() => _navigationService.NavigateToAsync(PageRoutes.Scan);

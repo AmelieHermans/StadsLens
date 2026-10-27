@@ -36,4 +36,12 @@ public class RoutesController : ControllerBase
     {
         return Ok(await _landmarkService.GetByRouteIdAsync(id));
     }
+
+    [HttpPost("plan")]
+    public async Task<ActionResult<RoutePlanResponse>> Plan([FromBody] CreateRouteRequest request, CancellationToken cancellationToken)
+    {
+        try { return Ok(await _routeService.PlanAsync(request, cancellationToken)); }
+        catch (KeyNotFoundException exception) { return NotFound(new { message = exception.Message }); }
+        catch (InvalidOperationException exception) { return BadRequest(new { message = exception.Message }); }
+    }
 }

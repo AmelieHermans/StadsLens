@@ -4,6 +4,8 @@
 <dict>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>StadsLens gebruikt je locatie om een route in de buurt te starten.</string>
 	<key>UIDeviceFamily</key>
 	<array>
 		<integer>1</integer>

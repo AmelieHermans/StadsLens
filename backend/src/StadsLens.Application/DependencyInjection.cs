@@ -11,6 +11,7 @@ public static class DependencyInjection
     {
         services.AddAutoMapper(cfg => { }, typeof(MappingProfile));
 
+        services.AddScoped<HttpClient>();
         services.AddScoped<IRouteService, RouteService>();
         services.AddScoped<ILandmarkService, LandmarkService>();
         services.AddScoped<IUserService, UserService>();
