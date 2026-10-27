@@ -2,7 +2,8 @@ using CommunityToolkit.Mvvm.ComponentModel;
 
 namespace StadsLens.Mobile.ViewModels;
 
-public class BaseViewModel : ObservableObject, IBaseViewModel
+// ObservableRecipient = ObservableObject die ook messages kan ontvangen (Messenger.Register).
+public class BaseViewModel : ObservableRecipient, IBaseViewModel
 {
     private string title = string.Empty;
 

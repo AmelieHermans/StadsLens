@@ -1,7 +1,9 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using StadsLens.Mobile.Constants;
+using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
@@ -31,6 +33,7 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel, IQuery
     public ICommand LoadLandmarksCommand { get; set; } = null!;
     public ICommand GoToMapCommand { get; set; } = null!;
     public ICommand GoToScanCommand { get; set; } = null!;
+    public ICommand GoToLandmarkDetailCommand { get; set; } = null!;
 
     public RouteDetailViewModel(ILandmarkDataService landmarkDataService, INavigationService navigationService)
     {
@@ -76,10 +79,21 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel, IQuery
 
     private Task GoToScanAsync() => _navigationService.NavigateToAsync(PageRoutes.Scan);
 
+    // Eerst navigeren (dan bestaat het ViewModel van de detailpagina), daarna de landmark doorsturen.
+    private async Task GoToLandmarkDetailAsync(Landmark? landmark)
+    {
+        if (landmark is null)
+            return;
+
+        await _navigationService.NavigateToLandmarkDetailPageAsync();
+        WeakReferenceMessenger.Default.Send(new LandmarkSelectedMessage(landmark));
+    }
+
     private void BindCommands()
     {
         LoadLandmarksCommand = new AsyncRelayCommand(LoadLandmarksAsync);
         GoToMapCommand = new AsyncRelayCommand(GoToMapAsync);
         GoToScanCommand = new AsyncRelayCommand(GoToScanAsync);
+        GoToLandmarkDetailCommand = new AsyncRelayCommand<Landmark>(GoToLandmarkDetailAsync);
     }
 }

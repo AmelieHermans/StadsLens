@@ -21,11 +21,26 @@ public class LandmarkDataService : ApiService<Landmark>, ILandmarkDataService
         return landmarks ?? [];
     }
 
-    public async Task<Landmark?> GetByTagAsync(string tag)
+    public async Task<Landmark?> GetByIdAsync(int id, string language)
     {
-        using HttpResponseMessage response = await _httpClient.GetAsync($"{_endpoint}/by-tag/{Uri.EscapeDataString(tag)}");
+        using HttpResponseMessage response = await _httpClient.GetAsync($"{_endpoint}/{id}?language={language}");
         return response.IsSuccessStatusCode
             ? await response.Content.ReadFromJsonAsync<Landmark>()
             : null;
+    }
+
+    public async Task<Landmark?> GetByTagAsync(string tag, string language)
+    {
+        using HttpResponseMessage response = await _httpClient.GetAsync($"{_endpoint}/by-tag/{Uri.EscapeDataString(tag)}?language={language}");
+        return response.IsSuccessStatusCode
+            ? await response.Content.ReadFromJsonAsync<Landmark>()
+            : null;
+    }
+
+    public async Task<byte[]> GetAudioAsync(int id, string language)
+    {
+        using HttpResponseMessage response = await _httpClient.GetAsync($"{_endpoint}/{id}/audio?language={language}");
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadAsByteArrayAsync();
     }
 }

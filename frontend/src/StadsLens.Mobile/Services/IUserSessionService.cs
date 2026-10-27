@@ -8,4 +8,8 @@ public interface IUserSessionService
     bool IsLoggedIn { get; }
     void SetUser(User user);
     void Clear();
+
+    // De gekozen taal voor bezienswaardigheden ("nl" of "en").
+    string Language { get; }
+    void SetLanguage(string language);
 }

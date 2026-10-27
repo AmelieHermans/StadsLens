@@ -12,6 +12,7 @@ public static class PageRoutes
     public const string RouteDetail = "routedetail";
     public const string Map = "map";
     public const string Scan = "scan";
-    public const string LandmarkDetail = "landmarkdetail";
     public const string RouteCreate = "route-create";
+
+    // LandmarkDetail gebruikt NavigationService.NavigateToLandmarkDetailPageAsync (PushAsync).
 }

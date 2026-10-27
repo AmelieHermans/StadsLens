@@ -10,15 +10,26 @@ Accept: application/json
 
 ###
 
-# Landmark in meerdere routes: het stadhuis zit in route 1 (stop 2) en route 2 (stop 1).
+# Landmark in meerdere routes: de kathedraal en het stadhuis zitten in route 1 en route 2.
 GET {{StadsLens_Api_HostAddress}}/api/routes/2/landmarks
 Accept: application/json
 
 ###
 
 # RouteIds toont alle routes waarin de landmark zit.
-GET {{StadsLens_Api_HostAddress}}/api/landmarks/by-tag/stadhuis
+GET {{StadsLens_Api_HostAddress}}/api/landmarks/by-tag/stadhuis-mechelen
 Accept: application/json
+
+###
+
+# Vertaald naar het Engels (Azure AI Translator). "language" in de response zegt in welke taal de tekst staat.
+GET {{StadsLens_Api_HostAddress}}/api/landmarks/1?language=en
+Accept: application/json
+
+###
+
+# De geschiedenis voorgelezen als mp3 (Azure AI Speech). Gebruik language=nl of language=en.
+GET {{StadsLens_Api_HostAddress}}/api/landmarks/1/audio?language=en
 
 ###
 

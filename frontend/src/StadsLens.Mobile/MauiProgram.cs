@@ -1,5 +1,6 @@
 
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Services;
 using StadsLens.Mobile.ViewModels;
@@ -51,6 +52,7 @@ public static class MauiProgram
         services.AddSingleton<ILandmarkDataService, LandmarkDataService>();
         services.AddSingleton<IUserDataService, UserDataService>();
         services.AddSingleton<IVisitDataService, VisitDataService>();
+        services.AddSingleton(AudioManager.Current);
 
         // Nieuwe service voor het genereren van wandelroutes
         services.AddTransient<IRoutingService, RoutingService>();
@@ -90,25 +92,9 @@ public static class MauiProgram
 
     private static void RegisterRoutes()
     {
-        Routing.RegisterRoute(
-            PageRoutes.RouteDetail,
-            typeof(RouteDetailPage));
-
-        Routing.RegisterRoute(
-            PageRoutes.Map,
-            typeof(MapPage));
-
-        // Nieuwe navigatieroute
-        Routing.RegisterRoute(
-            PageRoutes.RouteCreate,
-            typeof(RouteCreatePage));
-
-        Routing.RegisterRoute(
-            PageRoutes.Scan,
-            typeof(ScanPage));
-
-        Routing.RegisterRoute(
-            PageRoutes.LandmarkDetail,
-            typeof(LandmarkDetailPage));
+        Routing.RegisterRoute(PageRoutes.RouteDetail, typeof(RouteDetailPage));
+        Routing.RegisterRoute(PageRoutes.Map, typeof(MapPage));
+        Routing.RegisterRoute(PageRoutes.RouteCreate, typeof(RouteCreatePage));
+        Routing.RegisterRoute(PageRoutes.Scan, typeof(ScanPage));
     }
 }
