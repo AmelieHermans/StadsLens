@@ -12,18 +12,26 @@ public class MappingProfile : Profile
     public MappingProfile()
     {
         CreateMap<Route, RouteResponse>()
-            .ForMember(dest => dest.LandmarkCount, opt => opt.MapFrom(src => src.RouteLandmarks.Count));
+    .ForMember(
+        dest => dest.LandmarkCount,
+        opt => opt.MapFrom(src => src.RouteLandmarks.Count)
+    )
+    .ForMember(
+        dest => dest.Landmarks,
+        opt => opt.MapFrom(src =>
+            src.RouteLandmarks
+                .OrderBy(rl => rl.OrderInRoute)
+                .Select(rl => rl.Landmark)
+        )
+    );
 
         // Losse landmark (bv. na een scan): geen volgorde, wel alle routes waarin hij zit.
         CreateMap<Landmark, LandmarkResponse>()
-            .ForMember(dest => dest.RouteIds, opt => opt.MapFrom(src => src.RouteLandmarks.Select(rl => rl.RouteId)))
-            .ForMember(dest => dest.OrderInRoute, opt => opt.Ignore());
+            .ForMember(dest => dest.RouteIds, opt => opt.MapFrom(src => src.RouteLandmarks.Select(rl => rl.RouteId)));
 
         // Landmark binnen een route: de volgorde komt van de koppeling.
         CreateMap<RouteLandmark, LandmarkResponse>()
-            .IncludeMembers(src => src.Landmark)
-            .ForMember(dest => dest.OrderInRoute, opt => opt.MapFrom(src => src.OrderInRoute));
-
+            .IncludeMembers(src => src.Landmark);
         CreateMap<User, UserResponse>();
         CreateMap<CreateUserRequest, User>();
 

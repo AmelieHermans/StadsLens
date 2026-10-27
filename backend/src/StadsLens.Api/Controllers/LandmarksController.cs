@@ -15,6 +15,13 @@ public class LandmarksController : ControllerBase
         _landmarkService = landmarkService;
     }
 
+    [HttpGet]
+    public async Task<ActionResult<IEnumerable<LandmarkResponse>>> GetAllLandmarks()
+    {
+        var landmarks = await _landmarkService.GetAllLandmarks();
+        return Ok(landmarks);
+    }
+
     [HttpGet("{id:int}")]
     public async Task<ActionResult<LandmarkResponse>> GetById(int id)
     {
