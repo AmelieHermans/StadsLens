@@ -4,7 +4,8 @@ namespace StadsLens.Mobile.Services;
 
 public class NavigationService : INavigationService
 {
-    // De TabBar uit AppShell.xaml (Routes, Bezoeken, ...).
+    // Routes uit AppShell.xaml: het loginscherm en de TabBar (Routes, Bezoeken, ...).
+    private const string LoginRoute = "//login";
     private const string MainTabsRoute = "//main/routes";
 
     private readonly IServiceProvider _serviceProvider;
@@ -17,10 +18,20 @@ public class NavigationService : INavigationService
         _serviceProvider = serviceProvider;
     }
 
-    // Van het loginscherm naar de tabbladen: dat is een wissel binnen de Shell, geen pagina op de stack.
+    // Tussen het loginscherm en de tabbladen wisselen gebeurt binnen de Shell, niet met een pagina op de stack.
+    public async Task NavigateToLoginPageAsync()
+    {
+        await Shell.Current.GoToAsync(LoginRoute);
+    }
+
     public async Task NavigateToMainPageAsync()
     {
         await Shell.Current.GoToAsync(MainTabsRoute);
+    }
+
+    public async Task NavigateToRegisterPageAsync()
+    {
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<RegisterPage>());
     }
 
     // De pagina's komen uit de serviceprovider, zodat ze hun ViewModel via DI krijgen.

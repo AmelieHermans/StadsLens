@@ -2,12 +2,32 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+             xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
              x:Class="StadsLens.Mobile.Views.ScanPage"
              x:DataType="vm:IScanViewModel"
-             Title="{Binding Title}">
+             Title="{loc:Translate Scan_Title}">
 
-    <VerticalStackLayout Padding="16" Spacing="12">
-        <Label Text="{Binding Title}" Style="{StaticResource Headline}" />
-    </VerticalStackLayout>
+    <ScrollView>
+        <VerticalStackLayout Padding="16" Spacing="12">
+            <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
+            <Label Text="{loc:Translate Scan_Intro}" />
+
+            <HorizontalStackLayout Spacing="12">
+                <Button Text="{loc:Translate Scan_TakePhoto}" Command="{Binding TakePhotoCommand}"
+                        IsVisible="{Binding IsCaptureSupported}" IsEnabled="{Binding IsNotBusy}" />
+                <Button Text="{loc:Translate Scan_PickPhoto}" Command="{Binding PickPhotoCommand}" IsEnabled="{Binding IsNotBusy}" />
+            </HorizontalStackLayout>
+
+            <Image Source="{Binding PhotoPath}" Aspect="AspectFit" HeightRequest="300" IsVisible="{Binding HasPhoto}" />
+
+            <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
+
+            <Label Text="{Binding ResultText}" IsVisible="{Binding HasResult}" FontSize="16" />
+
+            <Button Text="{loc:Translate Scan_OpenLandmark}" Command="{Binding OpenLandmarkCommand}" IsVisible="{Binding IsRecognized}" />
+        </VerticalStackLayout>
+    </ScrollView>
 
 </ContentPage>

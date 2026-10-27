@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
 
@@ -55,7 +56,14 @@ public class BaseViewModel : ObservableRecipient, IBaseViewModel
     protected void ShowError(Exception exception)
     {
         ErrorMessage = exception is HttpRequestException
-            ? $"Kan de server niet bereiken. Draait de API? ({exception.Message})"
+            ? Text("Error_ServerUnreachable", exception.Message)
             : exception.Message;
+    }
+
+    // Een tekst in de taal van de app (Resources/Strings), eventueel met waarden ingevuld op {0}, {1}, ...
+    protected static string Text(string key, params object[] values)
+    {
+        var text = LocalizationService.Instance[key];
+        return values.Length == 0 ? text : string.Format(text, values);
     }
 }

@@ -14,4 +14,5 @@ public interface IMapViewModel : IBaseViewModel
 
     ICommand UseCurrentLocationCommand { get; set; }
     ICommand CreateRouteCommand { get; set; }
+    ICommand GoBackCommand { get; set; }
 }

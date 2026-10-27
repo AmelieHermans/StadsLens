@@ -4,6 +4,8 @@ namespace StadsLens.Mobile.Services;
 // Gegevens voor de nieuwe pagina worden na het navigeren met een message verstuurd.
 public interface INavigationService
 {
+    Task NavigateToLoginPageAsync();
+    Task NavigateToRegisterPageAsync();
     Task NavigateToMainPageAsync();
     Task NavigateToRouteDetailPageAsync();
     Task NavigateToMapPageAsync();

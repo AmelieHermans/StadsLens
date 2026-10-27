@@ -27,7 +27,6 @@ public class VisitsViewModel : BaseViewModel, IVisitsViewModel
     {
         _visitDataService = visitDataService;
         _userSession = userSession;
-        Title = "Bezoeken";
 
         BindCommands();
         LoadVisitsCommand.Execute(null);
@@ -35,6 +34,14 @@ public class VisitsViewModel : BaseViewModel, IVisitsViewModel
         Messenger.Register<VisitsViewModel, UserLoggedInMessage>(this, (r, m) => r.Receive(m));
 
         Messenger.Register<VisitsViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+
+        Messenger.Register<VisitsViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    // Andere taal: opnieuw laden zodat de namen van de bezienswaardigheden vertaald zijn.
+    public void Receive(LanguageChangedMessage message)
+    {
+        LoadVisitsCommand.Execute(null);
     }
 
     // Een (andere) gebruiker is ingelogd: de bezoeken van die gebruiker laden.

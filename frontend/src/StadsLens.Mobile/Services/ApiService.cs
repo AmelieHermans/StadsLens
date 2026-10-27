@@ -1,4 +1,5 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 
 namespace StadsLens.Mobile.Services;
 
@@ -46,5 +47,26 @@ public abstract class ApiService<T> : IApiService<T> where T : class
     {
         using HttpResponseMessage response = await _httpClient.DeleteAsync($"{_endpoint}/{id}");
         return response.IsSuccessStatusCode;
+    }
+
+    // De backend stuurt bij een fout meestal { "message": "..." } mee, maar niet altijd (bv. 413).
+    protected static async Task<string> ReadErrorMessageAsync(HttpResponseMessage response, string fallback)
+    {
+        try
+        {
+            var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
+            if (!string.IsNullOrWhiteSpace(error?.Message))
+                return error.Message;
+        }
+        catch (Exception ex) when (ex is JsonException or NotSupportedException)
+        {
+        }
+
+        return $"{fallback} ({(int)response.StatusCode}).";
+    }
+
+    private sealed class ErrorResponse
+    {
+        public string? Message { get; set; }
     }
 }

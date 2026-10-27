@@ -13,6 +13,7 @@ namespace StadsLens.Mobile.ViewModels;
 public class MapViewModel : BaseViewModel, IMapViewModel
 {
     private readonly IRouteDataService _routeDataService;
+    private readonly INavigationService _navigationService;
 
     private Route? selectedRoute;
 
@@ -64,11 +65,13 @@ public class MapViewModel : BaseViewModel, IMapViewModel
 
     public ICommand UseCurrentLocationCommand { get; set; } = null!;
     public ICommand CreateRouteCommand { get; set; } = null!;
+    public ICommand GoBackCommand { get; set; } = null!;
 
-    public MapViewModel(IRouteDataService routeDataService)
+    public MapViewModel(IRouteDataService routeDataService, INavigationService navigationService)
     {
         _routeDataService = routeDataService;
-        Title = "Route maken";
+        _navigationService = navigationService;
+        Title = Text("Map_Title");
 
         BindCommands();
 
@@ -78,7 +81,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
     public void Receive(RouteSelectedMessage message)
     {
         SelectedRoute = message.Value;
-        Title = $"Route maken: {message.Value.Name}";
+        Title = Text("Map_TitleWithRoute", message.Value.Name);
     }
 
     private async Task UseCurrentLocationAsync()
@@ -90,7 +93,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
             var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
             if (location is null)
             {
-                ErrorMessage = "Je huidige locatie kon niet worden bepaald.";
+                ErrorMessage = Text("Map_LocationUnknown");
                 return;
             }
 
@@ -109,7 +112,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
 
         if (SelectedRoute is null || !double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.InvariantCulture, out var distance) || distance <= 0)
         {
-            ErrorMessage = "Geef een geldige afstand in kilometers op.";
+            ErrorMessage = Text("Map_InvalidDistance");
             return;
         }
 
@@ -124,7 +127,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
             var plan = await _routeDataService.PlanRouteAsync(SelectedRoute.Id, distance, latitude, longitude);
             if (plan is null)
             {
-                ErrorMessage = "De route kon niet worden gemaakt.";
+                ErrorMessage = Text("Map_RouteFailed");
                 return;
             }
 
@@ -143,6 +146,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
 
     private void BindCommands()
     {
+        GoBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
         UseCurrentLocationCommand = new AsyncRelayCommand(UseCurrentLocationAsync);
         CreateRouteCommand = new AsyncRelayCommand(CreateRouteAsync);
     }

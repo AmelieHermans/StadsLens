@@ -37,6 +37,18 @@ public class LandmarkDataService : ApiService<Landmark>, ILandmarkDataService
             : null;
     }
 
+    public async Task<Recognition> RecognizeAsync(Stream photo, string fileName, string language)
+    {
+        using var content = new MultipartFormDataContent();
+        content.Add(new StreamContent(photo), "image", fileName);
+
+        using HttpResponseMessage response = await _httpClient.PostAsync($"{_endpoint}/recognize?language={language}", content);
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException(await ReadErrorMessageAsync(response, "Herkennen is mislukt"));
+
+        return await response.Content.ReadFromJsonAsync<Recognition>() ?? new Recognition();
+    }
+
     public async Task<byte[]> GetAudioAsync(int id, string language)
     {
         using HttpResponseMessage response = await _httpClient.GetAsync($"{_endpoint}/{id}/audio?language={language}");

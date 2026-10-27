@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+             xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
              x:Class="StadsLens.Mobile.Views.LoginPage"
              x:DataType="vm:ILoginViewModel"
              Title="{Binding Title}"
@@ -9,11 +10,14 @@
 
     <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
         <Label Text="StadsLens" Style="{StaticResource Headline}" />
-        <Label Text="Ontdek de stad door je camera." HorizontalOptions="Center" />
-        <Entry Placeholder="Je naam" Text="{Binding Name}" />
-        <Button Text="Start" Command="{Binding LoginCommand}" IsEnabled="{Binding IsNotBusy}" />
+        <Label Text="{loc:Translate Login_Tagline}" HorizontalOptions="Center" />
+        <Entry Placeholder="{loc:Translate Login_Name}" Text="{Binding Name}" />
+        <Entry Placeholder="{loc:Translate Login_Password}" Text="{Binding Password}" IsPassword="True" ReturnCommand="{Binding LoginCommand}" />
+        <Button Text="{loc:Translate Login_Button}" Command="{Binding LoginCommand}" IsEnabled="{Binding IsNotBusy}" />
         <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" HorizontalTextAlignment="Center" />
         <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+        <Button Text="{loc:Translate Login_GoToRegister}" Command="{Binding GoToRegisterCommand}"
+                BackgroundColor="Transparent" TextColor="{StaticResource Primary}" />
     </VerticalStackLayout>
 
 </ContentPage>

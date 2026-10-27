@@ -28,9 +28,16 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
     {
         _routeDataService = routeDataService;
         _navigationService = navigationService;
-        Title = "Wandelroutes";
 
         BindCommands();
+        LoadRoutesCommand.Execute(null);
+
+        Messenger.Register<RoutesViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    // Andere taal: de routes opnieuw ophalen, de backend vertaalt naam en beschrijving.
+    public void Receive(LanguageChangedMessage message)
+    {
         LoadRoutesCommand.Execute(null);
     }
 

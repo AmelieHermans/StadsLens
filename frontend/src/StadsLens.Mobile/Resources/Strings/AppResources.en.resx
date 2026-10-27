@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teksten van de app. Voeg een nieuwe sleutel altijd toe in alle vier de bestanden (nl = standaard, en, fr, de). -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common_Back" xml:space="preserve"><value>← Back</value></data>
+  <data name="Tab_Routes" xml:space="preserve"><value>Routes</value></data>
+  <data name="Tab_Visits" xml:space="preserve"><value>Visits</value></data>
+  <data name="Tab_Settings" xml:space="preserve"><value>Settings</value></data>
+  <data name="Tab_CreateRoute" xml:space="preserve"><value>Create route</value></data>
+  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Cannot reach the server. Is the API running? ({0})</value></data>
+  <data name="Login_Tagline" xml:space="preserve"><value>Discover the city through your camera.</value></data>
+  <data name="Login_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Password</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Log in</value></data>
+  <data name="Login_GoToRegister" xml:space="preserve"><value>No account yet? Create one</value></data>
+  <data name="Login_Empty" xml:space="preserve"><value>Enter your name and password.</value></data>
+  <data name="Login_Wrong" xml:space="preserve"><value>Name or password is incorrect.</value></data>
+  <data name="Register_Title" xml:space="preserve"><value>Create account</value></data>
+  <data name="Register_Header" xml:space="preserve"><value>Create an account</value></data>
+  <data name="Register_PasswordHint" xml:space="preserve"><value>Password (at least 6 characters)</value></data>
+  <data name="Register_ConfirmPassword" xml:space="preserve"><value>Repeat password</value></data>
+  <data name="Register_NameTooShort" xml:space="preserve"><value>Your name must have at least {0} characters.</value></data>
+  <data name="Register_PasswordTooShort" xml:space="preserve"><value>Your password must have at least {0} characters.</value></data>
+  <data name="Register_PasswordMismatch" xml:space="preserve"><value>The passwords do not match.</value></data>
+  <data name="Register_NameTaken" xml:space="preserve"><value>The name '{0}' is already taken.</value></data>
+  <data name="Routes_Title" xml:space="preserve"><value>Walking routes</value></data>
+  <data name="Routes_Empty" xml:space="preserve"><value>No routes found.</value></data>
+  <data name="Routes_Landmarks" xml:space="preserve"><value>sights</value></data>
+  <data name="RouteDetail_Map" xml:space="preserve"><value>Map</value></data>
+  <data name="RouteDetail_Scan" xml:space="preserve"><value>Scan building</value></data>
+  <data name="Visits_Empty" xml:space="preserve"><value>You haven't visited any sights yet.</value></data>
+  <data name="Landmark_Title" xml:space="preserve"><value>Sight</value></data>
+  <data name="Landmark_Visited" xml:space="preserve"><value>✔ Visited</value></data>
+  <data name="Landmark_MarkVisited" xml:space="preserve"><value>Mark as visited</value></data>
+  <data name="Landmark_ReadAloud" xml:space="preserve"><value>Read aloud</value></data>
+  <data name="Landmark_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Landmark_TranslationFailed" xml:space="preserve"><value>Translation failed, the text is shown in Dutch.</value></data>
+  <data name="Scan_Title" xml:space="preserve"><value>Scan</value></data>
+  <data name="Scan_Intro" xml:space="preserve"><value>Take a photo of a sight. StadsLens recognises it and adds it to your visits.</value></data>
+  <data name="Scan_TakePhoto" xml:space="preserve"><value>Take photo</value></data>
+  <data name="Scan_PickPhoto" xml:space="preserve"><value>Choose photo</value></data>
+  <data name="Scan_PickerTitle" xml:space="preserve"><value>Photo of a sight</value></data>
+  <data name="Scan_OpenLandmark" xml:space="preserve"><value>View sight</value></data>
+  <data name="Scan_NotRecognized" xml:space="preserve"><value>No sight recognised (confidence {0:P0}). Try a photo from closer by.</value></data>
+  <data name="Scan_Recognized" xml:space="preserve"><value>Recognised: {0} ({1:P0})</value></data>
+  <data name="Scan_AlreadyVisited" xml:space="preserve"><value>You had already visited this one.</value></data>
+  <data name="Scan_VisitAdded" xml:space="preserve"><value>Added to your visits.</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Language</value></data>
+  <data name="Settings_LanguageInfo" xml:space="preserve"><value>The app and the sights are shown in this language. Translated with Azure AI Translator, read aloud with Azure AI Speech.</value></data>
+  <data name="Settings_AutoRead" xml:space="preserve"><value>Read text aloud</value></data>
+  <data name="Settings_AutoReadInfo" xml:space="preserve"><value>Automatically reads the history aloud when you scan a sight.</value></data>
+  <data name="Settings_LoggedInAs" xml:space="preserve"><value>Logged in as {0}</value></data>
+  <data name="Settings_Logout" xml:space="preserve"><value>Log out</value></data>
+  <data name="Map_Title" xml:space="preserve"><value>Create route</value></data>
+  <data name="Map_TitleWithRoute" xml:space="preserve"><value>Create route: {0}</value></data>
+  <data name="Map_Distance" xml:space="preserve"><value>Distance (km)</value></data>
+  <data name="Map_CurrentLocation" xml:space="preserve"><value>Current location</value></data>
+  <data name="Map_CreateRoute" xml:space="preserve"><value>Make route</value></data>
+  <data name="Map_LocationUnknown" xml:space="preserve"><value>Your current location could not be determined.</value></data>
+  <data name="Map_InvalidDistance" xml:space="preserve"><value>Enter a valid distance in kilometres.</value></data>
+  <data name="Map_RouteFailed" xml:space="preserve"><value>The route could not be created.</value></data>
+  <data name="RouteCreate_Header" xml:space="preserve"><value>Create your own walking route</value></data>
+  <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Use current location</value></data>
+  <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Search for a street, address or place...</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Distance in km</value></data>
+  <data name="RouteCreate_Generate" xml:space="preserve"><value>Generate route</value></data>
+  <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Choose a starting point and the desired distance.</value></data>
+  <data name="RouteCreate_Locating" xml:space="preserve"><value>Determining location...</value></data>
+  <data name="RouteCreate_DistanceRange" xml:space="preserve"><value>Choose a distance between 0.5 and 50 km.</value></data>
+  <data name="RouteCreate_LocationNotYetKnown" xml:space="preserve"><value>Your current location is not known yet. Try again.</value></data>
+  <data name="RouteCreate_ChooseSuggestion" xml:space="preserve"><value>Search for an address and pick a suggestion, or turn on 'Current location'.</value></data>
+  <data name="RouteCreate_Calculating" xml:space="preserve"><value>Calculating walking route...</value></data>
+  <data name="RouteCreate_Summary" xml:space="preserve"><value>Actual walking distance: {0:F2} km · Estimated time: {1:hh\:mm} · {2} sights</value></data>
+</root>

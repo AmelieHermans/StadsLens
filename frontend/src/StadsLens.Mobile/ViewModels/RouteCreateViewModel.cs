@@ -11,7 +11,7 @@ namespace StadsLens.Mobile.ViewModels;
 
 public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 {
-    private const string CurrentLocationLabel = "Huidige locatie";
+    private static string CurrentLocationLabel => Text("Map_CurrentLocation");
 
     private readonly ILandmarkDataService _landmarkDataService;
     private readonly IRoutingService _routingService;
@@ -119,7 +119,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
     public bool IsAddressEnabled => !UseCurrentLocation;
 
-    private string resultSummary = "Kies een startlocatie en gewenste afstand.";
+    private string resultSummary = Text("RouteCreate_ChooseStart");
 
     public string ResultSummary
     {
@@ -165,7 +165,6 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         _routingService = routingService;
         _locationSearchService = locationSearchService;
         _navigationService = navigationService;
-        Title = "Route maken";
 
         BindCommands();
     }
@@ -185,7 +184,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
     {
         ErrorMessage = string.Empty;
 
-        ApplyLocation("Locatie bepalen...", null, null);
+        ApplyLocation(Text("RouteCreate_Locating"), null, null);
 
         try
         {
@@ -193,7 +192,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
                 new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
 
             if (location is null)
-                throw new InvalidOperationException("Je huidige locatie kon niet worden bepaald.");
+                throw new InvalidOperationException(Text("Map_LocationUnknown"));
 
             // De gebruiker kan de switch intussen al terug uitgezet hebben.
             if (UseCurrentLocation)
@@ -258,13 +257,13 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         if (!double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.CurrentCulture, out var targetKm)
             && !double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.InvariantCulture, out targetKm))
         {
-            ErrorMessage = "Geef een geldige afstand in kilometers op.";
+            ErrorMessage = Text("Map_InvalidDistance");
             return;
         }
 
         if (targetKm < 0.5 || targetKm > 50)
         {
-            ErrorMessage = "Kies een afstand tussen 0,5 en 50 km.";
+            ErrorMessage = Text("RouteCreate_DistanceRange");
             return;
         }
 
@@ -282,11 +281,11 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
             if (StartLatitude is null || StartLongitude is null)
             {
-                ErrorMessage = UseCurrentLocation ? "Je huidige locatie is nog niet bekend. Probeer opnieuw." : "Zoek een adres en kies een suggestie, of zet 'Huidige locatie' aan.";
+                ErrorMessage = Text(UseCurrentLocation ? "RouteCreate_LocationNotYetKnown" : "RouteCreate_ChooseSuggestion");
                 return;
             }
 
-            ResultSummary = "Wandelroute berekenen...";
+            ResultSummary = Text("RouteCreate_Calculating");
 
             var landmarks = await _landmarkDataService.GetAllAsync();
             var route = await _routingService.GenerateRouteAsync(
@@ -301,14 +300,11 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
             MapSource = new HtmlWebViewSource { Html = route.MapHtml };
 
-            ResultSummary =
-                $"Werkelijke wandelafstand: {route.DistanceKm:F2} km · " +
-                $"Geschatte tijd: {TimeSpan.FromMinutes(route.DurationMinutes):hh\\:mm} · " +
-                $"{RouteLandmarks.Count} bezienswaardigheden";
+            ResultSummary = Text("RouteCreate_Summary", route.DistanceKm, TimeSpan.FromMinutes(route.DurationMinutes), RouteLandmarks.Count);
         }
         catch (Exception ex)
         {
-            ResultSummary = "De route kon niet worden gemaakt.";
+            ResultSummary = Text("Map_RouteFailed");
             ErrorMessage = ex.Message;
         }
         finally

@@ -14,6 +14,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
     private readonly IVisitDataService _visitDataService;
     private readonly IUserSessionService _userSession;
     private readonly IAudioManager _audioManager;
+    private readonly INavigationService _navigationService;
 
     private IAudioPlayer? _player;
 
@@ -57,7 +58,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         }
     }
 
-    public string ReadAloudText => IsPlaying ? "Stop" : "Voorlezen";
+    public string ReadAloudText => Text(IsPlaying ? "Landmark_Stop" : "Landmark_ReadAloud");
 
     private string translationWarning = string.Empty;
 
@@ -75,42 +76,59 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
 
     public ICommand ReadAloudCommand { get; set; } = null!;
     public ICommand RegisterVisitCommand { get; set; } = null!;
+    public ICommand GoBackCommand { get; set; } = null!;
 
-    public LandmarkDetailViewModel(ILandmarkDataService landmarkDataService, IVisitDataService visitDataService, IUserSessionService userSession, IAudioManager audioManager)
+    public LandmarkDetailViewModel(ILandmarkDataService landmarkDataService, IVisitDataService visitDataService, IUserSessionService userSession, IAudioManager audioManager, INavigationService navigationService)
     {
         _landmarkDataService = landmarkDataService;
         _visitDataService = visitDataService;
         _userSession = userSession;
         _audioManager = audioManager;
-        Title = "Bezienswaardigheid";
+        _navigationService = navigationService;
+        Title = Text("Landmark_Title");
 
         BindCommands();
 
         Messenger.Register<LandmarkDetailViewModel, LandmarkSelectedMessage>(this, (r, m) => r.Receive(m));
         Messenger.Register<LandmarkDetailViewModel, LandmarkRecognizedMessage>(this, (r, m) => r.Receive(m));
         Messenger.Register<LandmarkDetailViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
+
+        newest = new WeakReference<LandmarkDetailViewModel>(this);
     }
 
-    // Gekozen in een lijst: enkel tonen.
+    // Gesloten detailpagina's blijven bestaan (en messages ontvangen) tot de garbage collector ze opruimt.
+    // Enkel de nieuwste ViewModel hoort bij de pagina die net geopend is, dus enkel die reageert.
+    private static WeakReference<LandmarkDetailViewModel>? newest;
+
+    private bool IsNewest => newest is not null && newest.TryGetTarget(out var viewModel) && ReferenceEquals(viewModel, this);
+
+    // Gekozen in een lijst.
     public void Receive(LandmarkSelectedMessage message)
     {
-        _ = LoadLandmarkAsync(message.Value, registerVisit: false);
+        if (IsNewest)
+            _ = LoadLandmarkAsync(message.Value, readAloud: false);
     }
 
-    // Herkend met de camera: de gebruiker staat er nu, dus meteen als bezocht registreren.
+    // Herkend met de camera (het bezoek is al geregistreerd door de ScanViewModel).
+    // Staat "Tekst voorlezen" aan in de instellingen, dan meteen voorlezen.
     public void Receive(LandmarkRecognizedMessage message)
     {
-        _ = LoadLandmarkAsync(message.Value, registerVisit: true);
+        if (IsNewest)
+            _ = LoadLandmarkAsync(message.Value, readAloud: _userSession.AutoReadAloud);
     }
 
     // Andere taal gekozen in de instellingen: de tekst opnieuw ophalen.
     public void Receive(LanguageChangedMessage message)
     {
+        if (!IsNewest)
+            return;
+
+        OnPropertyChanged(nameof(ReadAloudText));
         if (Landmark is not null)
-            _ = LoadLandmarkAsync(Landmark, registerVisit: false);
+            _ = LoadLandmarkAsync(Landmark, readAloud: false);
     }
 
-    private async Task LoadLandmarkAsync(Landmark selected, bool registerVisit)
+    private async Task LoadLandmarkAsync(Landmark selected, bool readAloud)
     {
         ErrorMessage = string.Empty;
         StopAudio();
@@ -129,7 +147,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
                 Landmark = translated;
                 Title = translated.Name;
                 if (translated.Language != _userSession.Language)
-                    TranslationWarning = "Vertalen is niet gelukt, de tekst staat in het Nederlands.";
+                    TranslationWarning = Text("Landmark_TranslationFailed");
             }
 
             if (_userSession.CurrentUser is not null)
@@ -147,8 +165,8 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
             IsBusy = false;
         }
 
-        if (registerVisit && !IsVisited)
-            await RegisterVisitAsync();
+        if (readAloud && !HasError)
+            await ReadAloudAsync();
     }
 
     private async Task ReadAloudAsync()
@@ -227,8 +245,16 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         }
     }
 
+    // Eerst het voorlezen stoppen, anders praat de stem verder op de vorige pagina.
+    private Task GoBackAsync()
+    {
+        StopAudio();
+        return _navigationService.NavigateBackAsync();
+    }
+
     private void BindCommands()
     {
+        GoBackCommand = new AsyncRelayCommand(GoBackAsync);
         ReadAloudCommand = new AsyncRelayCommand(ReadAloudAsync);
         RegisterVisitCommand = new AsyncRelayCommand(RegisterVisitAsync);
     }

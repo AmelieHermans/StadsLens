@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teksten van de app. Voeg een nieuwe sleutel altijd toe in alle vier de bestanden (nl = standaard, en, fr, de). -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common_Back" xml:space="preserve"><value>← Terug</value></data>
+  <data name="Tab_Routes" xml:space="preserve"><value>Routes</value></data>
+  <data name="Tab_Visits" xml:space="preserve"><value>Bezoeken</value></data>
+  <data name="Tab_Settings" xml:space="preserve"><value>Instellingen</value></data>
+  <data name="Tab_CreateRoute" xml:space="preserve"><value>Route creëren</value></data>
+  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Kan de server niet bereiken. Draait de API? ({0})</value></data>
+  <data name="Login_Tagline" xml:space="preserve"><value>Ontdek de stad door je camera.</value></data>
+  <data name="Login_Name" xml:space="preserve"><value>Naam</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Wachtwoord</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Inloggen</value></data>
+  <data name="Login_GoToRegister" xml:space="preserve"><value>Nog geen account? Maak er een</value></data>
+  <data name="Login_Empty" xml:space="preserve"><value>Vul je naam en wachtwoord in.</value></data>
+  <data name="Login_Wrong" xml:space="preserve"><value>Naam of wachtwoord klopt niet.</value></data>
+  <data name="Register_Title" xml:space="preserve"><value>Account maken</value></data>
+  <data name="Register_Header" xml:space="preserve"><value>Maak een account</value></data>
+  <data name="Register_PasswordHint" xml:space="preserve"><value>Wachtwoord (minstens 6 tekens)</value></data>
+  <data name="Register_ConfirmPassword" xml:space="preserve"><value>Herhaal wachtwoord</value></data>
+  <data name="Register_NameTooShort" xml:space="preserve"><value>Je naam moet minstens {0} tekens hebben.</value></data>
+  <data name="Register_PasswordTooShort" xml:space="preserve"><value>Je wachtwoord moet minstens {0} tekens hebben.</value></data>
+  <data name="Register_PasswordMismatch" xml:space="preserve"><value>De wachtwoorden zijn niet hetzelfde.</value></data>
+  <data name="Register_NameTaken" xml:space="preserve"><value>De naam '{0}' is al in gebruik.</value></data>
+  <data name="Routes_Title" xml:space="preserve"><value>Wandelroutes</value></data>
+  <data name="Routes_Empty" xml:space="preserve"><value>Geen routes gevonden.</value></data>
+  <data name="Routes_Landmarks" xml:space="preserve"><value>bezienswaardigheden</value></data>
+  <data name="RouteDetail_Map" xml:space="preserve"><value>Kaart</value></data>
+  <data name="RouteDetail_Scan" xml:space="preserve"><value>Scan gebouw</value></data>
+  <data name="Visits_Empty" xml:space="preserve"><value>Je hebt nog geen bezienswaardigheden bezocht.</value></data>
+  <data name="Landmark_Title" xml:space="preserve"><value>Bezienswaardigheid</value></data>
+  <data name="Landmark_Visited" xml:space="preserve"><value>✔ Bezocht</value></data>
+  <data name="Landmark_MarkVisited" xml:space="preserve"><value>Markeer als bezocht</value></data>
+  <data name="Landmark_ReadAloud" xml:space="preserve"><value>Voorlezen</value></data>
+  <data name="Landmark_Stop" xml:space="preserve"><value>Stop</value></data>
+  <data name="Landmark_TranslationFailed" xml:space="preserve"><value>Vertalen is niet gelukt, de tekst staat in het Nederlands.</value></data>
+  <data name="Scan_Title" xml:space="preserve"><value>Scannen</value></data>
+  <data name="Scan_Intro" xml:space="preserve"><value>Neem een foto van een bezienswaardigheid. StadsLens herkent ze en zet ze bij je bezoeken.</value></data>
+  <data name="Scan_TakePhoto" xml:space="preserve"><value>Foto nemen</value></data>
+  <data name="Scan_PickPhoto" xml:space="preserve"><value>Foto kiezen</value></data>
+  <data name="Scan_PickerTitle" xml:space="preserve"><value>Foto van een bezienswaardigheid</value></data>
+  <data name="Scan_OpenLandmark" xml:space="preserve"><value>Bekijk bezienswaardigheid</value></data>
+  <data name="Scan_NotRecognized" xml:space="preserve"><value>Geen bezienswaardigheid herkend (zekerheid {0:P0}). Probeer een foto van dichterbij.</value></data>
+  <data name="Scan_Recognized" xml:space="preserve"><value>Herkend: {0} ({1:P0})</value></data>
+  <data name="Scan_AlreadyVisited" xml:space="preserve"><value>Deze had je al bezocht.</value></data>
+  <data name="Scan_VisitAdded" xml:space="preserve"><value>Toegevoegd aan je bezoeken.</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Taal</value></data>
+  <data name="Settings_LanguageInfo" xml:space="preserve"><value>De app en de bezienswaardigheden worden in deze taal getoond. Vertaald met Azure AI Translator, voorgelezen met Azure AI Speech.</value></data>
+  <data name="Settings_AutoRead" xml:space="preserve"><value>Tekst voorlezen</value></data>
+  <data name="Settings_AutoReadInfo" xml:space="preserve"><value>Leest de geschiedenis automatisch voor wanneer je een bezienswaardigheid scant.</value></data>
+  <data name="Settings_LoggedInAs" xml:space="preserve"><value>Ingelogd als {0}</value></data>
+  <data name="Settings_Logout" xml:space="preserve"><value>Uitloggen</value></data>
+  <data name="Map_Title" xml:space="preserve"><value>Route maken</value></data>
+  <data name="Map_TitleWithRoute" xml:space="preserve"><value>Route maken: {0}</value></data>
+  <data name="Map_Distance" xml:space="preserve"><value>Afstand (km)</value></data>
+  <data name="Map_CurrentLocation" xml:space="preserve"><value>Huidige locatie</value></data>
+  <data name="Map_CreateRoute" xml:space="preserve"><value>Maak route</value></data>
+  <data name="Map_LocationUnknown" xml:space="preserve"><value>Je huidige locatie kon niet worden bepaald.</value></data>
+  <data name="Map_InvalidDistance" xml:space="preserve"><value>Geef een geldige afstand in kilometers op.</value></data>
+  <data name="Map_RouteFailed" xml:space="preserve"><value>De route kon niet worden gemaakt.</value></data>
+  <data name="RouteCreate_Header" xml:space="preserve"><value>Maak je eigen wandelroute</value></data>
+  <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Huidige locatie gebruiken</value></data>
+  <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Zoek een straat, adres of plaats...</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Afstand in km</value></data>
+  <data name="RouteCreate_Generate" xml:space="preserve"><value>Genereer route</value></data>
+  <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Kies een startlocatie en gewenste afstand.</value></data>
+  <data name="RouteCreate_Locating" xml:space="preserve"><value>Locatie bepalen...</value></data>
+  <data name="RouteCreate_DistanceRange" xml:space="preserve"><value>Kies een afstand tussen 0,5 en 50 km.</value></data>
+  <data name="RouteCreate_LocationNotYetKnown" xml:space="preserve"><value>Je huidige locatie is nog niet bekend. Probeer opnieuw.</value></data>
+  <data name="RouteCreate_ChooseSuggestion" xml:space="preserve"><value>Zoek een adres en kies een suggestie, of zet 'Huidige locatie' aan.</value></data>
+  <data name="RouteCreate_Calculating" xml:space="preserve"><value>Wandelroute berekenen...</value></data>
+  <data name="RouteCreate_Summary" xml:space="preserve"><value>Werkelijke wandelafstand: {0:F2} km · Geschatte tijd: {1:hh\:mm} · {2} bezienswaardigheden</value></data>
+</root>

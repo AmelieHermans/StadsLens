@@ -11,6 +11,7 @@ namespace StadsLens.Mobile.ViewModels;
 public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
 {
     private readonly ILandmarkDataService _landmarkDataService;
+    private readonly IRouteDataService _routeDataService;
     private readonly INavigationService _navigationService;
 
     private Route? selectedRoute;
@@ -33,15 +34,41 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
     public ICommand GoToMapCommand { get; set; } = null!;
     public ICommand GoToScanCommand { get; set; } = null!;
     public ICommand GoToLandmarkDetailCommand { get; set; } = null!;
+    public ICommand GoBackCommand { get; set; } = null!;
 
-    public RouteDetailViewModel(ILandmarkDataService landmarkDataService, INavigationService navigationService)
+    public RouteDetailViewModel(ILandmarkDataService landmarkDataService, IRouteDataService routeDataService, INavigationService navigationService)
     {
         _landmarkDataService = landmarkDataService;
+        _routeDataService = routeDataService;
         _navigationService = navigationService;
 
         BindCommands();
 
         Messenger.Register<RouteDetailViewModel, RouteSelectedMessage>(this, (r, m) => r.Receive(m));
+        Messenger.Register<RouteDetailViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    // Andere taal: de route (naam, beschrijving) en haar bezienswaardigheden vertaald opnieuw ophalen.
+    public async void Receive(LanguageChangedMessage message)
+    {
+        if (SelectedRoute is null)
+            return;
+
+        try
+        {
+            var route = await _routeDataService.GetByIdAsync(SelectedRoute.Id);
+            if (route is not null)
+            {
+                SelectedRoute = route;
+                Title = route.Name;
+            }
+        }
+        catch (Exception ex)
+        {
+            ShowError(ex);
+        }
+
+        LoadLandmarksCommand.Execute(null);
     }
 
     public void Receive(RouteSelectedMessage message)
@@ -102,6 +129,7 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
 
     private void BindCommands()
     {
+        GoBackCommand = new AsyncRelayCommand(_navigationService.NavigateBackAsync);
         LoadLandmarksCommand = new AsyncRelayCommand(LoadLandmarksAsync);
         GoToMapCommand = new AsyncRelayCommand(GoToMapAsync);
         GoToScanCommand = new AsyncRelayCommand(GoToScanAsync);
