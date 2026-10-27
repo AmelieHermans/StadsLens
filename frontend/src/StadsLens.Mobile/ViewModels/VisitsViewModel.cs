@@ -30,8 +30,17 @@ public class VisitsViewModel : BaseViewModel, IVisitsViewModel
         Title = "Bezoeken";
 
         BindCommands();
+        LoadVisitsCommand.Execute(null);
+
+        Messenger.Register<VisitsViewModel, UserLoggedInMessage>(this, (r, m) => r.Receive(m));
 
         Messenger.Register<VisitsViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    // Een (andere) gebruiker is ingelogd: de bezoeken van die gebruiker laden.
+    public void Receive(UserLoggedInMessage message)
+    {
+        LoadVisitsCommand.Execute(null);
     }
 
     // Een nieuw bezoek (bv. vanop de detailpagina): de lijst opnieuw laden.
@@ -42,6 +51,8 @@ public class VisitsViewModel : BaseViewModel, IVisitsViewModel
 
     private async Task LoadVisitsAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (IsBusy)
             return;
 
@@ -60,7 +71,7 @@ public class VisitsViewModel : BaseViewModel, IVisitsViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {

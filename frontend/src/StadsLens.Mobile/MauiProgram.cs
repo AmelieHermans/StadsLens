@@ -29,7 +29,6 @@ public static class MauiProgram
         RegisterServices(builder.Services);
         RegisterViewModels(builder.Services);
         RegisterViews(builder.Services);
-        RegisterRoutes();
 
         return builder.Build();
     }
@@ -88,13 +87,5 @@ public static class MauiProgram
         services.AddTransient<LandmarkDetailPage>();
         services.AddTransient<VisitsPage>();
         services.AddTransient<SettingsPage>();
-    }
-
-    private static void RegisterRoutes()
-    {
-        Routing.RegisterRoute(PageRoutes.RouteDetail, typeof(RouteDetailPage));
-        Routing.RegisterRoute(PageRoutes.Map, typeof(MapPage));
-        Routing.RegisterRoute(PageRoutes.RouteCreate, typeof(RouteCreatePage));
-        Routing.RegisterRoute(PageRoutes.Scan, typeof(ScanPage));
     }
 }

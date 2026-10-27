@@ -9,6 +9,9 @@
 
     <RefreshView Command="{Binding LoadVisitsCommand}" IsRefreshing="{Binding IsRefreshing}">
         <CollectionView ItemsSource="{Binding Visits}" SelectionMode="None">
+            <CollectionView.Header>
+                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Margin="16,8,16,0" />
+            </CollectionView.Header>
             <CollectionView.EmptyView>
                 <Label Text="Je hebt nog geen bezienswaardigheden bezocht." HorizontalOptions="Center" Margin="24" />
             </CollectionView.EmptyView>

@@ -4,6 +4,9 @@ namespace StadsLens.Mobile.Services;
 
 public class NavigationService : INavigationService
 {
+    // De TabBar uit AppShell.xaml (Routes, Bezoeken, ...).
+    private const string MainTabsRoute = "//main/routes";
+
     private readonly IServiceProvider _serviceProvider;
 
     // Shell.Current bestaat nog niet wanneer deze singleton aangemaakt wordt, dus pas ophalen bij gebruik.
@@ -14,16 +17,26 @@ public class NavigationService : INavigationService
         _serviceProvider = serviceProvider;
     }
 
-    public Task NavigateToAsync(string route, IDictionary<string, object>? parameters = null)
+    // Van het loginscherm naar de tabbladen: dat is een wissel binnen de Shell, geen pagina op de stack.
+    public async Task NavigateToMainPageAsync()
     {
-        return parameters is null
-            ? Shell.Current.GoToAsync(route)
-            : Shell.Current.GoToAsync(route, parameters);
+        await Shell.Current.GoToAsync(MainTabsRoute);
     }
 
-    public Task GoBackAsync()
+    // De pagina's komen uit de serviceprovider, zodat ze hun ViewModel via DI krijgen.
+    public async Task NavigateToRouteDetailPageAsync()
     {
-        return Shell.Current.GoToAsync("..");
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<RouteDetailPage>());
+    }
+
+    public async Task NavigateToMapPageAsync()
+    {
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<MapPage>());
+    }
+
+    public async Task NavigateToScanPageAsync()
+    {
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<ScanPage>());
     }
 
     public async Task NavigateToLandmarkDetailPageAsync()

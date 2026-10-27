@@ -36,13 +36,26 @@ public class BaseViewModel : ObservableRecipient, IBaseViewModel
         set => SetProperty(ref isRefreshing, value);
     }
 
-    // Toont een melding wanneer de API niet bereikbaar is of een fout teruggeeft.
-    protected static Task ShowErrorAsync(Exception exception)
-    {
-        var message = exception is HttpRequestException
-            ? $"Kan de server niet bereiken. Draait de API?\n\n{exception.Message}"
-            : exception.Message;
+    private string errorMessage = string.Empty;
 
-        return Shell.Current.DisplayAlertAsync("Fout", message, "OK");
+    // De ViewModel toont zelf geen pop-ups: de View bindt op ErrorMessage (Separation of Concerns).
+    public string ErrorMessage
+    {
+        get => errorMessage;
+        set
+        {
+            if (SetProperty(ref errorMessage, value))
+                OnPropertyChanged(nameof(HasError));
+        }
+    }
+
+    public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
+
+    // Zet een begrijpelijke melding wanneer de API niet bereikbaar is of een fout teruggeeft.
+    protected void ShowError(Exception exception)
+    {
+        ErrorMessage = exception is HttpRequestException
+            ? $"Kan de server niet bereiken. Draait de API? ({exception.Message})"
+            : exception.Message;
     }
 }

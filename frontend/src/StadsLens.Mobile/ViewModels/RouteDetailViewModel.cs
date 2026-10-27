@@ -2,14 +2,13 @@ using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
 
-public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel, IQueryAttributable
+public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
 {
     private readonly ILandmarkDataService _landmarkDataService;
     private readonly INavigationService _navigationService;
@@ -41,20 +40,25 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel, IQuery
         _navigationService = navigationService;
 
         BindCommands();
+
+        Messenger.Register<RouteDetailViewModel, RouteSelectedMessage>(this, (r, m) => r.Receive(m));
     }
 
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    public void Receive(RouteSelectedMessage message)
     {
-        if (query.TryGetValue(nameof(Route), out var value) && value is Route route)
-        {
-            SelectedRoute = route;
-            Title = route.Name;
-            LoadLandmarksCommand.Execute(null);
-        }
+        // Dezelfde route opnieuw (bv. wanneer de kaartpagina geopend wordt): niets te doen.
+        if (SelectedRoute?.Id == message.Value.Id)
+            return;
+
+        SelectedRoute = message.Value;
+        Title = message.Value.Name;
+        LoadLandmarksCommand.Execute(null);
     }
 
     private async Task LoadLandmarksAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (IsBusy || SelectedRoute is null)
             return;
 
@@ -67,7 +71,7 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel, IQuery
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {
@@ -75,9 +79,16 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel, IQuery
         }
     }
 
-    private Task GoToMapAsync() => _navigationService.NavigateToAsync(PageRoutes.Map, new Dictionary<string, object> { { nameof(Route), SelectedRoute! } });
+    private async Task GoToMapAsync()
+    {
+        if (SelectedRoute is null)
+            return;
 
-    private Task GoToScanAsync() => _navigationService.NavigateToAsync(PageRoutes.Scan);
+        await _navigationService.NavigateToMapPageAsync();
+        WeakReferenceMessenger.Default.Send(new RouteSelectedMessage(SelectedRoute));
+    }
+
+    private Task GoToScanAsync() => _navigationService.NavigateToScanPageAsync();
 
     // Eerst navigeren (dan bestaat het ViewModel van de detailpagina), daarna de landmark doorsturen.
     private async Task GoToLandmarkDetailAsync(Landmark? landmark)

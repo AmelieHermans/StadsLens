@@ -2,13 +2,15 @@ using System.Globalization;
 using System.Text.Json;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using StadsLens.Mobile.Constants;
+using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
 
-public class MapViewModel : BaseViewModel, IMapViewModel, IQueryAttributable
+public class MapViewModel : BaseViewModel, IMapViewModel
 {
     private readonly IRouteDataService _routeDataService;
 
@@ -69,25 +71,26 @@ public class MapViewModel : BaseViewModel, IMapViewModel, IQueryAttributable
         Title = "Route maken";
 
         BindCommands();
+
+        Messenger.Register<MapViewModel, RouteSelectedMessage>(this, (r, m) => r.Receive(m));
     }
 
-    public void ApplyQueryAttributes(IDictionary<string, object> query)
+    public void Receive(RouteSelectedMessage message)
     {
-        if (query.TryGetValue(nameof(Route), out var value) && value is Route route)
-        {
-            SelectedRoute = route;
-            Title = $"Route maken: {route.Name}";
-        }
+        SelectedRoute = message.Value;
+        Title = $"Route maken: {message.Value.Name}";
     }
 
     private async Task UseCurrentLocationAsync()
     {
+        ErrorMessage = string.Empty;
+
         try
         {
             var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
             if (location is null)
             {
-                await Shell.Current.DisplayAlertAsync("Locatie", "Je huidige locatie kon niet worden bepaald.", "OK");
+                ErrorMessage = "Je huidige locatie kon niet worden bepaald.";
                 return;
             }
 
@@ -96,15 +99,17 @@ public class MapViewModel : BaseViewModel, IMapViewModel, IQueryAttributable
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
     }
 
     private async Task CreateRouteAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (SelectedRoute is null || !double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.InvariantCulture, out var distance) || distance <= 0)
         {
-            await Shell.Current.DisplayAlertAsync("Route", "Geef een geldige afstand in kilometers op.", "OK");
+            ErrorMessage = "Geef een geldige afstand in kilometers op.";
             return;
         }
 
@@ -119,7 +124,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel, IQueryAttributable
             var plan = await _routeDataService.PlanRouteAsync(SelectedRoute.Id, distance, latitude, longitude);
             if (plan is null)
             {
-                await Shell.Current.DisplayAlertAsync("Route", "De route kon niet worden gemaakt.", "OK");
+                ErrorMessage = "De route kon niet worden gemaakt.";
                 return;
             }
 
@@ -128,7 +133,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel, IQueryAttributable
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {

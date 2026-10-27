@@ -9,6 +9,9 @@
 
     <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsRefreshing}">
         <CollectionView ItemsSource="{Binding Routes}" SelectionMode="None">
+            <CollectionView.Header>
+                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Margin="16,8,16,0" />
+            </CollectionView.Header>
             <CollectionView.EmptyView>
                 <Label Text="Geen routes gevonden." HorizontalOptions="Center" Margin="24" />
             </CollectionView.EmptyView>
