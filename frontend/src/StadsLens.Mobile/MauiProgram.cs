@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Logging;
+using Plugin.Maui.Audio;
 using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Services;
 using StadsLens.Mobile.ViewModels;
@@ -44,6 +45,7 @@ public static class MauiProgram
         services.AddSingleton<ILandmarkDataService, LandmarkDataService>();
         services.AddSingleton<IUserDataService, UserDataService>();
         services.AddSingleton<IVisitDataService, VisitDataService>();
+        services.AddSingleton(AudioManager.Current);
     }
 
     private static void RegisterViewModels(IServiceCollection services)
@@ -75,6 +77,5 @@ public static class MauiProgram
         Routing.RegisterRoute(PageRoutes.RouteDetail, typeof(RouteDetailPage));
         Routing.RegisterRoute(PageRoutes.Map, typeof(MapPage));
         Routing.RegisterRoute(PageRoutes.Scan, typeof(ScanPage));
-        Routing.RegisterRoute(PageRoutes.LandmarkDetail, typeof(LandmarkDetailPage));
     }
 }

@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
@@ -28,6 +30,14 @@ public class VisitsViewModel : BaseViewModel, IVisitsViewModel
         Title = "Bezoeken";
 
         BindCommands();
+
+        Messenger.Register<VisitsViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    // Een nieuw bezoek (bv. vanop de detailpagina): de lijst opnieuw laden.
+    public void Receive(VisitRegisteredMessage message)
+    {
+        LoadVisitsCommand.Execute(null);
     }
 
     private async Task LoadVisitsAsync()

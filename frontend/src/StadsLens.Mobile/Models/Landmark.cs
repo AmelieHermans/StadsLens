@@ -10,6 +10,9 @@ public class Landmark
     public string CustomVisionTag { get; set; } = string.Empty;
     public string? ImageUrl { get; set; }
 
+    // De taal van Name en History ("nl" of "en").
+    public string Language { get; set; } = "nl";
+
     // Enkel ingevuld wanneer de landmark via een route opgehaald wordt.
     public int? OrderInRoute { get; set; }
 
