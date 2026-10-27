@@ -1,3 +1,4 @@
+
 using Microsoft.Extensions.Logging;
 using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Services;
@@ -11,6 +12,7 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+
         builder
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
@@ -33,17 +35,26 @@ public static class MauiProgram
 
     private static void RegisterServices(IServiceCollection services)
     {
-        var httpClient = new HttpClient { BaseAddress = new Uri(ApiSettings.BaseUrl) };
-        // Slaat de waarschuwingspagina van gratis Ngrok-tunnels over.
-        httpClient.DefaultRequestHeaders.Add("ngrok-skip-browser-warning", "true");
+        var httpClient = new HttpClient
+        {
+            BaseAddress = new Uri(ApiSettings.BaseUrl)
+        };
+
+        httpClient.DefaultRequestHeaders.Add(
+            "ngrok-skip-browser-warning", "true");
 
         services.AddSingleton(httpClient);
+
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IUserSessionService, UserSessionService>();
         services.AddSingleton<IRouteDataService, RouteDataService>();
         services.AddSingleton<ILandmarkDataService, LandmarkDataService>();
         services.AddSingleton<IUserDataService, UserDataService>();
         services.AddSingleton<IVisitDataService, VisitDataService>();
+
+        // Nieuwe service voor het genereren van wandelroutes
+        services.AddTransient<IRoutingService, RoutingService>();
+        services.AddTransient<ILocationSearchService, LocationSearchService>();
     }
 
     private static void RegisterViewModels(IServiceCollection services)
@@ -51,7 +62,13 @@ public static class MauiProgram
         services.AddTransient<LoginViewModel>();
         services.AddTransient<RoutesViewModel>();
         services.AddTransient<RouteDetailViewModel>();
+
+        // Bestaande pagina's
         services.AddTransient<MapViewModel>();
+
+        // Nieuwe pagina Route maken
+        services.AddTransient<RouteCreateViewModel>();
+
         services.AddTransient<ScanViewModel>();
         services.AddTransient<LandmarkDetailViewModel>();
         services.AddTransient<VisitsViewModel>();
@@ -63,7 +80,13 @@ public static class MauiProgram
         services.AddTransient<LoginPage>();
         services.AddTransient<RoutesPage>();
         services.AddTransient<RouteDetailPage>();
+
+        // Bestaande kaartpagina
         services.AddTransient<MapPage>();
+
+        // Nieuwe pagina Route maken
+        services.AddTransient<RouteCreatePage>();
+
         services.AddTransient<ScanPage>();
         services.AddTransient<LandmarkDetailPage>();
         services.AddTransient<VisitsPage>();
@@ -72,9 +95,25 @@ public static class MauiProgram
 
     private static void RegisterRoutes()
     {
-        Routing.RegisterRoute(PageRoutes.RouteDetail, typeof(RouteDetailPage));
-        Routing.RegisterRoute(PageRoutes.Map, typeof(MapPage));
-        Routing.RegisterRoute(PageRoutes.Scan, typeof(ScanPage));
-        Routing.RegisterRoute(PageRoutes.LandmarkDetail, typeof(LandmarkDetailPage));
+        Routing.RegisterRoute(
+            PageRoutes.RouteDetail,
+            typeof(RouteDetailPage));
+
+        Routing.RegisterRoute(
+            PageRoutes.Map,
+            typeof(MapPage));
+
+        // Nieuwe navigatieroute
+        Routing.RegisterRoute(
+            PageRoutes.RouteCreate,
+            typeof(RouteCreatePage));
+
+        Routing.RegisterRoute(
+            PageRoutes.Scan,
+            typeof(ScanPage));
+
+        Routing.RegisterRoute(
+            PageRoutes.LandmarkDetail,
+            typeof(LandmarkDetailPage));
     }
 }

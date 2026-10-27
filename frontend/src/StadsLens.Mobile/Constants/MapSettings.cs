@@ -9,4 +9,6 @@ public static class MapSettings
     public static string CartoTileUrl => string.IsNullOrWhiteSpace(CartoBasemapApiKey)
         ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
         : $"https://{{s}}.basemaps.cartocdn.com/rastertiles/voyager/{{z}}/{{x}}/{{y}}{{r}}.png?key={CartoBasemapApiKey}";
+
+
 }
