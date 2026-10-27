@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+    xmlns:models="clr-namespace:StadsLens.Mobile.Models"
+    x:Class="StadsLens.Mobile.Views.RouteCreatePage"
+    x:DataType="vm:IRouteCreateViewModel"
+    Title="{Binding Title}">
+
+    <Grid Padding="12"
+          RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto"
+          RowSpacing="8">
+
+        <Label Text="Maak je eigen wandelroute"
+               Style="{StaticResource Headline}" />
+
+        <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
+            <Label Text="Huidige locatie gebruiken" VerticalOptions="Center" />
+            <Switch Grid.Column="1" IsToggled="{Binding UseCurrentLocation}" VerticalOptions="Center" />
+        </Grid>
+
+        <Entry
+            Grid.Row="2"
+            Placeholder="Zoek een straat, adres of plaats..."
+            Text="{Binding StartAddress}"
+            IsEnabled="{Binding IsAddressEnabled}"
+            ClearButtonVisibility="WhileEditing"
+            ReturnType="Search" />
+
+        <Grid Grid.Row="3" ColumnDefinitions="130,*" ColumnSpacing="8">
+            <Entry
+                Placeholder="Afstand in km"
+                Text="{Binding DistanceKm}"
+                Keyboard="Numeric" />
+
+            <Button
+                Grid.Column="1"
+                Text="Genereer route"
+                Command="{Binding CreateRouteCommand}"
+                IsEnabled="{Binding IsNotBusy}" />
+        </Grid>
+
+        <Grid Grid.Row="4">
+            <WebView Source="{Binding MapSource}" />
+
+            <ActivityIndicator
+                IsRunning="{Binding IsBusy}"
+                IsVisible="{Binding IsBusy}"
+                HorizontalOptions="Center"
+                VerticalOptions="Center" />
+        </Grid>
+
+        <Label
+            Grid.Row="5"
+            Text="{Binding ResultSummary}"
+            FontAttributes="Bold"
+            FontSize="15"
+            VerticalOptions="Center" />
+
+        <!-- Tik op een bezienswaardigheid om de detailpagina te openen. -->
+        <CollectionView
+            Grid.Row="6"
+            ItemsSource="{Binding RouteLandmarks}"
+            HeightRequest="120">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Landmark">
+                    <Grid Padding="4,8" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Grid.GestureRecognizers>
+                            <TapGestureRecognizer
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteCreateViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType=vm:IRouteCreateViewModel}"
+                                CommandParameter="{Binding .}" />
+                        </Grid.GestureRecognizers>
+                        <Label Text="📍" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding Name}" VerticalOptions="Center" />
+                        <Label Grid.Column="2" Text="›" FontSize="20" VerticalOptions="Center" />
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+
+        <!-- Suggesties als laag over de rest van de pagina, net onder het zoekveld (staat als laatste = bovenaan). -->
+        <Border
+            Grid.Row="3"
+            Grid.RowSpan="2"
+            VerticalOptions="Start"
+            IsVisible="{Binding HasLocationSuggestions}"
+            BackgroundColor="{AppThemeBinding Light={StaticResource White}, Dark={StaticResource Gray900}}"
+            Stroke="{AppThemeBinding Light={StaticResource Gray200}, Dark={StaticResource Gray600}}"
+            StrokeShape="RoundRectangle 8"
+            ZIndex="1">
+            <Border.Shadow>
+                <Shadow Opacity="0.3" Radius="8" Offset="0,4" />
+            </Border.Shadow>
+
+            <CollectionView
+                ItemsSource="{Binding LocationSuggestions}"
+                SelectionMode="Single"
+                SelectedItem="{Binding SelectedSuggestion}"
+                MaximumHeightRequest="250">
+
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="models:LocationSuggestion">
+                        <Grid Padding="12,10" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Label Text="📍" FontSize="18" VerticalOptions="Center" />
+                            <Label Grid.Column="1" Text="{Binding Label}" VerticalOptions="Center" LineBreakMode="WordWrap" />
+                        </Grid>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+        </Border>
+
+    </Grid>
+</ContentPage>

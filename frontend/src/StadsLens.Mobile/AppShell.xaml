@@ -24,6 +24,10 @@
             Title="Instellingen"
             Route="settings"
             ContentTemplate="{DataTemplate views:SettingsPage}" />
+        <ShellContent
+            Title="Route creëren"
+            Route="create-route"
+            ContentTemplate="{DataTemplate views:RouteCreatePage}" />
     </TabBar>
 
 </Shell>

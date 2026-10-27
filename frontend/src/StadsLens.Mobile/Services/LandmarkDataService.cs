@@ -15,6 +15,12 @@ public class LandmarkDataService : ApiService<Landmark>, ILandmarkDataService
         return landmarks ?? [];
     }
 
+    public async Task<IEnumerable<Landmark>> GetLandmarksAsync()
+    {
+        List<Landmark>? landmarks = await _httpClient.GetFromJsonAsync<List<Landmark>>(_endpoint);
+        return landmarks ?? [];
+    }
+
     public async Task<Landmark?> GetByIdAsync(int id, string language)
     {
         using HttpResponseMessage response = await _httpClient.GetAsync($"{_endpoint}/{id}?language={language}");
