@@ -1,7 +1,6 @@
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
@@ -36,6 +35,8 @@ public class LoginViewModel : BaseViewModel, ILoginViewModel
 
     private async Task LoginAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (IsBusy || string.IsNullOrWhiteSpace(Name))
             return;
 
@@ -45,17 +46,17 @@ public class LoginViewModel : BaseViewModel, ILoginViewModel
             User? user = await _userDataService.CreateAsync(new User { Name = Name, PreferredLanguage = "nl" });
             if (user is null)
             {
-                await Shell.Current.DisplayAlertAsync("Fout", "Gebruiker aanmaken is mislukt.", "OK");
+                ErrorMessage = "Gebruiker aanmaken is mislukt.";
                 return;
             }
 
             _userSession.SetUser(user);
             WeakReferenceMessenger.Default.Send(new UserLoggedInMessage(user));
-            await _navigationService.NavigateToAsync(PageRoutes.Routes);
+            await _navigationService.NavigateToMainPageAsync();
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {

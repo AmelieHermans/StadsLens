@@ -1,7 +1,8 @@
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
-using StadsLens.Mobile.Constants;
+using CommunityToolkit.Mvvm.Messaging;
+using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
@@ -30,10 +31,13 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
         Title = "Wandelroutes";
 
         BindCommands();
+        LoadRoutesCommand.Execute(null);
     }
 
     private async Task LoadRoutesAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (IsBusy)
             return;
 
@@ -46,7 +50,7 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {
@@ -60,10 +64,9 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
         if (route is null)
             return;
 
-        await _navigationService.NavigateToAsync(PageRoutes.RouteDetail, new Dictionary<string, object>
-        {
-            { nameof(Route), route }
-        });
+        // Eerst navigeren (dan bestaat het ViewModel van de detailpagina), daarna de route doorsturen.
+        await _navigationService.NavigateToRouteDetailPageAsync();
+        WeakReferenceMessenger.Default.Send(new RouteSelectedMessage(route));
     }
 
     private void BindCommands()

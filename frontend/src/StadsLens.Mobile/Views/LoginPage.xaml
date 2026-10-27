@@ -12,6 +12,7 @@
         <Label Text="Ontdek de stad door je camera." HorizontalOptions="Center" />
         <Entry Placeholder="Je naam" Text="{Binding Name}" />
         <Button Text="Start" Command="{Binding LoginCommand}" IsEnabled="{Binding IsNotBusy}" />
+        <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" HorizontalTextAlignment="Center" />
         <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
     </VerticalStackLayout>
 

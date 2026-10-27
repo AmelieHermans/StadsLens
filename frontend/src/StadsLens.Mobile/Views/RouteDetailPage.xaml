@@ -8,7 +8,10 @@
              Title="{Binding Title}">
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
-        <Label Text="{Binding SelectedRoute.Description}" />
+        <VerticalStackLayout Spacing="8">
+            <Label Text="{Binding SelectedRoute.Description}" />
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
+        </VerticalStackLayout>
 
         <CollectionView Grid.Row="1" ItemsSource="{Binding Landmarks}" SelectionMode="None">
             <CollectionView.ItemTemplate>

@@ -172,6 +172,12 @@
         </Setter>
     </Style>
 
+    <!-- Foutmelding van een ViewModel (ErrorMessage). -->
+    <Style TargetType="Label" x:Key="ErrorText">
+        <Setter Property="TextColor" Value="{AppThemeBinding Light=#B3261E, Dark=#F2B8B5}" />
+        <Setter Property="FontAttributes" Value="Bold" />
+    </Style>
+
     <Style TargetType="Label" x:Key="Headline">
         <Setter Property="TextColor" Value="{AppThemeBinding Light={StaticResource MidnightBlue}, Dark={StaticResource White}}" />
         <Setter Property="FontSize" Value="32" />

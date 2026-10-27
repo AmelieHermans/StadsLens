@@ -51,12 +51,13 @@
                 VerticalOptions="Center" />
         </Grid>
 
-        <Label
-            Grid.Row="5"
-            Text="{Binding ResultSummary}"
-            FontAttributes="Bold"
-            FontSize="15"
-            VerticalOptions="Center" />
+        <VerticalStackLayout Grid.Row="5" Spacing="4">
+            <Label
+                Text="{Binding ResultSummary}"
+                FontAttributes="Bold"
+                FontSize="15" />
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
+        </VerticalStackLayout>
 
         <!-- Tik op een bezienswaardigheid om de detailpagina te openen. -->
         <CollectionView

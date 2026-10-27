@@ -1,11 +1,13 @@
 namespace StadsLens.Mobile.Services;
 
+// Navigatie volgens de les (deck 5): één methode per pagina, de ViewModels kennen de Views niet.
+// Gegevens voor de nieuwe pagina worden na het navigeren met een message verstuurd.
 public interface INavigationService
 {
-    Task NavigateToAsync(string route, IDictionary<string, object>? parameters = null);
-    Task GoBackAsync();
-
-    // Navigatie volgens de les (deck 5): de pagina komt uit DI, de gegevens volgen via een message.
+    Task NavigateToMainPageAsync();
+    Task NavigateToRouteDetailPageAsync();
+    Task NavigateToMapPageAsync();
+    Task NavigateToScanPageAsync();
     Task NavigateToLandmarkDetailPageAsync();
     Task NavigateBackAsync();
 }

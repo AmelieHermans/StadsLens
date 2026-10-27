@@ -112,6 +112,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
 
     private async Task LoadLandmarkAsync(Landmark selected, bool registerVisit)
     {
+        ErrorMessage = string.Empty;
         StopAudio();
         Landmark = selected;
         Title = selected.Name;
@@ -139,7 +140,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {
@@ -152,6 +153,8 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
 
     private async Task ReadAloudAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (IsPlaying)
         {
             StopAudio();
@@ -174,7 +177,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
         finally
         {
@@ -220,7 +223,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         }
         catch (Exception ex)
         {
-            await ShowErrorAsync(ex);
+            ShowError(ex);
         }
     }
 

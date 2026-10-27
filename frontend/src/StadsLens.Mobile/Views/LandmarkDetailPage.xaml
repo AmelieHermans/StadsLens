@@ -17,6 +17,8 @@
 
             <Label Text="{Binding TranslationWarning}" TextColor="DarkOrange" IsVisible="{Binding HasTranslationWarning}" />
 
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
+
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
             <Label Text="{Binding Landmark.History}" FontSize="16" LineHeight="1.3" />

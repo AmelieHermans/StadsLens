@@ -1,4 +1,4 @@
-﻿using System.Collections.ObjectModel;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
@@ -183,6 +183,8 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
     private async Task LoadCurrentLocationAsync()
     {
+        ErrorMessage = string.Empty;
+
         ApplyLocation("Locatie bepalen...", null, null);
 
         try
@@ -201,7 +203,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         {
             // Zonder locatie heeft de switch geen zin: terug uitzetten zodat de gebruiker een adres kan typen.
             UseCurrentLocation = false;
-            await Shell.Current.DisplayAlertAsync("Locatie", ex.Message, "OK");
+            ErrorMessage = ex.Message;
         }
     }
 
@@ -248,19 +250,21 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
     private async Task CreateRouteAsync()
     {
+        ErrorMessage = string.Empty;
+
         if (IsBusy)
             return;
 
         if (!double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.CurrentCulture, out var targetKm)
             && !double.TryParse(DistanceKm, NumberStyles.Float, CultureInfo.InvariantCulture, out targetKm))
         {
-            await Shell.Current.DisplayAlertAsync("Afstand", "Geef een geldige afstand in kilometers op.", "OK");
+            ErrorMessage = "Geef een geldige afstand in kilometers op.";
             return;
         }
 
         if (targetKm < 0.5 || targetKm > 50)
         {
-            await Shell.Current.DisplayAlertAsync("Afstand", "Kies een afstand tussen 0,5 en 50 km.", "OK");
+            ErrorMessage = "Kies een afstand tussen 0,5 en 50 km.";
             return;
         }
 
@@ -278,12 +282,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
             if (StartLatitude is null || StartLongitude is null)
             {
-                await Shell.Current.DisplayAlertAsync(
-                    "Startlocatie",
-                    UseCurrentLocation
-                        ? "Je huidige locatie is nog niet bekend. Probeer opnieuw."
-                        : "Zoek een adres en kies een suggestie, of zet 'Huidige locatie' aan.",
-                    "OK");
+                ErrorMessage = UseCurrentLocation ? "Je huidige locatie is nog niet bekend. Probeer opnieuw." : "Zoek een adres en kies een suggestie, of zet 'Huidige locatie' aan.";
                 return;
             }
 
@@ -310,7 +309,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         catch (Exception ex)
         {
             ResultSummary = "De route kon niet worden gemaakt.";
-            await Shell.Current.DisplayAlertAsync("Routefout", ex.Message, "OK");
+            ErrorMessage = ex.Message;
         }
         finally
         {

@@ -7,4 +7,8 @@ public interface IBaseViewModel
     bool IsBusy { get; set; }
     bool IsNotBusy { get; }
     bool IsRefreshing { get; set; }
+
+    // Foutmelding die de pagina toont (leeg = geen fout).
+    string ErrorMessage { get; set; }
+    bool HasError { get; }
 }
