@@ -1,412 +1,296 @@
-
 using Microsoft.EntityFrameworkCore;
 using StadsLens.Domain.Entities;
 
 namespace StadsLens.Infrastructure.Data;
 
-// Vult een lege database met voorbeeldroutes en voegt landmarks toe
-// voor Geel, Herentals en Olen zonder hiervoor routes aan te maken.
+// Vult de database met 4 duidelijk herkenbare landmarks per stad
+// (Mechelen, Geel, Herentals, Olen) en de twee bestaande Mechelse routes.
+//
+// Elke landmark is één gebouw met een eigen silhouet dat goed zichtbaar is
+// vanaf straatniveau, zodat Custom Vision het betrouwbaar kan herkennen.
+// Pleinen, dorpskernen, natuurgebieden en stations zitten er bewust niet meer in.
 public static class DbSeeder
 {
+    // Landmarks uit een vorige versie van de seeder die niet meer gebruikt worden.
+    // Ze worden verwijderd zolang ze in geen enkele route zitten.
+    private static readonly string[] ObsoleteLandmarkNames =
+    {
+        "Markt van Geel", "Gasthuismuseum", "Cultuurcentrum de Werft", "Station Geel",
+        "Sint-Franciscuskerk", "Zammelkerk", "Kerk van Ten Aard",
+        "Begijnhof Herentals", "Kasteel Le Paige", "Hidrodoe", "Netepark",
+        "Toeristentoren", "Grote Markt Herentals",
+        "Olen-Centrum", "Olen-Statie", "Station Olen", "Winkelomheide",
+        "Kerk van Onze-Lieve-Vrouw-Olen", "Kanaal Bocholt-Herentals",
+        "Groene omgeving van Olen"
+    };
+
     public static async Task SeedAsync(StadsLensDbContext context)
     {
         // ============================================================
-        // BESTAANDE LANDMARKS VAN MECHELEN
+        // MECHELEN - 4 LANDMARKS
         // ============================================================
 
-        var sintRombouts = new Landmark
+        var mechelen = new List<Landmark>
         {
-            Name = "Sint-Romboutskathedraal",
-            History = "De toren van de Sint-Romboutskathedraal werd gebouwd tussen 1452 en 1520 en is 97 meter hoog.",
-            Latitude = 51.0289,
-            Longitude = 4.4797,
-            CustomVisionTag = "sint-rombouts"
-        };
-
-        var stadhuis = new Landmark
-        {
-            Name = "Stadhuis van Mechelen",
-            History = "Het stadhuis op de Grote Markt combineert de gotische Lakenhalle met het Paleis van de Grote Raad.",
-            Latitude = 51.0280,
-            Longitude = 4.4813,
-            CustomVisionTag = "stadhuis"
-        };
-
-        var hofVanBusleyden = new Landmark
-        {
-            Name = "Hof van Busleyden",
-            History = "Dit renaissancepaleis werd rond 1503 gebouwd voor Hiëronymus van Busleyden, een vriend van Erasmus.",
-            Latitude = 51.0302,
-            Longitude = 4.4826,
-            CustomVisionTag = "hof-van-busleyden"
-        };
-
-        var kazerneDossin = new Landmark
-        {
-            Name = "Kazerne Dossin",
-            History = "Vanuit de Dossinkazerne werden tussen 1942 en 1944 meer dan 25.000 Joden en Roma gedeporteerd. Vandaag is het een memoriaal en museum.",
-            Latitude = 51.0326,
-            Longitude = 4.4749,
-            CustomVisionTag = "kazerne-dossin"
+            new()
+            {
+                Name = "Sint-Romboutskathedraal",
+                History = "De toren van de Sint-Romboutskathedraal werd gebouwd tussen 1452 en 1520 en is 97 meter hoog.",
+                Latitude = 51.0289,
+                Longitude = 4.4790,
+                CustomVisionTag = "sint-rombouts"
+            },
+            new()
+            {
+                Name = "Stadhuis van Mechelen",
+                History = "Het stadhuis op de Grote Markt combineert de gotische Lakenhalle met het Paleis van de Grote Raad.",
+                Latitude = 51.0280,
+                Longitude = 4.4811,
+                CustomVisionTag = "stadhuis-mechelen"
+            },
+            new()
+            {
+                Name = "Hof van Busleyden",
+                History = "Dit renaissancepaleis werd rond 1503 gebouwd voor Hiëronymus van Busleyden, een vriend van Erasmus.",
+                Latitude = 51.0308,
+                Longitude = 4.4821,
+                CustomVisionTag = "hof-van-busleyden"
+            },
+            new()
+            {
+                Name = "Kazerne Dossin",
+                History = "Vanuit de Dossinkazerne werden tussen 1942 en 1944 meer dan 25.000 Joden en Roma gedeporteerd. Vandaag is het een memoriaal en museum.",
+                Latitude = 51.0342,
+                Longitude = 4.4785,
+                CustomVisionTag = "kazerne-dossin"
+            }
         };
 
         // ============================================================
-        // BESTAANDE ROUTES VAN MECHELEN
+        // GEEL - 4 LANDMARKS
         // ============================================================
 
-        if (!await context.Routes.AnyAsync(
-                r => r.Name == "Historisch Mechelen"))
+        var geel = new List<Landmark>
         {
-            var historischMechelen = new Route
+            new()
+            {
+                Name = "Sint-Dimpnakerk",
+                History = "Deze gotische kerk werd vanaf 1349 gebouwd op de plek waar Sint-Dimpna vereerd wordt. Uit de opvang van pelgrims bij deze kerk groeide de Geelse gezinsverpleging.",
+                Latitude = 51.1626,
+                Longitude = 5.0021,
+                CustomVisionTag = "sint-dimpnakerk"
+            },
+            new()
+            {
+                Name = "Sint-Amandskerk",
+                History = "De oudste parochiekerk van Geel werd grotendeels gebouwd tussen 1490 en 1531 in laatgotische stijl. De toren is ongeveer 59 meter hoog.",
+                Latitude = 51.1620,
+                Longitude = 4.9905,
+                CustomVisionTag = "sint-amandskerk"
+            },
+            new()
+            {
+                Name = "Stadhuis van Geel",
+                History = "Het stadhuis begon als lakenhal in de vroege 15de eeuw en werd later ingericht als stadhuis. Het oudste deel van het huidige gebouw dateert uit de 17de eeuw.",
+                Latitude = 51.1614,
+                Longitude = 4.9870,
+                CustomVisionTag = "stadhuis-geel"
+            },
+            new()
+            {
+                Name = "Campus Thomas More Geel",
+                History = "Geel is de hoofdzetel van hogeschool Thomas More Kempen, die in 1995 ontstond als Katholieke Hogeschool Kempen en sinds 2012 de naam Thomas More draagt.",
+                Latitude = 51.1609,
+                Longitude = 4.9614,
+                CustomVisionTag = "campus-thomas-more-geel"
+            }
+        };
+
+        // ============================================================
+        // HERENTALS - 4 LANDMARKS
+        // ============================================================
+
+        var herentals = new List<Landmark>
+        {
+            new()
+            {
+                Name = "Lakenhal",
+                History = "De Lakenhal werd in de vroege 15de eeuw gebouwd door wolwevers en lakenmakers. Na een brand in 1512 werd ze heropgebouwd; het belfort staat op de UNESCO-werelderfgoedlijst.",
+                Latitude = 51.1768,
+                Longitude = 4.8362,
+                CustomVisionTag = "lakenhal"
+            },
+            new()
+            {
+                Name = "Sint-Waldetrudiskerk",
+                History = "Deze gotische kerk werd vanaf 1417 gebouwd en is sinds 1936 een beschermd monument.",
+                Latitude = 51.1746,
+                Longitude = 4.8357,
+                CustomVisionTag = "sint-waldetrudiskerk"
+            },
+            new()
+            {
+                Name = "Bovenpoort",
+                History = "De Bovenpoort is een van de twee overgebleven stadspoorten van Herentals en herinnert aan de vroegere stadsomwalling.",
+                Latitude = 51.1736,
+                Longitude = 4.8391,
+                CustomVisionTag = "bovenpoort"
+            },
+            new()
+            {
+                Name = "Begijnhofkerk",
+                History = "De Sint-Catharinakerk staat midden in het begijnhof van Herentals, dat deel uitmaakt van het UNESCO-werelderfgoed van de Vlaamse begijnhoven.",
+                Latitude = 51.1812,
+                Longitude = 4.8374,
+                CustomVisionTag = "begijnhofkerk"
+            }
+        };
+
+        // ============================================================
+        // OLEN - 4 LANDMARKS
+        // ============================================================
+
+        var olen = new List<Landmark>
+        {
+            new()
+            {
+                Name = "Sint-Martinuskerk Olen-Centrum",
+                History = "De Sint-Martinuskerk is de parochiekerk van Olen-Centrum en vormt samen met het gemeentehuis het hart van het dorp.",
+                Latitude = 51.1443,
+                Longitude = 4.8573,
+                CustomVisionTag = "sint-martinuskerk-olen"
+            },
+            new()
+            {
+                Name = "Gemeentehuis Olen",
+                History = "Het gemeentehuis aan het Dorp is het bestuurlijke centrum van Olen.",
+                Latitude = 51.1437,
+                Longitude = 4.8596,
+                CustomVisionTag = "gemeentehuis-olen"
+            },
+            new()
+            {
+                Name = "Sint-Jozefkerk Olen",
+                History = "Deze neoromaanse kerk werd in 1923 gebouwd voor de arbeiders van de nabijgelegen metaalfabriek. De bouw liep vertraging op door de Eerste Wereldoorlog.",
+                Latitude = 51.1848,
+                Longitude = 4.9044,
+                CustomVisionTag = "sint-jozefkerk-olen"
+            },
+            new()
+            {
+                Name = "Onze-Lieve-Vrouwkerk van Olen",
+                History = "Deze kerk is toegewijd aan Onze-Lieve-Vrouw en is een van de parochiekerken van Olen.",
+                Latitude = 51.1522,
+                Longitude = 4.8642,
+                CustomVisionTag = "olv-kerk-olen"
+            }
+        };
+
+        // ============================================================
+        // LANDMARKS OPSLAAN OF BIJWERKEN
+        // ============================================================
+
+        await RemoveObsoleteLandmarksAsync(context);
+
+        await UpsertLandmarksAsync(context, mechelen);
+        await UpsertLandmarksAsync(context, geel);
+        await UpsertLandmarksAsync(context, herentals);
+        await UpsertLandmarksAsync(context, olen);
+
+        await context.SaveChangesAsync();
+
+        // ============================================================
+        // ROUTES VAN MECHELEN
+        // ============================================================
+        // De landmarks komen uit de database, zodat er geen dubbele
+        // landmarks ontstaan wanneer de seeder opnieuw draait.
+
+        var sintRombouts = await GetLandmarkAsync(context, "Sint-Romboutskathedraal");
+        var stadhuis = await GetLandmarkAsync(context, "Stadhuis van Mechelen");
+        var hofVanBusleyden = await GetLandmarkAsync(context, "Hof van Busleyden");
+        var kazerneDossin = await GetLandmarkAsync(context, "Kazerne Dossin");
+
+        if (!await context.Routes.AnyAsync(r => r.Name == "Historisch Mechelen"))
+        {
+            context.Routes.Add(new Route
             {
                 Name = "Historisch Mechelen",
                 Description = "Een korte wandeling langs de bekendste gebouwen van het centrum.",
                 City = "Mechelen",
                 RouteLandmarks =
                 {
-                    new RouteLandmark
-                    {
-                        Landmark = sintRombouts,
-                        OrderInRoute = 1
-                    },
-                    new RouteLandmark
-                    {
-                        Landmark = stadhuis,
-                        OrderInRoute = 2
-                    },
-                    new RouteLandmark
-                    {
-                        Landmark = hofVanBusleyden,
-                        OrderInRoute = 3
-                    }
+                    new RouteLandmark { Landmark = sintRombouts, OrderInRoute = 1 },
+                    new RouteLandmark { Landmark = stadhuis, OrderInRoute = 2 },
+                    new RouteLandmark { Landmark = hofVanBusleyden, OrderInRoute = 3 }
                 }
-            };
-
-            context.Routes.Add(historischMechelen);
+            });
         }
 
-        if (!await context.Routes.AnyAsync(
-                r => r.Name == "Van Grote Markt tot Dossin"))
+        if (!await context.Routes.AnyAsync(r => r.Name == "Van Grote Markt tot Dossin"))
         {
-            var groteMarktTotDossin = new Route
+            context.Routes.Add(new Route
             {
                 Name = "Van Grote Markt tot Dossin",
                 Description = "Start op de Grote Markt en wandel langs de kathedraal naar Kazerne Dossin.",
                 City = "Mechelen",
                 RouteLandmarks =
                 {
-                    new RouteLandmark
-                    {
-                        Landmark = stadhuis,
-                        OrderInRoute = 1
-                    },
-                    new RouteLandmark
-                    {
-                        Landmark = sintRombouts,
-                        OrderInRoute = 2
-                    },
-                    new RouteLandmark
-                    {
-                        Landmark = kazerneDossin,
-                        OrderInRoute = 3
-                    }
+                    new RouteLandmark { Landmark = stadhuis, OrderInRoute = 1 },
+                    new RouteLandmark { Landmark = sintRombouts, OrderInRoute = 2 },
+                    new RouteLandmark { Landmark = kazerneDossin, OrderInRoute = 3 }
                 }
-            };
-
-            context.Routes.Add(groteMarktTotDossin);
+            });
         }
-
-        // Sla de bestaande routes eerst op.
-        await context.SaveChangesAsync();
-
-        // ============================================================
-        // GEEL - 10 LANDMARKS, GEEN NIEUWE ROUTE
-        // ============================================================
-
-        var geelLandmarks = new List<Landmark>
-        {
-            new()
-            {
-                Name = "Sint-Amandskerk",
-                History = "De Sint-Amandskerk ligt aan de Markt en vormt een belangrijk herkenningspunt in het centrum van Geel.",
-                Latitude = 51.1610,
-                Longitude = 4.9890,
-                CustomVisionTag = "sint-amandskerk"
-            },
-            new()
-            {
-                Name = "Sint-Dimpnakerk",
-                History = "Deze kerk is verbonden met de verering van Sint-Dimpna en de eeuwenoude traditie van gezinsverpleging in Geel.",
-                Latitude = 51.1575,
-                Longitude = 4.9970,
-                CustomVisionTag = "sint-dimpnakerk"
-            },
-            new()
-            {
-                Name = "Markt van Geel",
-                History = "De Markt vormt het historische centrum van Geel en is een ontmoetingsplaats voor inwoners en bezoekers.",
-                Latitude = 51.1608,
-                Longitude = 4.9892,
-                CustomVisionTag = "markt-geel"
-            },
-            new()
-            {
-                Name = "Gasthuismuseum",
-                History = "Het Gasthuismuseum vertelt het verhaal van de zorgtraditie en de geschiedenis van de Geelse gezinsverpleging.",
-                Latitude = 51.1584,
-                Longitude = 4.9940,
-                CustomVisionTag = "gasthuismuseum"
-            },
-            new()
-            {
-                Name = "Cultuurcentrum de Werft",
-                History = "De Werft is een cultureel centrum waar voorstellingen, concerten en andere culturele activiteiten plaatsvinden.",
-                Latitude = 51.1615,
-                Longitude = 4.9880,
-                CustomVisionTag = "de-werft"
-            },
-            new()
-            {
-                Name = "Stadhuis van Geel",
-                History = "Het stadhuis is een herkenningspunt van het lokale bestuur in het centrum van Geel.",
-                Latitude = 51.1605,
-                Longitude = 4.9890,
-                CustomVisionTag = "stadhuis-geel"
-            },
-            new()
-            {
-                Name = "Station Geel",
-                History = "Het station verbindt Geel per spoor met andere steden en vormt een toegangspoort tot de stad.",
-                Latitude = 51.1640,
-                Longitude = 4.9870,
-                CustomVisionTag = "station-geel"
-            },
-            new()
-            {
-                Name = "Sint-Franciscuskerk",
-                History = "Deze kerk is een religieus herkenningspunt in Geel en maakt deel uit van het plaatselijke kerkelijke erfgoed.",
-                Latitude = 51.1620,
-                Longitude = 4.9910,
-                CustomVisionTag = "sint-franciscuskerk"
-            },
-            new()
-            {
-                Name = "Zammelkerk",
-                History = "De kerk van Zammel vormt een herkenningspunt in deze deelgemeente van Geel.",
-                Latitude = 51.1220,
-                Longitude = 4.9340,
-                CustomVisionTag = "zammelkerk"
-            },
-            new()
-            {
-                Name = "Kerk van Ten Aard",
-                History = "De dorpskerk van Ten Aard is een herkenningspunt van deze Geelse deelgemeenschap.",
-                Latitude = 51.1810,
-                Longitude = 4.9800,
-                CustomVisionTag = "kerk-ten-aard"
-            }
-        };
-
-        // ============================================================
-        // HERENTALS - 10 LANDMARKS, GEEN NIEUWE ROUTE
-        // ============================================================
-
-        var herentalsLandmarks = new List<Landmark>
-        {
-            new()
-            {
-                Name = "Lakenhal",
-                History = "De historische Lakenhal herinnert aan het handelsverleden van Herentals en ligt aan de Grote Markt.",
-                Latitude = 51.1760,
-                Longitude = 4.8350,
-                CustomVisionTag = "lakenhal"
-            },
-            new()
-            {
-                Name = "Sint-Waldetrudiskerk",
-                History = "Deze gotische kerk is een van de belangrijkste historische monumenten van Herentals.",
-                Latitude = 51.1765,
-                Longitude = 4.8350,
-                CustomVisionTag = "sint-waldetrudiskerk"
-            },
-            new()
-            {
-                Name = "Begijnhof Herentals",
-                History = "Het historische begijnhof getuigt van het religieuze en sociale leven van vroegere generaties.",
-                Latitude = 51.1790,
-                Longitude = 4.8300,
-                CustomVisionTag = "begijnhof-herentals"
-            },
-            new()
-            {
-                Name = "Bovenpoort",
-                History = "De Bovenpoort is een overblijfsel van de historische stadsverdediging van Herentals.",
-                Latitude = 51.1730,
-                Longitude = 4.8390,
-                CustomVisionTag = "bovenpoort"
-            },
-            new()
-            {
-                Name = "Kasteel Le Paige",
-                History = "Kasteel Le Paige is een historisch kasteel in een groene omgeving en een bekende bezienswaardigheid van Herentals.",
-                Latitude = 51.1780,
-                Longitude = 4.8400,
-                CustomVisionTag = "kasteel-le-paige"
-            },
-            new()
-            {
-                Name = "Hidrodoe",
-                History = "Hidrodoe is een interactief waterdoecentrum waar bezoekers de eigenschappen en het belang van water ontdekken.",
-                Latitude = 51.1700,
-                Longitude = 4.8470,
-                CustomVisionTag = "hidrodoe"
-            },
-            new()
-            {
-                Name = "Netepark",
-                History = "Het Netepark is een recreatiegebied met sport- en ontspanningsmogelijkheden.",
-                Latitude = 51.1710,
-                Longitude = 4.8470,
-                CustomVisionTag = "netepark"
-            },
-            new()
-            {
-                Name = "Toeristentoren",
-                History = "De Toeristentoren is een uitkijkpunt in de bosrijke omgeving van Herentals.",
-                Latitude = 51.1660,
-                Longitude = 4.8540,
-                CustomVisionTag = "toeristentoren"
-            },
-            new()
-            {
-                Name = "Grote Markt Herentals",
-                History = "De Grote Markt is het centrale plein van Herentals en wordt omringd door historische gebouwen en horecazaken.",
-                Latitude = 51.1760,
-                Longitude = 4.8350,
-                CustomVisionTag = "grote-markt-herentals"
-            },
-            new()
-            {
-                Name = "Begijnhofkerk",
-                History = "De begijnhofkerk maakt deel uit van het historische begijnhof en het religieuze erfgoed van Herentals.",
-                Latitude = 51.1790,
-                Longitude = 4.8310,
-                CustomVisionTag = "begijnhofkerk"
-            }
-        };
-
-        // ============================================================
-        // OLEN - 10 LANDMARKS, GEEN NIEUWE ROUTE
-        // ============================================================
-
-        var olenLandmarks = new List<Landmark>
-        {
-            new()
-            {
-                Name = "Sint-Martinuskerk Olen-Centrum",
-                History = "De Sint-Martinuskerk is een herkenningspunt van de historische dorpskern van Olen-Centrum.",
-                Latitude = 51.1450,
-                Longitude = 4.8590,
-                CustomVisionTag = "sint-martinuskerk-olen"
-            },
-            new()
-            {
-                Name = "Gemeentehuis Olen",
-                History = "Het gemeentehuis is het administratieve centrum van de gemeente Olen.",
-                Latitude = 51.1450,
-                Longitude = 4.8590,
-                CustomVisionTag = "gemeentehuis-olen"
-            },
-            new()
-            {
-                Name = "Olen-Centrum",
-                History = "De dorpskern van Olen-Centrum vormt een vertrekpunt om het lokale erfgoed en het dorpsleven te ontdekken.",
-                Latitude = 51.1450,
-                Longitude = 4.8590,
-                CustomVisionTag = "olen-centrum"
-            },
-            new()
-            {
-                Name = "Olen-Statie",
-                History = "Olen-Statie ontwikkelde zich rond de spoorverbinding en vormt een van de herkenbare woonkernen van Olen.",
-                Latitude = 51.1610,
-                Longitude = 4.9070,
-                CustomVisionTag = "olen-statie"
-            },
-            new()
-            {
-                Name = "Station Olen",
-                History = "Het station biedt een spoorverbinding voor Olen en de omliggende gemeenten.",
-                Latitude = 51.1610,
-                Longitude = 4.9070,
-                CustomVisionTag = "station-olen"
-            },
-            new()
-            {
-                Name = "Onze-Lieve-Vrouwkerk van Olen",
-                History = "Deze kerk is een religieus herkenningspunt in een van de dorpskernen van Olen.",
-                Latitude = 51.1530,
-                Longitude = 4.8780,
-                CustomVisionTag = "olv-kerk-olen"
-            },
-            new()
-            {
-                Name = "Winkelomheide",
-                History = "Winkelomheide is een landelijke omgeving in de regio met een eigen dorpskarakter.",
-                Latitude = 51.1690,
-                Longitude = 4.8810,
-                CustomVisionTag = "winkelomheide"
-            },
-            new()
-            {
-                Name = "Kerk van Onze-Lieve-Vrouw-Olen",
-                History = "De dorpskerk is een herkenningspunt in de kern Onze-Lieve-Vrouw-Olen.",
-                Latitude = 51.1530,
-                Longitude = 4.8780,
-                CustomVisionTag = "kerk-olv-olen"
-            },
-            new()
-            {
-                Name = "Kanaal Bocholt-Herentals",
-                History = "Het kanaal Bocholt-Herentals is een belangrijke waterweg in de regio en biedt mogelijkheden voor wandelingen langs het water.",
-                Latitude = 51.1580,
-                Longitude = 4.8860,
-                CustomVisionTag = "kanaal-bocholt-herentals"
-            },
-            new()
-            {
-                Name = "Groene omgeving van Olen",
-                History = "De landelijke omgeving van Olen biedt wandelmogelijkheden langs groene zones en rustige wegen.",
-                Latitude = 51.1490,
-                Longitude = 4.8750,
-                CustomVisionTag = "groene-omgeving-olen"
-            }
-        };
-
-        // ============================================================
-        // SLA NIEUWE LANDMARKS OP ZONDER ROUTES AAN TE MAKEN
-        // ============================================================
-
-        await AddLandmarksIfMissingAsync(context, geelLandmarks);
-        await AddLandmarksIfMissingAsync(context, herentalsLandmarks);
-        await AddLandmarksIfMissingAsync(context, olenLandmarks);
 
         await context.SaveChangesAsync();
     }
 
-    private static async Task AddLandmarksIfMissingAsync(
+    // Voegt nieuwe landmarks toe en werkt bestaande bij (op naam),
+    // zodat gecorrigeerde coördinaten en teksten ook in een bestaande database terechtkomen.
+    private static async Task UpsertLandmarksAsync(
         StadsLensDbContext context,
         List<Landmark> landmarks)
     {
         foreach (var landmark in landmarks)
         {
-            var exists = await context.Landmarks.AnyAsync(
-                l => l.Name == landmark.Name);
+            var existing = await context.Landmarks
+                .FirstOrDefaultAsync(l => l.Name == landmark.Name);
 
-            if (!exists)
+            if (existing is null)
             {
                 context.Landmarks.Add(landmark);
             }
+            else
+            {
+                existing.History = landmark.History;
+                existing.Latitude = landmark.Latitude;
+                existing.Longitude = landmark.Longitude;
+                existing.CustomVisionTag = landmark.CustomVisionTag;
+            }
         }
+    }
+
+    // Verwijdert landmarks uit de vorige versie, behalve als ze in een route gebruikt worden.
+    private static async Task RemoveObsoleteLandmarksAsync(StadsLensDbContext context)
+    {
+        var obsolete = await context.Landmarks
+            .Where(l => ObsoleteLandmarkNames.Contains(l.Name))
+            .ToListAsync();
+
+        foreach (var landmark in obsolete)
+        {
+            var usedInRoute = await context.Set<RouteLandmark>()
+                .AnyAsync(rl => rl.Landmark.Name == landmark.Name);
+
+            if (!usedInRoute)
+            {
+                context.Landmarks.Remove(landmark);
+            }
+        }
+    }
+
+    private static async Task<Landmark> GetLandmarkAsync(StadsLensDbContext context, string name)
+    {
+        return await context.Landmarks.FirstAsync(l => l.Name == name);
     }
 }
