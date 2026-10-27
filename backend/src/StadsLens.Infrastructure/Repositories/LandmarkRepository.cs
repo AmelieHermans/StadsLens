@@ -26,6 +26,14 @@ public class LandmarkRepository : ILandmarkRepository
             .ToListAsync();
     }
 
+    public async Task<IEnumerable<Landmark>> GetAllLandmarks()
+    {
+        return await _context.Landmarks
+            .Include(l => l.RouteLandmarks)
+            .AsNoTracking()
+            .ToListAsync();
+    }
+
     public async Task<Landmark?> GetByIdAsync(int id)
     {
         return await _context.Landmarks

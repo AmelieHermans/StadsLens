@@ -18,6 +18,7 @@ public class RouteRepository : IRouteRepository
     {
         return await _context.Routes
             .Include(r => r.RouteLandmarks)
+            .ThenInclude(rl => rl.Landmark)
             .AsNoTracking()
             .ToListAsync();
     }

@@ -22,6 +22,12 @@ public class LandmarkService : ILandmarkService
         return _mapper.Map<IEnumerable<LandmarkResponse>>(landmarks);
     }
 
+    public async Task<IEnumerable<LandmarkResponse>> GetAllLandmarks()
+    {
+        var landmarks = await _landmarkRepository.GetAllLandmarks();
+        return _mapper.Map<IEnumerable<LandmarkResponse>>(landmarks);
+    }
+
     public async Task<LandmarkResponse?> GetByIdAsync(int id)
     {
         var landmark = await _landmarkRepository.GetByIdAsync(id);
