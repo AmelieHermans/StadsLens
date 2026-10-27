@@ -5,7 +5,11 @@ public static class Languages
 {
     public const string Dutch = "nl";
     public const string English = "en";
+    public const string French = "fr";
+    public const string German = "de";
     public const string Default = Dutch;
 
-    public static bool IsSupported(string? language) => language is Dutch or English;
+    public static readonly string[] All = [Dutch, English, French, German];
+
+    public static bool IsSupported(string? language) => language is not null && All.Contains(language);
 }

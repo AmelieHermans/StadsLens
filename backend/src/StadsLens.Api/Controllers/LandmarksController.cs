@@ -9,6 +9,8 @@ namespace StadsLens.Api.Controllers;
 [Route("api/[controller]")]
 public class LandmarksController : ControllerBase
 {
+    private const int MaxImageSize = 4 * 1024 * 1024;
+
     private readonly ILandmarkService _landmarkService;
 
     public LandmarksController(ILandmarkService landmarkService)
@@ -17,16 +19,20 @@ public class LandmarksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<LandmarkResponse>>> GetAllLandmarks()
+    public async Task<ActionResult<IEnumerable<LandmarkResponse>>> GetAllLandmarks([FromQuery] string? language, CancellationToken cancellationToken)
     {
-        var landmarks = await _landmarkService.GetAllLandmarks();
-        return Ok(landmarks);
+        language = RequestLanguage.Resolve(Request, language);
+        if (!Languages.IsSupported(language))
+            return UnsupportedLanguage(language);
+
+        return Ok(await _landmarkService.GetAllLandmarks(language, cancellationToken));
     }
 
-    // ?language=en geeft naam en geschiedenis vertaald terug (Azure AI Translator).
+    // Naam en geschiedenis in de taal uit ?language= of de Accept-Language-header (Azure AI Translator).
     [HttpGet("{id:int}")]
-    public async Task<ActionResult<LandmarkResponse>> GetById(int id, [FromQuery] string language = Languages.Default, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<LandmarkResponse>> GetById(int id, [FromQuery] string? language = null, CancellationToken cancellationToken = default)
     {
+        language = RequestLanguage.Resolve(Request, language);
         if (!Languages.IsSupported(language))
             return UnsupportedLanguage(language);
 
@@ -36,8 +42,9 @@ public class LandmarksController : ControllerBase
 
     // Wordt gebruikt na een scan: de app stuurt de tag die Custom Vision teruggeeft.
     [HttpGet("by-tag/{tag}")]
-    public async Task<ActionResult<LandmarkResponse>> GetByTag(string tag, [FromQuery] string language = Languages.Default, CancellationToken cancellationToken = default)
+    public async Task<ActionResult<LandmarkResponse>> GetByTag(string tag, [FromQuery] string? language = null, CancellationToken cancellationToken = default)
     {
+        language = RequestLanguage.Resolve(Request, language);
         if (!Languages.IsSupported(language))
             return UnsupportedLanguage(language);
 
@@ -45,10 +52,38 @@ public class LandmarksController : ControllerBase
         return landmark is null ? NotFound() : Ok(landmark);
     }
 
+    // Scan: de app stuurt een foto (multipart, veld "image") en krijgt de herkende landmark terug (Azure AI Custom Vision).
+    [HttpPost("recognize")]
+    [RequestSizeLimit(MaxImageSize)]
+    public async Task<ActionResult<RecognitionResponse>> Recognize(IFormFile image, [FromQuery] string? language = null, CancellationToken cancellationToken = default)
+    {
+        language = RequestLanguage.Resolve(Request, language);
+        if (!Languages.IsSupported(language))
+            return UnsupportedLanguage(language);
+
+        if (image.Length == 0)
+            return BadRequest(new { message = "De foto is leeg." });
+
+        // Custom Vision weigert afbeeldingen groter dan 4 MB.
+        if (image.Length > MaxImageSize)
+            return BadRequest(new { message = "De foto is groter dan 4 MB." });
+
+        try
+        {
+            await using var stream = image.OpenReadStream();
+            return Ok(await _landmarkService.RecognizeAsync(stream, language, cancellationToken));
+        }
+        catch (Exception exception) when (exception is HttpRequestException or InvalidOperationException)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, new { message = $"Herkennen is mislukt: {exception.Message}" });
+        }
+    }
+
     // De geschiedenis voorgelezen als mp3 (Azure AI Speech).
     [HttpGet("{id:int}/audio")]
-    public async Task<IActionResult> GetAudio(int id, [FromQuery] string language = Languages.Default, CancellationToken cancellationToken = default)
+    public async Task<IActionResult> GetAudio(int id, [FromQuery] string? language = null, CancellationToken cancellationToken = default)
     {
+        language = RequestLanguage.Resolve(Request, language);
         if (!Languages.IsSupported(language))
             return UnsupportedLanguage(language);
 
@@ -64,5 +99,5 @@ public class LandmarksController : ControllerBase
     }
 
     private BadRequestObjectResult UnsupportedLanguage(string language) =>
-        BadRequest(new { message = $"Taal '{language}' wordt niet ondersteund. Gebruik 'nl' of 'en'." });
+        BadRequest(new { message = $"Taal '{language}' wordt niet ondersteund. Gebruik {string.Join(", ", Languages.All.Select(code => $"'{code}'"))}." });
 }

@@ -25,8 +25,10 @@ public class RouteRepository : IRouteRepository
 
     public async Task<Route?> GetByIdAsync(int id)
     {
+        // Ook de landmarks zelf laden (zoals in GetAllAsync), anders bevat RouteResponse.Landmarks enkel null.
         return await _context.Routes
             .Include(r => r.RouteLandmarks)
+            .ThenInclude(rl => rl.Landmark)
             .AsNoTracking()
             .FirstOrDefaultAsync(r => r.Id == id);
     }

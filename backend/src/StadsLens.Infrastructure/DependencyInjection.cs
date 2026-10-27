@@ -2,9 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using StadsLens.Application.Interfaces.AI;
 using StadsLens.Application.Interfaces.Repositories;
+using StadsLens.Application.Interfaces.Security;
 using StadsLens.Infrastructure.AI;
 using StadsLens.Infrastructure.Data;
 using StadsLens.Infrastructure.Repositories;
+using StadsLens.Infrastructure.Security;
 
 namespace StadsLens.Infrastructure;
 
@@ -20,9 +22,12 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IVisitRepository, VisitRepository>();
 
+        services.AddSingleton<IPasswordHasher, Pbkdf2PasswordHasher>();
+
         // Azure AI-diensten (sleutels komen uit .env)
         services.AddHttpClient<ITranslationService, AzureTranslationService>();
         services.AddHttpClient<ISpeechService, AzureSpeechService>();
+        services.AddHttpClient<IImageRecognitionService, AzureCustomVisionService>();
 
         return services;
     }

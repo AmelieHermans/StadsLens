@@ -9,11 +9,13 @@ namespace StadsLens.Infrastructure.AI;
 // Azure AI Speech (text-to-speech) via de REST API.
 public class AzureSpeechService : ISpeechService
 {
-    // Per taal een neurale stem: Vlaams voor Nederlands, Brits voor Engels.
+    // Per taal een neurale stem: Vlaams voor Nederlands, Brits voor Engels, Belgisch voor Frans, Duits voor Duits.
     private static readonly Dictionary<string, (string Locale, string Voice)> Voices = new()
     {
         [Languages.Dutch] = ("nl-BE", "nl-BE-DenaNeural"),
-        [Languages.English] = ("en-GB", "en-GB-SoniaNeural")
+        [Languages.English] = ("en-GB", "en-GB-SoniaNeural"),
+        [Languages.French] = ("fr-BE", "fr-BE-CharlineNeural"),
+        [Languages.German] = ("de-DE", "de-DE-KatjaNeural")
     };
 
     private readonly HttpClient _httpClient;
