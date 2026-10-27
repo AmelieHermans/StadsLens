@@ -8,14 +8,14 @@ namespace StadsLens.Mobile.ViewModels;
 
 public partial class RoutesViewModel : BaseViewModel
 {
-    private readonly IStadsLensApiService _apiService;
+    private readonly IRouteDataService _routeDataService;
     private readonly INavigationService _navigationService;
 
     public ObservableCollection<Route> Routes { get; } = new();
 
-    public RoutesViewModel(IStadsLensApiService apiService, INavigationService navigationService)
+    public RoutesViewModel(IRouteDataService routeDataService, INavigationService navigationService)
     {
-        _apiService = apiService;
+        _routeDataService = routeDataService;
         _navigationService = navigationService;
         Title = "Wandelroutes";
     }
@@ -30,7 +30,7 @@ public partial class RoutesViewModel : BaseViewModel
         {
             IsBusy = true;
             Routes.Clear();
-            foreach (var route in await _apiService.GetRoutesAsync())
+            foreach (var route in await _routeDataService.GetAllAsync())
                 Routes.Add(route);
         }
         catch (Exception ex)

@@ -7,14 +7,14 @@ namespace StadsLens.Mobile.ViewModels;
 
 public partial class VisitsViewModel : BaseViewModel
 {
-    private readonly IStadsLensApiService _apiService;
+    private readonly IVisitDataService _visitDataService;
     private readonly IUserSessionService _userSession;
 
     public ObservableCollection<Visit> Visits { get; } = new();
 
-    public VisitsViewModel(IStadsLensApiService apiService, IUserSessionService userSession)
+    public VisitsViewModel(IVisitDataService visitDataService, IUserSessionService userSession)
     {
-        _apiService = apiService;
+        _visitDataService = visitDataService;
         _userSession = userSession;
         Title = "Bezoeken";
     }
@@ -35,7 +35,7 @@ public partial class VisitsViewModel : BaseViewModel
         {
             IsBusy = true;
             Visits.Clear();
-            foreach (var visit in await _apiService.GetVisitsByUserAsync(_userSession.CurrentUser.Id))
+            foreach (var visit in await _visitDataService.GetByUserAsync(_userSession.CurrentUser.Id))
                 Visits.Add(visit);
         }
         catch (Exception ex)

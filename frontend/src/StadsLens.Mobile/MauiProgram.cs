@@ -40,7 +40,10 @@ public static class MauiProgram
         services.AddSingleton(httpClient);
         services.AddSingleton<INavigationService, NavigationService>();
         services.AddSingleton<IUserSessionService, UserSessionService>();
-        services.AddSingleton<IStadsLensApiService, StadsLensApiService>();
+        services.AddSingleton<IRouteDataService, RouteDataService>();
+        services.AddSingleton<ILandmarkDataService, LandmarkDataService>();
+        services.AddSingleton<IUserDataService, UserDataService>();
+        services.AddSingleton<IVisitDataService, VisitDataService>();
     }
 
     private static void RegisterViewModels(IServiceCollection services)

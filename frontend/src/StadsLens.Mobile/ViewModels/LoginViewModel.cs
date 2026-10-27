@@ -3,22 +3,23 @@ using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Messages;
+using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
 
 public partial class LoginViewModel : BaseViewModel
 {
-    private readonly IStadsLensApiService _apiService;
+    private readonly IUserDataService _userDataService;
     private readonly INavigationService _navigationService;
     private readonly IUserSessionService _userSession;
 
     [ObservableProperty]
     private string name = string.Empty;
 
-    public LoginViewModel(IStadsLensApiService apiService, INavigationService navigationService, IUserSessionService userSession)
+    public LoginViewModel(IUserDataService userDataService, INavigationService navigationService, IUserSessionService userSession)
     {
-        _apiService = apiService;
+        _userDataService = userDataService;
         _navigationService = navigationService;
         _userSession = userSession;
         Title = "StadsLens";
@@ -33,7 +34,7 @@ public partial class LoginViewModel : BaseViewModel
         try
         {
             IsBusy = true;
-            var user = await _apiService.CreateUserAsync(Name, "nl");
+            User? user = await _userDataService.CreateAsync(new User { Name = Name, PreferredLanguage = "nl" });
             if (user is null)
             {
                 await Shell.Current.DisplayAlertAsync("Fout", "Gebruiker aanmaken is mislukt.", "OK");
