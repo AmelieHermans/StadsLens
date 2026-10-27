@@ -11,7 +11,7 @@ namespace StadsLens.Mobile.ViewModels;
 
 public partial class MapViewModel : BaseViewModel, IQueryAttributable
 {
-    private readonly IStadsLensApiService _apiService;
+    private readonly IRouteDataService _routeDataService;
     [ObservableProperty] private Route? selectedRoute;
     [ObservableProperty] private string distanceKm = "2";
     [ObservableProperty] private string startLatitude = string.Empty;
@@ -19,7 +19,7 @@ public partial class MapViewModel : BaseViewModel, IQueryAttributable
     [ObservableProperty] private WebViewSource mapSource = new HtmlWebViewSource { Html = CreateEmptyMapHtml() };
     [ObservableProperty] private string resultSummary = string.Empty;
 
-    public MapViewModel(IStadsLensApiService apiService) { _apiService = apiService; Title = "Route maken"; }
+    public MapViewModel(IRouteDataService routeDataService) { _routeDataService = routeDataService; Title = "Route maken"; }
     public void ApplyQueryAttributes(IDictionary<string, object> query)
     {
         if (query.TryGetValue(nameof(Route), out var value) && value is Route route) { SelectedRoute = route; Title = $"Route maken: {route.Name}"; }
@@ -45,7 +45,7 @@ public partial class MapViewModel : BaseViewModel, IQueryAttributable
         try
         {
             IsBusy = true;
-            var plan = await _apiService.PlanRouteAsync(SelectedRoute.Id, distance, latitude, longitude);
+            var plan = await _routeDataService.PlanRouteAsync(SelectedRoute.Id, distance, latitude, longitude);
             if (plan is null) { await Shell.Current.DisplayAlertAsync("Route", "De route kon niet worden gemaakt.", "OK"); return; }
             ResultSummary = $"{plan.DistanceMeters / 1000:0.0} km · {TimeSpan.FromSeconds(plan.DurationSeconds):hh\\:mm} · {plan.Landmarks.Count} landmarks" + (plan.IsEstimated ? " (schatting)" : string.Empty);
             MapSource = new HtmlWebViewSource { Html = BuildMapHtml(plan) };

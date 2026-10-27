@@ -9,7 +9,7 @@ namespace StadsLens.Mobile.ViewModels;
 
 public partial class RouteDetailViewModel : BaseViewModel, IQueryAttributable
 {
-    private readonly IStadsLensApiService _apiService;
+    private readonly ILandmarkDataService _landmarkDataService;
     private readonly INavigationService _navigationService;
 
     [ObservableProperty]
@@ -17,9 +17,9 @@ public partial class RouteDetailViewModel : BaseViewModel, IQueryAttributable
 
     public ObservableCollection<Landmark> Landmarks { get; } = new();
 
-    public RouteDetailViewModel(IStadsLensApiService apiService, INavigationService navigationService)
+    public RouteDetailViewModel(ILandmarkDataService landmarkDataService, INavigationService navigationService)
     {
-        _apiService = apiService;
+        _landmarkDataService = landmarkDataService;
         _navigationService = navigationService;
     }
 
@@ -43,7 +43,7 @@ public partial class RouteDetailViewModel : BaseViewModel, IQueryAttributable
         {
             IsBusy = true;
             Landmarks.Clear();
-            foreach (var landmark in await _apiService.GetLandmarksByRouteAsync(SelectedRoute.Id))
+            foreach (var landmark in await _landmarkDataService.GetByRouteAsync(SelectedRoute.Id))
                 Landmarks.Add(landmark);
         }
         catch (Exception ex)
