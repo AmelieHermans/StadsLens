@@ -1,4 +1,4 @@
-using CommunityToolkit.Mvvm.ComponentModel;
+using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using StadsLens.Mobile.Constants;
@@ -8,14 +8,21 @@ using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
 
-public partial class LoginViewModel : BaseViewModel
+public class LoginViewModel : BaseViewModel, ILoginViewModel
 {
     private readonly IUserDataService _userDataService;
     private readonly INavigationService _navigationService;
     private readonly IUserSessionService _userSession;
 
-    [ObservableProperty]
     private string name = string.Empty;
+
+    public string Name
+    {
+        get => name;
+        set => SetProperty(ref name, value);
+    }
+
+    public ICommand LoginCommand { get; set; } = null!;
 
     public LoginViewModel(IUserDataService userDataService, INavigationService navigationService, IUserSessionService userSession)
     {
@@ -23,9 +30,10 @@ public partial class LoginViewModel : BaseViewModel
         _navigationService = navigationService;
         _userSession = userSession;
         Title = "StadsLens";
+
+        BindCommands();
     }
 
-    [RelayCommand]
     private async Task LoginAsync()
     {
         if (IsBusy || string.IsNullOrWhiteSpace(Name))
@@ -53,5 +61,10 @@ public partial class LoginViewModel : BaseViewModel
         {
             IsBusy = false;
         }
+    }
+
+    private void BindCommands()
+    {
+        LoginCommand = new AsyncRelayCommand(LoginAsync);
     }
 }

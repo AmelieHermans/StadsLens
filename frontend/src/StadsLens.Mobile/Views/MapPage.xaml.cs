@@ -4,7 +4,7 @@ namespace StadsLens.Mobile.Views;
 
 public partial class MapPage : ContentPage
 {
-    public MapPage(MapViewModel viewModel)
+    public MapPage(IMapViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

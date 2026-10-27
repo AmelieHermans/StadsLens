@@ -1,6 +1,6 @@
 namespace StadsLens.Mobile.ViewModels;
 
-public partial class LandmarkDetailViewModel : BaseViewModel
+public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
 {
     public LandmarkDetailViewModel()
     {

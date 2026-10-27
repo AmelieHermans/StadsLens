@@ -4,7 +4,7 @@ namespace StadsLens.Mobile.Views;
 
 public partial class SettingsPage : ContentPage
 {
-    public SettingsPage(SettingsViewModel viewModel)
+    public SettingsPage(ISettingsViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = viewModel;

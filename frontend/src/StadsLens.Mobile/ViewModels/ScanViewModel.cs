@@ -1,6 +1,6 @@
 namespace StadsLens.Mobile.ViewModels;
 
-public partial class ScanViewModel : BaseViewModel
+public class ScanViewModel : BaseViewModel, IScanViewModel
 {
     public ScanViewModel()
     {

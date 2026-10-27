@@ -4,9 +4,9 @@ namespace StadsLens.Mobile.Views;
 
 public partial class RoutesPage : ContentPage
 {
-    private readonly RoutesViewModel _viewModel;
+    private readonly IRoutesViewModel _viewModel;
 
-    public RoutesPage(RoutesViewModel viewModel)
+    public RoutesPage(IRoutesViewModel viewModel)
     {
         InitializeComponent();
         BindingContext = _viewModel = viewModel;

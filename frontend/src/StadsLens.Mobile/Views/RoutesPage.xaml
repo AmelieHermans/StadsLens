@@ -4,7 +4,7 @@
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.RoutesPage"
-             x:DataType="vm:RoutesViewModel"
+             x:DataType="vm:IRoutesViewModel"
              Title="{Binding Title}">
 
     <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsRefreshing}">
@@ -17,7 +17,7 @@
                     <Border Margin="16,8" Padding="16">
                         <Border.GestureRecognizers>
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:RoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType=vm:RoutesViewModel}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType=vm:IRoutesViewModel}"
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
