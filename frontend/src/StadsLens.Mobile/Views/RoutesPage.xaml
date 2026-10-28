@@ -20,8 +20,10 @@
                 <DataTemplate x:DataType="models:Route">
                     <Border Margin="16,8" Padding="16">
                         <Border.GestureRecognizers>
+                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
+                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType=vm:IRoutesViewModel}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">

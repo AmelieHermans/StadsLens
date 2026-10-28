@@ -20,8 +20,10 @@
                 <DataTemplate x:DataType="models:Landmark">
                     <Grid ColumnDefinitions="*,Auto" Padding="0,8">
                         <Grid.GestureRecognizers>
+                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
+                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteDetailViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType=vm:IRouteDetailViewModel}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteDetailViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding Name}" VerticalOptions="Center" />
