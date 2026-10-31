@@ -13,4 +13,5 @@ public interface IRouteDetailViewModel : IBaseViewModel
     ICommand GoToMapCommand { get; set; }
     ICommand GoToScanCommand { get; set; }
     ICommand GoToLandmarkDetailCommand { get; set; }
+    ICommand GoBackCommand { get; set; }
 }

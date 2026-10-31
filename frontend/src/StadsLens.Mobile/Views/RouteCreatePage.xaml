@@ -3,26 +3,27 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+    xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
     xmlns:models="clr-namespace:StadsLens.Mobile.Models"
     x:Class="StadsLens.Mobile.Views.RouteCreatePage"
     x:DataType="vm:IRouteCreateViewModel"
-    Title="{Binding Title}">
+    Title="{loc:Translate Tab_CreateRoute}">
 
     <Grid Padding="12"
           RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto"
           RowSpacing="8">
 
-        <Label Text="Maak je eigen wandelroute"
+        <Label Text="{loc:Translate RouteCreate_Header}"
                Style="{StaticResource Headline}" />
 
         <Grid Grid.Row="1" ColumnDefinitions="*,Auto" ColumnSpacing="8">
-            <Label Text="Huidige locatie gebruiken" VerticalOptions="Center" />
+            <Label Text="{loc:Translate RouteCreate_UseCurrentLocation}" VerticalOptions="Center" />
             <Switch Grid.Column="1" IsToggled="{Binding UseCurrentLocation}" VerticalOptions="Center" />
         </Grid>
 
         <Entry
             Grid.Row="2"
-            Placeholder="Zoek een straat, adres of plaats..."
+            Placeholder="{loc:Translate RouteCreate_SearchPlaceholder}"
             Text="{Binding StartAddress}"
             IsEnabled="{Binding IsAddressEnabled}"
             ClearButtonVisibility="WhileEditing"
@@ -30,13 +31,13 @@
 
         <Grid Grid.Row="3" ColumnDefinitions="130,*" ColumnSpacing="8">
             <Entry
-                Placeholder="Afstand in km"
+                Placeholder="{loc:Translate RouteCreate_DistancePlaceholder}"
                 Text="{Binding DistanceKm}"
                 Keyboard="Numeric" />
 
             <Button
                 Grid.Column="1"
-                Text="Genereer route"
+                Text="{loc:Translate RouteCreate_Generate}"
                 Command="{Binding CreateRouteCommand}"
                 IsEnabled="{Binding IsNotBusy}" />
         </Grid>
@@ -69,8 +70,10 @@
                 <DataTemplate x:DataType="models:Landmark">
                     <Grid Padding="4,8" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
                         <Grid.GestureRecognizers>
+                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
+                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteCreateViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType=vm:IRouteCreateViewModel}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteCreateViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
                         <Label Text="📍" VerticalOptions="Center" />

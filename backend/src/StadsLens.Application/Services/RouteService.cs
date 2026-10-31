@@ -16,26 +16,48 @@ public class RouteService : IRouteService
     private readonly ILandmarkRepository _landmarkRepository;
     private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
+    private readonly ContentTranslator _translator;
 
-    public RouteService(IRouteRepository routeRepository, ILandmarkRepository landmarkRepository, IMapper mapper, HttpClient httpClient, IConfiguration configuration)
+    public RouteService(IRouteRepository routeRepository, ILandmarkRepository landmarkRepository, IMapper mapper, HttpClient httpClient, IConfiguration configuration, ContentTranslator translator)
     {
         _routeRepository = routeRepository;
         _landmarkRepository = landmarkRepository;
         _mapper = mapper;
         _httpClient = httpClient;
         _configuration = configuration;
+        _translator = translator;
     }
 
-    public async Task<IEnumerable<RouteResponse>> GetAllAsync()
+    public async Task<IEnumerable<RouteResponse>> GetAllAsync(string language = Languages.Default, CancellationToken cancellationToken = default)
     {
         var routes = await _routeRepository.GetAllAsync();
-        return _mapper.Map<IEnumerable<RouteResponse>>(routes);
+        return await TranslateAsync(_mapper.Map<List<RouteResponse>>(routes), language, cancellationToken);
     }
 
-    public async Task<RouteResponse?> GetByIdAsync(int id)
+    public async Task<RouteResponse?> GetByIdAsync(int id, string language = Languages.Default, CancellationToken cancellationToken = default)
     {
         var route = await _routeRepository.GetByIdAsync(id);
-        return route is null ? null : _mapper.Map<RouteResponse>(route);
+        return route is null ? null : (await TranslateAsync([_mapper.Map<RouteResponse>(route)], language, cancellationToken))[0];
+    }
+
+    // Naam en beschrijving van de routes en de namen van hun landmarks, samen in één vertaalverzoek.
+    private async Task<List<RouteResponse>> TranslateAsync(List<RouteResponse> routes, string language, CancellationToken cancellationToken)
+    {
+        var texts = routes.SelectMany(route => new[] { route.Name, route.Description }.Concat(route.Landmarks.Select(landmark => landmark.Name))).ToList();
+        var translated = await _translator.TranslateAsync(texts, language, cancellationToken);
+        if (translated is null)
+            return routes;
+
+        var index = 0;
+        foreach (var route in routes)
+        {
+            route.Name = translated[index++];
+            route.Description = translated[index++];
+            foreach (var landmark in route.Landmarks)
+                landmark.Name = translated[index++];
+        }
+
+        return routes;
     }
 
     public async Task<RoutePlanResponse> PlanAsync(CreateRouteRequest request, CancellationToken cancellationToken = default)

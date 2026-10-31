@@ -2,18 +2,20 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+             xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
              x:Class="StadsLens.Mobile.Views.LandmarkDetailPage"
              x:DataType="vm:ILandmarkDetailViewModel"
              Title="{Binding Title}">
 
     <ScrollView>
         <VerticalStackLayout Padding="16" Spacing="12">
+            <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
             <Image Source="{Binding Landmark.ImageUrl}" Aspect="AspectFill" HeightRequest="200"
                    IsVisible="{Binding HasImage}" />
 
             <Label Text="{Binding Landmark.Name}" Style="{StaticResource Headline}" />
 
-            <Label Text="✔ Bezocht" TextColor="Green" FontAttributes="Bold" IsVisible="{Binding IsVisited}" />
+            <Label Text="{loc:Translate Landmark_Visited}" TextColor="Green" FontAttributes="Bold" IsVisible="{Binding IsVisited}" />
 
             <Label Text="{Binding TranslationWarning}" TextColor="DarkOrange" IsVisible="{Binding HasTranslationWarning}" />
 
@@ -25,7 +27,7 @@
 
             <HorizontalStackLayout Spacing="12">
                 <Button Text="{Binding ReadAloudText}" Command="{Binding ReadAloudCommand}" />
-                <Button Text="Markeer als bezocht" Command="{Binding RegisterVisitCommand}" IsVisible="{Binding IsNotVisited}" />
+                <Button Text="{loc:Translate Landmark_MarkVisited}" Command="{Binding RegisterVisitCommand}" IsVisible="{Binding IsNotVisited}" />
             </HorizontalStackLayout>
         </VerticalStackLayout>
     </ScrollView>

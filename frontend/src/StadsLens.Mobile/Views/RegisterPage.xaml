@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+             xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+             x:Class="StadsLens.Mobile.Views.RegisterPage"
+             x:DataType="vm:IRegisterViewModel"
+             Title="{loc:Translate Register_Title}">
+
+    <VerticalStackLayout Padding="24" Spacing="16" VerticalOptions="Center">
+        <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
+        <Label Text="{loc:Translate Register_Header}" Style="{StaticResource Headline}" />
+        <Entry Placeholder="{loc:Translate Login_Name}" Text="{Binding Name}" />
+        <Entry Placeholder="{loc:Translate Register_PasswordHint}" Text="{Binding Password}" IsPassword="True" />
+        <Entry Placeholder="{loc:Translate Register_ConfirmPassword}" Text="{Binding ConfirmPassword}" IsPassword="True" ReturnCommand="{Binding RegisterCommand}" />
+        <Button Text="{loc:Translate Register_Title}" Command="{Binding RegisterCommand}" IsEnabled="{Binding IsNotBusy}" />
+        <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" HorizontalTextAlignment="Center" />
+        <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
+    </VerticalStackLayout>
+
+</ContentPage>

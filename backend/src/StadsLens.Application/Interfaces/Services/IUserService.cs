@@ -6,5 +6,10 @@ public interface IUserService
 {
     Task<IEnumerable<UserResponse>> GetAllAsync();
     Task<UserResponse?> GetByIdAsync(int id);
-    Task<UserResponse> CreateAsync(CreateUserRequest request);
+
+    // Geeft null terug als de naam al in gebruik is.
+    Task<UserResponse?> RegisterAsync(RegisterRequest request);
+
+    // Geeft null terug als de naam niet bestaat of het wachtwoord fout is.
+    Task<UserResponse?> LoginAsync(LoginRequest request);
 }

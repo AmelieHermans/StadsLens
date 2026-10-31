@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using StadsLens.Application;
 using StadsLens.Application.Interfaces.Services;
 using StadsLens.Contracts.Users;
 using StadsLens.Contracts.Visits;
@@ -31,16 +32,34 @@ public class UsersController : ControllerBase
         return user is null ? NotFound() : Ok(user);
     }
 
-    [HttpPost]
-    public async Task<ActionResult<UserResponse>> Create(CreateUserRequest request)
+    // Nieuw account. 409 als de naam al bestaat.
+    [HttpPost("register")]
+    public async Task<ActionResult<UserResponse>> Register(RegisterRequest request)
     {
-        var user = await _userService.CreateAsync(request);
-        return CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
+        var user = await _userService.RegisterAsync(request);
+        return user is null
+            ? Conflict(new { message = $"De naam '{request.Name.Trim()}' is al in gebruik." })
+            : CreatedAtAction(nameof(GetById), new { id = user.Id }, user);
     }
 
-    [HttpGet("{id:int}/visits")]
-    public async Task<ActionResult<IEnumerable<VisitResponse>>> GetVisits(int id)
+    // Bestaand account. 401 bij een onbekende naam of een fout wachtwoord (zonder te zeggen welk van de twee).
+    [HttpPost("login")]
+    public async Task<ActionResult<UserResponse>> Login(LoginRequest request)
     {
-        return Ok(await _visitService.GetByUserIdAsync(id));
+        var user = await _userService.LoginAsync(request);
+        return user is null
+            ? Unauthorized(new { message = "Naam of wachtwoord klopt niet." })
+            : Ok(user);
+    }
+
+    // De namen van de landmarks in de taal van de app (Accept-Language-header of ?language=).
+    [HttpGet("{id:int}/visits")]
+    public async Task<ActionResult<IEnumerable<VisitResponse>>> GetVisits(int id, [FromQuery] string? language, CancellationToken cancellationToken)
+    {
+        language = RequestLanguage.Resolve(Request, language);
+        if (!Languages.IsSupported(language))
+            language = Languages.Default;
+
+        return Ok(await _visitService.GetByUserIdAsync(id, language, cancellationToken));
     }
 }

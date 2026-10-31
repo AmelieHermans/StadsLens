@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Teksten van de app. Voeg een nieuwe sleutel altijd toe in alle vier de bestanden (nl = standaard, en, fr, de). -->
+<root>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value></resheader>
+  <data name="Common_Back" xml:space="preserve"><value>← Zurück</value></data>
+  <data name="Tab_Routes" xml:space="preserve"><value>Routen</value></data>
+  <data name="Tab_Visits" xml:space="preserve"><value>Besuche</value></data>
+  <data name="Tab_Settings" xml:space="preserve"><value>Einstellungen</value></data>
+  <data name="Tab_CreateRoute" xml:space="preserve"><value>Route erstellen</value></data>
+  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Der Server ist nicht erreichbar. Läuft die API? ({0})</value></data>
+  <data name="Login_Tagline" xml:space="preserve"><value>Entdecke die Stadt durch deine Kamera.</value></data>
+  <data name="Login_Name" xml:space="preserve"><value>Name</value></data>
+  <data name="Login_Password" xml:space="preserve"><value>Passwort</value></data>
+  <data name="Login_Button" xml:space="preserve"><value>Anmelden</value></data>
+  <data name="Login_GoToRegister" xml:space="preserve"><value>Noch kein Konto? Erstelle eins</value></data>
+  <data name="Login_Empty" xml:space="preserve"><value>Gib deinen Namen und dein Passwort ein.</value></data>
+  <data name="Login_Wrong" xml:space="preserve"><value>Name oder Passwort ist falsch.</value></data>
+  <data name="Register_Title" xml:space="preserve"><value>Konto erstellen</value></data>
+  <data name="Register_Header" xml:space="preserve"><value>Erstelle ein Konto</value></data>
+  <data name="Register_PasswordHint" xml:space="preserve"><value>Passwort (mindestens 6 Zeichen)</value></data>
+  <data name="Register_ConfirmPassword" xml:space="preserve"><value>Passwort wiederholen</value></data>
+  <data name="Register_NameTooShort" xml:space="preserve"><value>Dein Name muss mindestens {0} Zeichen haben.</value></data>
+  <data name="Register_PasswordTooShort" xml:space="preserve"><value>Dein Passwort muss mindestens {0} Zeichen haben.</value></data>
+  <data name="Register_PasswordMismatch" xml:space="preserve"><value>Die Passwörter stimmen nicht überein.</value></data>
+  <data name="Register_NameTaken" xml:space="preserve"><value>Der Name „{0}“ ist bereits vergeben.</value></data>
+  <data name="Routes_Title" xml:space="preserve"><value>Wanderrouten</value></data>
+  <data name="Routes_Empty" xml:space="preserve"><value>Keine Routen gefunden.</value></data>
+  <data name="Routes_Landmarks" xml:space="preserve"><value>Sehenswürdigkeiten</value></data>
+  <data name="RouteDetail_Map" xml:space="preserve"><value>Karte</value></data>
+  <data name="RouteDetail_Scan" xml:space="preserve"><value>Gebäude scannen</value></data>
+  <data name="Visits_Empty" xml:space="preserve"><value>Du hast noch keine Sehenswürdigkeiten besucht.</value></data>
+  <data name="Landmark_Title" xml:space="preserve"><value>Sehenswürdigkeit</value></data>
+  <data name="Landmark_Visited" xml:space="preserve"><value>✔ Besucht</value></data>
+  <data name="Landmark_MarkVisited" xml:space="preserve"><value>Als besucht markieren</value></data>
+  <data name="Landmark_ReadAloud" xml:space="preserve"><value>Vorlesen</value></data>
+  <data name="Landmark_Stop" xml:space="preserve"><value>Stopp</value></data>
+  <data name="Landmark_TranslationFailed" xml:space="preserve"><value>Die Übersetzung ist fehlgeschlagen, der Text wird auf Niederländisch angezeigt.</value></data>
+  <data name="Scan_Title" xml:space="preserve"><value>Scannen</value></data>
+  <data name="Scan_Intro" xml:space="preserve"><value>Mach ein Foto einer Sehenswürdigkeit. StadsLens erkennt sie und fügt sie deinen Besuchen hinzu.</value></data>
+  <data name="Scan_TakePhoto" xml:space="preserve"><value>Foto aufnehmen</value></data>
+  <data name="Scan_PickPhoto" xml:space="preserve"><value>Foto auswählen</value></data>
+  <data name="Scan_PickerTitle" xml:space="preserve"><value>Foto einer Sehenswürdigkeit</value></data>
+  <data name="Scan_OpenLandmark" xml:space="preserve"><value>Sehenswürdigkeit ansehen</value></data>
+  <data name="Scan_NotRecognized" xml:space="preserve"><value>Keine Sehenswürdigkeit erkannt (Sicherheit {0:P0}). Versuche ein Foto aus der Nähe.</value></data>
+  <data name="Scan_Recognized" xml:space="preserve"><value>Erkannt: {0} ({1:P0})</value></data>
+  <data name="Scan_AlreadyVisited" xml:space="preserve"><value>Diese hast du schon besucht.</value></data>
+  <data name="Scan_VisitAdded" xml:space="preserve"><value>Zu deinen Besuchen hinzugefügt.</value></data>
+  <data name="Settings_Language" xml:space="preserve"><value>Sprache</value></data>
+  <data name="Settings_LanguageInfo" xml:space="preserve"><value>Die App und die Sehenswürdigkeiten werden in dieser Sprache angezeigt. Übersetzt mit Azure AI Translator, vorgelesen mit Azure AI Speech.</value></data>
+  <data name="Settings_AutoRead" xml:space="preserve"><value>Text vorlesen</value></data>
+  <data name="Settings_AutoReadInfo" xml:space="preserve"><value>Liest die Geschichte automatisch vor, wenn du eine Sehenswürdigkeit scannst.</value></data>
+  <data name="Settings_LoggedInAs" xml:space="preserve"><value>Angemeldet als {0}</value></data>
+  <data name="Settings_Logout" xml:space="preserve"><value>Abmelden</value></data>
+  <data name="Map_Title" xml:space="preserve"><value>Route erstellen</value></data>
+  <data name="Map_TitleWithRoute" xml:space="preserve"><value>Route erstellen: {0}</value></data>
+  <data name="Map_Distance" xml:space="preserve"><value>Entfernung (km)</value></data>
+  <data name="Map_CurrentLocation" xml:space="preserve"><value>Aktueller Standort</value></data>
+  <data name="Map_CreateRoute" xml:space="preserve"><value>Route erstellen</value></data>
+  <data name="Map_LocationUnknown" xml:space="preserve"><value>Dein aktueller Standort konnte nicht bestimmt werden.</value></data>
+  <data name="Map_InvalidDistance" xml:space="preserve"><value>Gib eine gültige Entfernung in Kilometern ein.</value></data>
+  <data name="Map_RouteFailed" xml:space="preserve"><value>Die Route konnte nicht erstellt werden.</value></data>
+  <data name="RouteCreate_Header" xml:space="preserve"><value>Erstelle deine eigene Wanderroute</value></data>
+  <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Aktuellen Standort verwenden</value></data>
+  <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Suche eine Straße, Adresse oder einen Ort...</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Entfernung in km</value></data>
+  <data name="RouteCreate_Generate" xml:space="preserve"><value>Route generieren</value></data>
+  <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Wähle einen Startpunkt und die gewünschte Entfernung.</value></data>
+  <data name="RouteCreate_Locating" xml:space="preserve"><value>Standort wird bestimmt...</value></data>
+  <data name="RouteCreate_DistanceRange" xml:space="preserve"><value>Wähle eine Entfernung zwischen 0,5 und 50 km.</value></data>
+  <data name="RouteCreate_LocationNotYetKnown" xml:space="preserve"><value>Dein aktueller Standort ist noch nicht bekannt. Versuche es erneut.</value></data>
+  <data name="RouteCreate_ChooseSuggestion" xml:space="preserve"><value>Suche eine Adresse und wähle einen Vorschlag, oder aktiviere „Aktueller Standort“.</value></data>
+  <data name="RouteCreate_Calculating" xml:space="preserve"><value>Wanderroute wird berechnet...</value></data>
+  <data name="RouteCreate_Summary" xml:space="preserve"><value>Tatsächliche Gehstrecke: {0:F2} km · Geschätzte Zeit: {1:hh\:mm} · {2} Sehenswürdigkeiten</value></data>
+</root>

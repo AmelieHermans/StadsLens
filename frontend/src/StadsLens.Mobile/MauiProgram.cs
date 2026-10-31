@@ -35,23 +35,30 @@ public static class MauiProgram
 
     private static void RegisterServices(IServiceCollection services)
     {
-        var httpClient = new HttpClient
+        // De LanguageHandler stuurt de gekozen taal mee met elk verzoek, dus de HttpClient wordt pas
+        // gemaakt wanneer de UserSessionService beschikbaar is.
+        services.AddSingleton(serviceProvider =>
         {
-            BaseAddress = new Uri(ApiSettings.BaseUrl)
-        };
+            var httpClient = new HttpClient(new LanguageHandler(serviceProvider.GetRequiredService<IUserSessionService>()))
+            {
+                BaseAddress = new Uri(ApiSettings.BaseUrl)
+            };
 
-        httpClient.DefaultRequestHeaders.Add(
-            "ngrok-skip-browser-warning", "true");
+            httpClient.DefaultRequestHeaders.Add(
+                "ngrok-skip-browser-warning", "true");
 
-        services.AddSingleton(httpClient);
+            return httpClient;
+        });
 
         services.AddSingleton<INavigationService, NavigationService>();
+        services.AddSingleton<ILocalizationService>(LocalizationService.Instance);
         services.AddSingleton<IUserSessionService, UserSessionService>();
         services.AddSingleton<IRouteDataService, RouteDataService>();
         services.AddSingleton<ILandmarkDataService, LandmarkDataService>();
         services.AddSingleton<IUserDataService, UserDataService>();
         services.AddSingleton<IVisitDataService, VisitDataService>();
         services.AddSingleton(AudioManager.Current);
+        services.AddSingleton(MediaPicker.Default);
 
         // Nieuwe service voor het genereren van wandelroutes
         services.AddTransient<IRoutingService, RoutingService>();
@@ -61,6 +68,7 @@ public static class MauiProgram
     private static void RegisterViewModels(IServiceCollection services)
     {
         services.AddTransient<ILoginViewModel, LoginViewModel>();
+        services.AddTransient<IRegisterViewModel, RegisterViewModel>();
         services.AddTransient<IRoutesViewModel, RoutesViewModel>();
         services.AddTransient<IRouteDetailViewModel, RouteDetailViewModel>();
         services.AddTransient<IMapViewModel, MapViewModel>();
@@ -74,6 +82,7 @@ public static class MauiProgram
     private static void RegisterViews(IServiceCollection services)
     {
         services.AddTransient<LoginPage>();
+        services.AddTransient<RegisterPage>();
         services.AddTransient<RoutesPage>();
         services.AddTransient<RouteDetailPage>();
 

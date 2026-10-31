@@ -16,4 +16,5 @@ public interface ILandmarkDetailViewModel : IBaseViewModel
 
     ICommand ReadAloudCommand { get; set; }
     ICommand RegisterVisitCommand { get; set; }
+    ICommand GoBackCommand { get; set; }
 }

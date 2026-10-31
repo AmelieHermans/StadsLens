@@ -2,10 +2,11 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+             xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.RoutesPage"
              x:DataType="vm:IRoutesViewModel"
-             Title="{Binding Title}">
+             Title="{loc:Translate Routes_Title}">
 
     <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsRefreshing}">
         <CollectionView ItemsSource="{Binding Routes}" SelectionMode="None">
@@ -13,20 +14,30 @@
                 <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Margin="16,8,16,0" />
             </CollectionView.Header>
             <CollectionView.EmptyView>
-                <Label Text="Geen routes gevonden." HorizontalOptions="Center" Margin="24" />
+                <Label Text="{loc:Translate Routes_Empty}" HorizontalOptions="Center" Margin="24" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Route">
                     <Border Margin="16,8" Padding="16">
                         <Border.GestureRecognizers>
+                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
+                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType=vm:IRoutesViewModel}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
                         <VerticalStackLayout Spacing="4">
                             <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
                             <Label Text="{Binding Description}" />
-                            <Label Text="{Binding LandmarkCount, StringFormat='{0} bezienswaardigheden'}" FontSize="12" />
+                            <Label FontSize="12">
+                                <Label.FormattedText>
+                                    <FormattedString>
+                                        <Span Text="{Binding LandmarkCount}" />
+                                        <Span Text=" " />
+                                        <Span Text="{loc:Translate Routes_Landmarks}" />
+                                    </FormattedString>
+                                </Label.FormattedText>
+                            </Label>
                         </VerticalStackLayout>
                     </Border>
                 </DataTemplate>

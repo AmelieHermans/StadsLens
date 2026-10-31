@@ -2,6 +2,7 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
+             xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.RouteDetailPage"
              x:DataType="vm:IRouteDetailViewModel"
@@ -9,6 +10,7 @@
 
     <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
         <VerticalStackLayout Spacing="8">
+            <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
             <Label Text="{Binding SelectedRoute.Description}" />
             <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
         </VerticalStackLayout>
@@ -18,8 +20,10 @@
                 <DataTemplate x:DataType="models:Landmark">
                     <Grid ColumnDefinitions="*,Auto" Padding="0,8">
                         <Grid.GestureRecognizers>
+                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
+                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
                             <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteDetailViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType=vm:IRouteDetailViewModel}"
+                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteDetailViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding Name}" VerticalOptions="Center" />
@@ -30,8 +34,8 @@
         </CollectionView>
 
         <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="Center">
-            <Button Text="Kaart" Command="{Binding GoToMapCommand}" />
-            <Button Text="Scan gebouw" Command="{Binding GoToScanCommand}" />
+            <Button Text="{loc:Translate RouteDetail_Map}" Command="{Binding GoToMapCommand}" />
+            <Button Text="{loc:Translate RouteDetail_Scan}" Command="{Binding GoToScanCommand}" />
         </HorizontalStackLayout>
     </Grid>
 

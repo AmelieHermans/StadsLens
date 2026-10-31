@@ -28,6 +28,14 @@ public class UserRepository : IUserRepository
             .FirstOrDefaultAsync(u => u.Id == id);
     }
 
+    // SQL Server vergelijkt standaard hoofdletterongevoelig: "Kayn" en "kayn" zijn dezelfde naam.
+    public async Task<User?> GetByNameAsync(string name)
+    {
+        return await _context.Users
+            .AsNoTracking()
+            .FirstOrDefaultAsync(u => u.Name == name);
+    }
+
     public async Task<User> AddAsync(User user)
     {
         _context.Users.Add(user);
