@@ -29,6 +29,9 @@ public static class DependencyInjection
         services.AddHttpClient<ISpeechService, AzureSpeechService>();
         services.AddHttpClient<IImageRecognitionService, AzureCustomVisionService>();
 
+        // Een afbeelding maken duurt veel langer dan de standaardtimeout van 100 seconden toelaat.
+        services.AddHttpClient<IImageGenerationService, AzureImageGenerationService>(client => client.Timeout = TimeSpan.FromMinutes(5));
+
         return services;
     }
 }

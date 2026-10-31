@@ -98,6 +98,27 @@ public class LandmarksController : ControllerBase
         }
     }
 
+    // Tijdreis: een AI-impressie van het gebouw in het verleden of in een mogelijke toekomst.
+    // De foto van de scan is optioneel; zonder foto werkt de AI enkel met de beschrijving.
+    [HttpPost("{id:int}/timetravel/{era}")]
+    [RequestSizeLimit(MaxImageSize)]
+    public async Task<IActionResult> GetTimeTravelImage(int id, string era, IFormFile? image = null, CancellationToken cancellationToken = default)
+    {
+        if (!TimeTravelEras.IsSupported(era))
+            return BadRequest(new { message = $"Tijdperk '{era}' wordt niet ondersteund. Gebruik '{TimeTravelEras.Past}' of '{TimeTravelEras.Future}'." });
+
+        try
+        {
+            await using var photo = image?.OpenReadStream();
+            var result = await _landmarkService.GetTimeTravelImageAsync(id, era, photo, image?.FileName, cancellationToken);
+            return result is null ? NotFound() : File(result, "image/png");
+        }
+        catch (Exception exception) when (exception is HttpRequestException or InvalidOperationException)
+        {
+            return StatusCode(StatusCodes.Status502BadGateway, new { message = $"De afbeelding maken is mislukt: {exception.Message}" });
+        }
+    }
+
     private BadRequestObjectResult UnsupportedLanguage(string language) =>
         BadRequest(new { message = $"Taal '{language}' wordt niet ondersteund. Gebruik {string.Join(", ", Languages.All.Select(code => $"'{code}'"))}." });
 }

@@ -90,4 +90,16 @@
   <data name="RouteCreate_ChooseSuggestion" xml:space="preserve"><value>Recherchez une adresse et choisissez une suggestion, ou activez « Position actuelle ».</value></data>
   <data name="RouteCreate_Calculating" xml:space="preserve"><value>Calcul de l'itinéraire...</value></data>
   <data name="RouteCreate_Summary" xml:space="preserve"><value>Distance réelle : {0:F2} km · Durée estimée : {1:hh\:mm} · {2} sites</value></data>
+  <data name="Landmark_TimeTravel" xml:space="preserve"><value>Voyager dans le temps</value></data>
+  <data name="TimeTravel_Title" xml:space="preserve"><value>Voyager dans le temps</value></data>
+  <data name="TimeTravel_Hint" xml:space="preserve"><value>Glissez vers la gauche pour le passé, vers la droite pour un avenir possible.</value></data>
+  <data name="TimeTravel_Past" xml:space="preserve"><value>Passé</value></data>
+  <data name="TimeTravel_Today" xml:space="preserve"><value>Aujourd'hui</value></data>
+  <data name="TimeTravel_Future" xml:space="preserve"><value>Avenir</value></data>
+  <data name="TimeTravel_EraPast" xml:space="preserve"><value>Le passé : impression par IA, pas une vraie photo</value></data>
+  <data name="TimeTravel_EraToday" xml:space="preserve"><value>Aujourd'hui</value></data>
+  <data name="TimeTravel_EraFuture" xml:space="preserve"><value>Un avenir possible : impression par IA, personne ne sait ce qu'il en sera vraiment</value></data>
+  <data name="TimeTravel_NoPhoto" xml:space="preserve"><value>Scannez ce bâtiment pour utiliser votre propre photo comme point de départ.</value></data>
+  <data name="TimeTravel_Loading" xml:space="preserve"><value>L'IA crée les images, cela peut prendre un moment...</value></data>
+  <data name="TimeTravel_Retry" xml:space="preserve"><value>Réessayer</value></data>
 </root>

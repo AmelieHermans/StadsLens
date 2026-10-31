@@ -90,4 +90,16 @@
   <data name="RouteCreate_ChooseSuggestion" xml:space="preserve"><value>Suche eine Adresse und wähle einen Vorschlag, oder aktiviere „Aktueller Standort“.</value></data>
   <data name="RouteCreate_Calculating" xml:space="preserve"><value>Wanderroute wird berechnet...</value></data>
   <data name="RouteCreate_Summary" xml:space="preserve"><value>Tatsächliche Gehstrecke: {0:F2} km · Geschätzte Zeit: {1:hh\:mm} · {2} Sehenswürdigkeiten</value></data>
+  <data name="Landmark_TimeTravel" xml:space="preserve"><value>Durch die Zeit reisen</value></data>
+  <data name="TimeTravel_Title" xml:space="preserve"><value>Durch die Zeit reisen</value></data>
+  <data name="TimeTravel_Hint" xml:space="preserve"><value>Nach links für die Vergangenheit, nach rechts für eine mögliche Zukunft.</value></data>
+  <data name="TimeTravel_Past" xml:space="preserve"><value>Vergangenheit</value></data>
+  <data name="TimeTravel_Today" xml:space="preserve"><value>Heute</value></data>
+  <data name="TimeTravel_Future" xml:space="preserve"><value>Zukunft</value></data>
+  <data name="TimeTravel_EraPast" xml:space="preserve"><value>Die Vergangenheit: KI-Eindruck, kein echtes Foto</value></data>
+  <data name="TimeTravel_EraToday" xml:space="preserve"><value>Heute</value></data>
+  <data name="TimeTravel_EraFuture" xml:space="preserve"><value>Eine mögliche Zukunft: KI-Eindruck, niemand weiß, wie es wirklich wird</value></data>
+  <data name="TimeTravel_NoPhoto" xml:space="preserve"><value>Scanne dieses Gebäude, um dein eigenes Foto als Ausgangspunkt zu verwenden.</value></data>
+  <data name="TimeTravel_Loading" xml:space="preserve"><value>Die KI erstellt die Bilder, das kann etwas dauern...</value></data>
+  <data name="TimeTravel_Retry" xml:space="preserve"><value>Erneut versuchen</value></data>
 </root>

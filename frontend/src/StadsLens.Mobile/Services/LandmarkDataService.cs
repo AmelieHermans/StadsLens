@@ -55,4 +55,28 @@ public class LandmarkDataService : ApiService<Landmark>, ILandmarkDataService
         response.EnsureSuccessStatusCode();
         return await response.Content.ReadAsByteArrayAsync();
     }
+
+    public async Task<string> GetTimeTravelImageAsync(int id, string era, string? photoPath)
+    {
+        // Elke afbeelding kost geld en tijd, dus bewaren we ze op het toestel en vragen we ze maar één keer op.
+        // De naam van de bronfoto hoort erbij: een nieuwe scan moet nieuwe beelden geven die op die foto passen.
+        var source = photoPath is null ? string.Empty : $"_{Path.GetFileNameWithoutExtension(photoPath)}";
+        var imagePath = Path.Combine(FileSystem.CacheDirectory, $"timetravel_{id}_{era}{source}.png");
+        if (File.Exists(imagePath))
+            return imagePath;
+
+        using var content = new MultipartFormDataContent();
+        content.Add(new StringContent(era), "era");
+
+        await using FileStream? photo = photoPath is null ? null : File.OpenRead(photoPath);
+        if (photo is not null)
+            content.Add(new StreamContent(photo), "image", Path.GetFileName(photoPath)!);
+
+        using HttpResponseMessage response = await _httpClient.PostAsync($"{_endpoint}/{id}/timetravel/{era}", content);
+        if (!response.IsSuccessStatusCode)
+            throw new InvalidOperationException(await ReadErrorMessageAsync(response, "De afbeelding maken is mislukt"));
+
+        await File.WriteAllBytesAsync(imagePath, await response.Content.ReadAsByteArrayAsync());
+        return imagePath;
+    }
 }

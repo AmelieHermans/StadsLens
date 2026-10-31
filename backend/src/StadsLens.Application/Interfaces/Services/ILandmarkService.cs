@@ -15,4 +15,8 @@ public interface ILandmarkService
 
     // De geschiedenis voorgelezen als mp3, of null als de landmark niet bestaat.
     Task<byte[]?> GetHistoryAudioAsync(int id, string language = Languages.Default, CancellationToken cancellationToken = default);
+
+    // Een AI-impressie van het gebouw in dit tijdperk (png), of null als de landmark niet bestaat.
+    // Met een foto vertrekt de AI van die foto, anders enkel van de beschrijving.
+    Task<byte[]?> GetTimeTravelImageAsync(int id, string era, Stream? photo, string? fileName, CancellationToken cancellationToken = default);
 }

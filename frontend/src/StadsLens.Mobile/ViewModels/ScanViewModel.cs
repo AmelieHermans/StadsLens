@@ -149,6 +149,7 @@ public class ScanViewModel : BaseViewModel, IScanViewModel
                 return;
             }
 
+            _userSession.SetScanPhoto(recognition.Landmark.Id, photo.FullPath);
             RecognizedLandmark = recognition.Landmark;
             ResultText = Text("Scan_Recognized", recognition.Landmark.Name, recognition.Probability);
 

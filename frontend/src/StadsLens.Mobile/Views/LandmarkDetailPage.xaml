@@ -52,6 +52,9 @@
 
             <Button Text="{Binding ReadAloudText}" Command="{Binding ReadAloudCommand}"
                     IsVisible="{Binding CanViewHistory}" HorizontalOptions="Start" />
+
+            <Button Text="{loc:Translate Landmark_TimeTravel}" Command="{Binding GoToTimeTravelCommand}"
+                    IsVisible="{Binding CanViewHistory}" HorizontalOptions="Start" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

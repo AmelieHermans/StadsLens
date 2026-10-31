@@ -9,7 +9,7 @@ public interface IMapViewModel : IBaseViewModel
     string DistanceKm { get; set; }
     string StartLatitude { get; set; }
     string StartLongitude { get; set; }
-    WebViewSource MapSource { get; set; }
+    string MapHtml { get; set; }
     string ResultSummary { get; set; }
     string VisitedLegendText { get; }
     string NotVisitedLegendText { get; }

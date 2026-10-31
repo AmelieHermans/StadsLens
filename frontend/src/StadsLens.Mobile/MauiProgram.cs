@@ -52,7 +52,10 @@ public static class MauiProgram
         {
             var httpClient = new HttpClient(new LanguageHandler(serviceProvider.GetRequiredService<IUserSessionService>()))
             {
-                BaseAddress = new Uri(ApiSettings.BaseUrl)
+                BaseAddress = new Uri(ApiSettings.BaseUrl),
+
+                // Een AI-afbeelding laten maken kan tot een paar minuten duren.
+                Timeout = TimeSpan.FromMinutes(5)
             };
 
             httpClient.DefaultRequestHeaders.Add(
@@ -70,6 +73,7 @@ public static class MauiProgram
         services.AddSingleton<IVisitDataService, VisitDataService>();
         services.AddSingleton(AudioManager.Current);
         services.AddSingleton(MediaPicker.Default);
+        services.AddSingleton(Geolocation.Default);
 
         // Nieuwe service voor het genereren van wandelroutes
         services.AddTransient<IRoutingService, RoutingService>();
@@ -85,6 +89,7 @@ public static class MauiProgram
         services.AddTransient<IMapViewModel, MapViewModel>();
         services.AddTransient<IScanViewModel, ScanViewModel>();
         services.AddTransient<ILandmarkDetailViewModel, LandmarkDetailViewModel>();
+        services.AddTransient<ITimeTravelViewModel, TimeTravelViewModel>();
         services.AddTransient<IVisitsViewModel, VisitsViewModel>();
         services.AddTransient<ISettingsViewModel, SettingsViewModel>();
         services.AddTransient<IRouteCreateViewModel, RouteCreateViewModel>();
@@ -106,6 +111,7 @@ public static class MauiProgram
 
         services.AddTransient<ScanPage>();
         services.AddTransient<LandmarkDetailPage>();
+        services.AddTransient<TimeTravelPage>();
         services.AddTransient<VisitsPage>();
         services.AddTransient<SettingsPage>();
     }

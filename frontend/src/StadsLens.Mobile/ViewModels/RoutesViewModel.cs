@@ -19,8 +19,26 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
     private string selectedStatus = "all";
     private string searchText = string.Empty;
 
-    public ObservableCollection<Route> Routes { get => routes; set => SetProperty(ref routes, value); }
-    public ObservableCollection<Route> VisibleRoutes { get => visibleRoutes; private set => SetProperty(ref visibleRoutes, value); }
+    public ObservableCollection<Route> Routes
+    {
+        get => routes;
+        set => SetProperty(ref routes, value);
+    }
+
+    public ObservableCollection<Route> VisibleRoutes
+    {
+        get => visibleRoutes;
+        private set => SetProperty(ref visibleRoutes, value);
+    }
+
+    private Route? selectedRoute;
+
+    public Route? SelectedRoute
+    {
+        get => selectedRoute;
+        set => SetProperty(ref selectedRoute, value);
+    }
+
     public bool ShowStatusFilter => Routes.Count > 4;
     public string SearchText
     {
@@ -47,9 +65,28 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
         _navigationService = navigationService;
         BindCommands();
         LoadRoutesCommand.Execute(null);
-        Messenger.Register<RoutesViewModel, LanguageChangedMessage>(this, (r, _) => { OnPropertyChanged(nameof(AllStatusText)); OnPropertyChanged(nameof(InProgressStatusText)); OnPropertyChanged(nameof(CompletedStatusText)); LoadRoutesCommand.Execute(null); });
-        Messenger.Register<RoutesViewModel, VisitRegisteredMessage>(this, (r, _) => r.LoadRoutesCommand.Execute(null));
-        Messenger.Register<RoutesViewModel, UserLoggedInMessage>(this, (r, _) => r.LoadRoutesCommand.Execute(null));
+
+        Messenger.Register<RoutesViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
+        Messenger.Register<RoutesViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+        Messenger.Register<RoutesViewModel, UserLoggedInMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    public void Receive(LanguageChangedMessage message)
+    {
+        OnPropertyChanged(nameof(AllStatusText));
+        OnPropertyChanged(nameof(InProgressStatusText));
+        OnPropertyChanged(nameof(CompletedStatusText));
+        LoadRoutesCommand.Execute(null);
+    }
+
+    public void Receive(VisitRegisteredMessage message)
+    {
+        LoadRoutesCommand.Execute(null);
+    }
+
+    public void Receive(UserLoggedInMessage message)
+    {
+        LoadRoutesCommand.Execute(null);
     }
 
     private async Task LoadRoutesAsync()
@@ -94,9 +131,15 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
 
     private void SelectStatus(string? status) { if (!string.IsNullOrWhiteSpace(status)) SelectedStatus = status; }
 
-    private async Task GoToRouteDetailAsync(Route? route)
+    private async Task GoToRouteDetailAsync()
     {
-        if (route is null) return;
+        var route = SelectedRoute;
+        if (route is null)
+            return;
+
+        // Selectie meteen wissen, anders opent een tweede tik op dezelfde route niets meer.
+        SelectedRoute = null;
+
         await _navigationService.NavigateToRouteDetailPageAsync();
         WeakReferenceMessenger.Default.Send(new RouteSelectedMessage(route));
     }
@@ -112,7 +155,7 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
     private void BindCommands()
     {
         LoadRoutesCommand = new AsyncRelayCommand(LoadRoutesAsync);
-        GoToRouteDetailCommand = new AsyncRelayCommand<Route>(GoToRouteDetailAsync);
+        GoToRouteDetailCommand = new AsyncRelayCommand(GoToRouteDetailAsync);
         SelectStatusCommand = new RelayCommand<string>(SelectStatus);
     }
 }
