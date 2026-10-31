@@ -21,4 +21,5 @@ public class Landmark
 
     // Enkel in de app: wordt ingevuld op basis van de bezoeken van de gebruiker.
     public bool IsVisited { get; set; }
+    public int VisitCount { get; set; }
 }

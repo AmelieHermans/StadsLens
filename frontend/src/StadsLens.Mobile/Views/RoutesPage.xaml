@@ -9,16 +9,24 @@
              Title="{loc:Translate Routes_Title}">
 
     <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsRefreshing}">
-        <CollectionView ItemsSource="{Binding Routes}" SelectionMode="None">
+        <CollectionView ItemsSource="{Binding VisibleRoutes}" SelectionMode="None">
             <CollectionView.Header>
-                <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Margin="16,8,16,0" />
+                <VerticalStackLayout Spacing="8" Margin="16,8,16,0">
+                    <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
+                    <Entry Text="{Binding SearchText}" Placeholder="{loc:Translate Routes_SearchPlaceholder}" ClearButtonVisibility="WhileEditing" />
+                    <HorizontalStackLayout IsVisible="{Binding ShowStatusFilter}" Spacing="4" HorizontalOptions="Center">
+                        <Button Text="{Binding AllStatusText}" Command="{Binding SelectStatusCommand}" CommandParameter="all" />
+                        <Button Text="{Binding InProgressStatusText}" Command="{Binding SelectStatusCommand}" CommandParameter="progress" />
+                        <Button Text="{Binding CompletedStatusText}" Command="{Binding SelectStatusCommand}" CommandParameter="complete" />
+                    </HorizontalStackLayout>
+                </VerticalStackLayout>
             </CollectionView.Header>
             <CollectionView.EmptyView>
                 <Label Text="{loc:Translate Routes_Empty}" HorizontalOptions="Center" Margin="24" />
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Route">
-                    <Border Margin="16,8" Padding="16">
+                    <Border Margin="16,8" Padding="0" Stroke="#D7DFEA" StrokeThickness="1">
                         <Border.GestureRecognizers>
                             <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
                                  even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
@@ -26,19 +34,19 @@
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Border.GestureRecognizers>
-                        <VerticalStackLayout Spacing="4">
-                            <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
-                            <Label Text="{Binding Description}" />
-                            <Label FontSize="12">
-                                <Label.FormattedText>
-                                    <FormattedString>
-                                        <Span Text="{Binding LandmarkCount}" />
-                                        <Span Text=" " />
-                                        <Span Text="{loc:Translate Routes_Landmarks}" />
-                                    </FormattedString>
-                                </Label.FormattedText>
-                            </Label>
-                        </VerticalStackLayout>
+                        <Grid ColumnDefinitions="*,120" HeightRequest="160" ColumnSpacing="0">
+                            <VerticalStackLayout Grid.Column="0" Padding="16,10" Spacing="5" VerticalOptions="Center">
+                                <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />
+                                <Label Text="{Binding Description}" LineBreakMode="TailTruncation" MaxLines="2" />
+                                <Grid ColumnDefinitions="*,Auto">
+                                    <Label Text="{Binding ProgressText}" FontSize="13" VerticalOptions="Center" />
+                                    <Label Grid.Column="1" Text="✓" TextColor="#16834A" FontSize="18" FontAttributes="Bold" IsVisible="{Binding IsComplete}" />
+                                </Grid>
+                                <ProgressBar Progress="{Binding Progress}" ProgressColor="#1464F4" />
+                                <Label FontSize="12" Text="{Binding LandmarkCount, StringFormat='{0} bezienswaardigheden'}" />
+                            </VerticalStackLayout>
+                            <Image Grid.Column="1" Source="{Binding ImageUrl}" Aspect="AspectFill" />
+                        </Grid>
                     </Border>
                 </DataTemplate>
             </CollectionView.ItemTemplate>

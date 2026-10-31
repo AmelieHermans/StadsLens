@@ -9,4 +9,11 @@ public partial class RoutesPage : ContentPage
         InitializeComponent();
         BindingContext = viewModel;
     }
+
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+        if (BindingContext is IRoutesViewModel viewModel)
+            viewModel.LoadRoutesCommand.Execute(null);
+    }
 }

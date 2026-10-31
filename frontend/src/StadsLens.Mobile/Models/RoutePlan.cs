@@ -14,4 +14,4 @@ public class RoutePlan
     public List<RouteLandmark> Landmarks { get; set; } = [];
 }
 public class RouteCoordinate { public double Latitude { get; set; } public double Longitude { get; set; } }
-public class RouteLandmark { public int Id { get; set; } public string Name { get; set; } = string.Empty; public double Latitude { get; set; } public double Longitude { get; set; } }
+public class RouteLandmark { public int Id { get; set; } public string Name { get; set; } = string.Empty; public double Latitude { get; set; } public double Longitude { get; set; } public int OrderInRoute { get; set; } }

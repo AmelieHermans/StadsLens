@@ -29,11 +29,23 @@
   <data name="Routes_Title" xml:space="preserve"><value>Itinéraires à pied</value></data>
   <data name="Routes_Empty" xml:space="preserve"><value>Aucun itinéraire trouvé.</value></data>
   <data name="Routes_Landmarks" xml:space="preserve"><value>sites</value></data>
+  <data name="Routes_FilterAll" xml:space="preserve"><value>Toutes</value></data>
+  <data name="Routes_FilterInProgress" xml:space="preserve"><value>En cours</value></data>
+  <data name="Routes_FilterCompleted" xml:space="preserve"><value>Terminées</value></data>
+  <data name="Routes_SearchPlaceholder" xml:space="preserve"><value>Rechercher un nom ou une description</value></data>
+  <data name="RouteDetail_Progress" xml:space="preserve"><value>{0}/{1} visitées</value></data>
+  <data name="RouteDetail_Start" xml:space="preserve"><value>Commencer l’itinéraire</value></data>
+  <data name="RouteDetail_Continue" xml:space="preserve"><value>Continuer</value></data>
+  <data name="RouteDetail_WalkAgain" xml:space="preserve"><value>Refaire la balade</value></data>
+  <data name="RouteDetail_OpenMap" xml:space="preserve"><value>Ouvrir la carte</value></data>
+  <data name="Landmark_VisitCount" xml:space="preserve"><value>{0} visites</value></data>
+  <data name="Landmark_ScanToUnlock" xml:space="preserve"><value>Scannez ce bâtiment pour débloquer son histoire.</value></data>
+  <data name="Landmark_ScanThis" xml:space="preserve"><value>Scanner ce bâtiment</value></data>
   <data name="RouteDetail_Map" xml:space="preserve"><value>Carte</value></data>
   <data name="RouteDetail_Scan" xml:space="preserve"><value>Scanner un bâtiment</value></data>
   <data name="Visits_Empty" xml:space="preserve"><value>Vous n'avez encore visité aucun site.</value></data>
   <data name="Landmark_Title" xml:space="preserve"><value>Site</value></data>
-  <data name="Landmark_Visited" xml:space="preserve"><value>✔ Visité</value></data>
+  <data name="Landmark_Visited" xml:space="preserve"><value>Visité</value></data>
   <data name="Landmark_MarkVisited" xml:space="preserve"><value>Marquer comme visité</value></data>
   <data name="Landmark_ReadAloud" xml:space="preserve"><value>Lire à voix haute</value></data>
   <data name="Landmark_Stop" xml:space="preserve"><value>Arrêter</value></data>
@@ -62,6 +74,10 @@
   <data name="Map_LocationUnknown" xml:space="preserve"><value>Votre position actuelle n'a pas pu être déterminée.</value></data>
   <data name="Map_InvalidDistance" xml:space="preserve"><value>Saisissez une distance valide en kilomètres.</value></data>
   <data name="Map_RouteFailed" xml:space="preserve"><value>L'itinéraire n'a pas pu être créé.</value></data>
+  <data name="Map_VisitedLegend" xml:space="preserve"><value>Visité</value></data>
+  <data name="Map_NotVisitedLegend" xml:space="preserve"><value>À visiter</value></data>
+  <data name="Map_VisitedPopup" xml:space="preserve"><value>Visité</value></data>
+  <data name="Map_NotVisitedPopup" xml:space="preserve"><value>À visiter</value></data>
   <data name="RouteCreate_Header" xml:space="preserve"><value>Créez votre propre itinéraire à pied</value></data>
   <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Utiliser la position actuelle</value></data>
   <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Recherchez une rue, une adresse ou un lieu...</value></data>

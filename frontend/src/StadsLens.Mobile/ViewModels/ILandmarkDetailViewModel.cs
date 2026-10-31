@@ -9,12 +9,14 @@ public interface ILandmarkDetailViewModel : IBaseViewModel
     bool HasImage { get; }
     bool IsVisited { get; set; }
     bool IsNotVisited { get; }
+    bool CanViewHistory { get; }
+    string VisitCountText { get; }
     bool IsPlaying { get; set; }
     string ReadAloudText { get; }
     string TranslationWarning { get; set; }
     bool HasTranslationWarning { get; }
 
     ICommand ReadAloudCommand { get; set; }
-    ICommand RegisterVisitCommand { get; set; }
     ICommand GoBackCommand { get; set; }
+    ICommand ScanThisCommand { get; set; }
 }

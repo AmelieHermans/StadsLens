@@ -88,6 +88,7 @@ public static class MauiProgram
 
         // Bestaande kaartpagina
         services.AddTransient<MapPage>();
+        services.AddTransient<RouteMapPage>();
 
         // Nieuwe pagina Route maken
         services.AddTransient<RouteCreatePage>();
