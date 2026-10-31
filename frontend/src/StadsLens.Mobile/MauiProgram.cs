@@ -5,6 +5,10 @@ using StadsLens.Mobile.Constants;
 using StadsLens.Mobile.Services;
 using StadsLens.Mobile.ViewModels;
 using StadsLens.Mobile.Views;
+#if WINDOWS
+using Microsoft.Maui.Handlers;
+using StadsLens.Mobile.Behaviors;
+#endif
 
 namespace StadsLens.Mobile;
 
@@ -13,6 +17,13 @@ public static class MauiProgram
     public static MauiApp CreateMauiApp()
     {
         var builder = MauiApp.CreateBuilder();
+
+#if WINDOWS
+        ButtonHandler.Mapper.AppendToMapping("HandCursor", (handler, view) =>
+            HandCursorBehavior.SetHandCursor(handler.PlatformView, view.IsEnabled));
+        SwitchHandler.Mapper.AppendToMapping("HandCursor", (handler, view) =>
+            HandCursorBehavior.SetHandCursor(handler.PlatformView, view.IsEnabled));
+#endif
 
         builder
             .UseMauiApp<App>()

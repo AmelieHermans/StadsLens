@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+             xmlns:behaviors="clr-namespace:StadsLens.Mobile.Behaviors"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.RouteDetailPage"
              x:DataType="vm:IRouteDetailViewModel"
@@ -35,6 +36,9 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Landmark">
                     <Grid ColumnDefinitions="*,Auto,Auto" Padding="0,9">
+                        <Grid.Behaviors>
+                            <behaviors:HandCursorBehavior />
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteDetailViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType={x:Null}}"

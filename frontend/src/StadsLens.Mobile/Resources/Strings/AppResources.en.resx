@@ -81,7 +81,7 @@
   <data name="RouteCreate_Header" xml:space="preserve"><value>Create your own walking route</value></data>
   <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Use current location</value></data>
   <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Search for a street, address or place...</value></data>
-  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Distance in km</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Distance</value></data>
   <data name="RouteCreate_Generate" xml:space="preserve"><value>Generate route</value></data>
   <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Choose a starting point and the desired distance.</value></data>
   <data name="RouteCreate_Locating" xml:space="preserve"><value>Determining location...</value></data>

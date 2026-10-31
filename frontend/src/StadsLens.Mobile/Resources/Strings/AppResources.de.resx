@@ -81,7 +81,7 @@
   <data name="RouteCreate_Header" xml:space="preserve"><value>Erstelle deine eigene Wanderroute</value></data>
   <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Aktuellen Standort verwenden</value></data>
   <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Suche eine Straße, Adresse oder einen Ort...</value></data>
-  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Entfernung in km</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Entfernung</value></data>
   <data name="RouteCreate_Generate" xml:space="preserve"><value>Route generieren</value></data>
   <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Wähle einen Startpunkt und die gewünschte Entfernung.</value></data>
   <data name="RouteCreate_Locating" xml:space="preserve"><value>Standort wird bestimmt...</value></data>

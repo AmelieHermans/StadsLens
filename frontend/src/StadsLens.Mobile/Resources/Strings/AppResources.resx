@@ -81,7 +81,7 @@
   <data name="RouteCreate_Header" xml:space="preserve"><value>Maak je eigen wandelroute</value></data>
   <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Huidige locatie gebruiken</value></data>
   <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Zoek een straat, adres of plaats...</value></data>
-  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Afstand in km</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Afstand</value></data>
   <data name="RouteCreate_Generate" xml:space="preserve"><value>Genereer route</value></data>
   <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Kies een startlocatie en gewenste afstand.</value></data>
   <data name="RouteCreate_Locating" xml:space="preserve"><value>Locatie bepalen...</value></data>

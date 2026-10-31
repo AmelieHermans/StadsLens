@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+             xmlns:behaviors="clr-namespace:StadsLens.Mobile.Behaviors"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.RoutesPage"
              x:DataType="vm:IRoutesViewModel"
@@ -27,6 +28,9 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Route">
                     <Border Margin="16,8" Padding="0" Stroke="#D7DFEA" StrokeThickness="1">
+                        <Border.Behaviors>
+                            <behaviors:HandCursorBehavior />
+                        </Border.Behaviors>
                         <Border.GestureRecognizers>
                             <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
                                  even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
