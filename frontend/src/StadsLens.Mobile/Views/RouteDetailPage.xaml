@@ -3,40 +3,55 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+             xmlns:behaviors="clr-namespace:StadsLens.Mobile.Behaviors"
              xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.RouteDetailPage"
              x:DataType="vm:IRouteDetailViewModel"
              Title="{Binding Title}">
 
-    <Grid RowDefinitions="Auto,*,Auto" Padding="16" RowSpacing="12">
-        <VerticalStackLayout Spacing="8">
+    <Grid RowDefinitions="Auto,150,Auto,*,Auto" Padding="16" RowSpacing="10">
+        <VerticalStackLayout Spacing="4">
             <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
             <Label Text="{Binding SelectedRoute.Description}" />
             <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
         </VerticalStackLayout>
 
-        <CollectionView Grid.Row="1" ItemsSource="{Binding Landmarks}" SelectionMode="None">
+        <Border Grid.Row="1" Stroke="#D7DFEA" StrokeShape="RoundRectangle 12" Padding="0">
+            <Grid>
+                <WebView Source="{Binding MapPreviewSource}" />
+                <Button Text="{loc:Translate RouteDetail_OpenMap}" Command="{Binding GoToMapCommand}"
+                        HorizontalOptions="End" VerticalOptions="Start" Margin="6" />
+            </Grid>
+        </Border>
+
+        <VerticalStackLayout Grid.Row="2" Spacing="3">
+            <Grid ColumnDefinitions="*,Auto">
+                <Label Text="{Binding ProgressText}" FontAttributes="Bold" />
+                <Label Grid.Column="1" Text="✓" TextColor="#16834A" FontSize="18" FontAttributes="Bold" IsVisible="{Binding IsRouteComplete}" />
+            </Grid>
+            <ProgressBar Progress="{Binding Progress}" ProgressColor="#1464F4" />
+        </VerticalStackLayout>
+
+        <CollectionView Grid.Row="3" ItemsSource="{Binding Landmarks}" SelectionMode="None">
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Landmark">
-                    <Grid ColumnDefinitions="*,Auto" Padding="0,8">
+                    <Grid ColumnDefinitions="*,Auto,Auto" Padding="0,9">
+                        <Grid.Behaviors>
+                            <behaviors:HandCursorBehavior />
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
-                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
-                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
                             <TapGestureRecognizer
                                 Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRouteDetailViewModel}}, Path=GoToLandmarkDetailCommand, x:DataType={x:Null}}"
                                 CommandParameter="{Binding .}" />
                         </Grid.GestureRecognizers>
                         <Label Text="{Binding Name}" VerticalOptions="Center" />
-                        <Label Grid.Column="1" Text="›" FontSize="20" VerticalOptions="Center" />
+                        <Label Grid.Column="1" Text="{Binding VisitCount, StringFormat='× {0}'}" FontSize="12" VerticalOptions="Center" Margin="0,0,12,0" />
+                        <Label Grid.Column="2" Text="✓" TextColor="#16834A" IsVisible="{Binding IsVisited}" VerticalOptions="Center" />
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
 
-        <HorizontalStackLayout Grid.Row="2" Spacing="12" HorizontalOptions="Center">
-            <Button Text="{loc:Translate RouteDetail_Map}" Command="{Binding GoToMapCommand}" />
-            <Button Text="{loc:Translate RouteDetail_Scan}" Command="{Binding GoToScanCommand}" />
-        </HorizontalStackLayout>
+        <Button Grid.Row="4" Text="{Binding PrimaryActionText}" Command="{Binding PrimaryRouteActionCommand}" />
     </Grid>
-
 </ContentPage>

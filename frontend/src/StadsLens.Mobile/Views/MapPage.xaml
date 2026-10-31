@@ -7,16 +7,20 @@
              x:DataType="vm:IMapViewModel"
              Title="{Binding Title}">
 
-    <Grid RowDefinitions="Auto,Auto,Auto,*,Auto,Auto" Padding="12" RowSpacing="8">
+    <Grid RowDefinitions="Auto,Auto,Auto,Auto,*,Auto,Auto" Padding="12" RowSpacing="8">
         <VerticalStackLayout Spacing="8">
             <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
             <Label Text="{Binding Title}" Style="{StaticResource Headline}" />
         </VerticalStackLayout>
         <HorizontalStackLayout Grid.Row="1" Spacing="8"><Entry Placeholder="{loc:Translate Map_Distance}" Text="{Binding DistanceKm}" Keyboard="Numeric" WidthRequest="140" /><Button Text="{loc:Translate Map_CurrentLocation}" Command="{Binding UseCurrentLocationCommand}" /></HorizontalStackLayout>
         <Label Grid.Row="2" Text="{Binding StartLatitude, StringFormat='Start: {0}'}" FontSize="12" />
-        <WebView Grid.Row="3" Source="{Binding MapSource}" />
-        <VerticalStackLayout Grid.Row="4" Spacing="4"><Label Text="{Binding ResultSummary}" /><Button Text="{loc:Translate Map_CreateRoute}" Command="{Binding CreateRouteCommand}" IsEnabled="{Binding IsNotBusy}" /></VerticalStackLayout>
-        <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Grid.Row="5" />
+        <HorizontalStackLayout Grid.Row="3" Spacing="16" HorizontalOptions="Center">
+            <HorizontalStackLayout Spacing="5"><Ellipse WidthRequest="12" HeightRequest="12" Fill="#16834A" /><Label Text="{Binding VisitedLegendText}" FontSize="12" VerticalOptions="Center" /></HorizontalStackLayout>
+            <HorizontalStackLayout Spacing="5"><Ellipse WidthRequest="12" HeightRequest="12" Fill="#1464F4" /><Label Text="{Binding NotVisitedLegendText}" FontSize="12" VerticalOptions="Center" /></HorizontalStackLayout>
+        </HorizontalStackLayout>
+        <WebView Grid.Row="4" Source="{Binding MapSource}" />
+        <VerticalStackLayout Grid.Row="5" Spacing="4"><Label Text="{Binding ResultSummary}" /><Button Text="{loc:Translate Map_CreateRoute}" Command="{Binding CreateRouteCommand}" IsEnabled="{Binding IsNotBusy}" /></VerticalStackLayout>
+        <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Grid.Row="6" />
     </Grid>
 
 </ContentPage>

@@ -8,28 +8,50 @@
              Title="{Binding Title}">
 
     <ScrollView>
-        <VerticalStackLayout Padding="16" Spacing="12">
-            <Button Text="{loc:Translate Common_Back}" Command="{Binding GoBackCommand}" Style="{StaticResource BackButton}" />
-            <Image Source="{Binding Landmark.ImageUrl}" Aspect="AspectFill" HeightRequest="200"
-                   IsVisible="{Binding HasImage}" />
+        <VerticalStackLayout Padding="20" Spacing="18">
+            <Button Text="{loc:Translate Common_Back}"
+                    Command="{Binding GoBackCommand}"
+                    Style="{StaticResource BackButton}" />
 
-            <Label Text="{Binding Landmark.Name}" Style="{StaticResource Headline}" />
+            <Border HeightRequest="220" StrokeThickness="0" StrokeShape="RoundRectangle 16"
+                    IsVisible="{Binding HasImage}">
+                <Image Source="{Binding Landmark.ImageUrl}" Aspect="AspectFill" />
+            </Border>
 
-            <Label Text="{loc:Translate Landmark_Visited}" TextColor="Green" FontAttributes="Bold" IsVisible="{Binding IsVisited}" />
+            <VerticalStackLayout Spacing="8">
+                <Label Text="{Binding Landmark.Name}" Style="{StaticResource Headline}" />
+                <Border HorizontalOptions="Start" Padding="10,5" StrokeThickness="0"
+                        BackgroundColor="#EAF5EE" StrokeShape="RoundRectangle 12"
+                        IsVisible="{Binding IsVisited}">
+                    <HorizontalStackLayout Spacing="6">
+                        <Label Text="✓" TextColor="#16834A" FontAttributes="Bold" />
+                        <Label Text="{loc:Translate Landmark_Visited}" TextColor="#16834A" FontAttributes="Bold" />
+                    </HorizontalStackLayout>
+                </Border>
+                <Label Text="{Binding VisitCountText}" FontSize="13" TextColor="Gray"
+                       IsVisible="{Binding IsVisited}" />
+            </VerticalStackLayout>
 
-            <Label Text="{Binding TranslationWarning}" TextColor="DarkOrange" IsVisible="{Binding HasTranslationWarning}" />
-
-            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
-
+            <Label Text="{Binding TranslationWarning}" TextColor="DarkOrange"
+                   IsVisible="{Binding HasTranslationWarning}" />
+            <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}"
+                   Style="{StaticResource ErrorText}" />
             <ActivityIndicator IsRunning="{Binding IsBusy}" IsVisible="{Binding IsBusy}" />
 
-            <Label Text="{Binding Landmark.History}" FontSize="16" LineHeight="1.3" />
+            <Border Padding="18" StrokeThickness="0" StrokeShape="RoundRectangle 14"
+                    BackgroundColor="{AppThemeBinding Light=#F4F5F6, Dark=#2B2B2B}"
+                    IsVisible="{Binding CanViewHistory}">
+                <Label Text="{Binding Landmark.History}" FontSize="16" LineHeight="1.35" />
+            </Border>
 
-            <HorizontalStackLayout Spacing="12">
-                <Button Text="{Binding ReadAloudText}" Command="{Binding ReadAloudCommand}" />
-                <Button Text="{loc:Translate Landmark_MarkVisited}" Command="{Binding RegisterVisitCommand}" IsVisible="{Binding IsNotVisited}" />
-            </HorizontalStackLayout>
+            <VerticalStackLayout Spacing="10" IsVisible="{Binding IsNotVisited}">
+                <Label Text="{loc:Translate Landmark_ScanToUnlock}" TextColor="Gray" />
+                <Button Text="{loc:Translate Landmark_ScanThis}"
+                        Command="{Binding ScanThisCommand}" />
+            </VerticalStackLayout>
+
+            <Button Text="{Binding ReadAloudText}" Command="{Binding ReadAloudCommand}"
+                    IsVisible="{Binding CanViewHistory}" HorizontalOptions="Start" />
         </VerticalStackLayout>
     </ScrollView>
-
 </ContentPage>

@@ -9,6 +9,7 @@ public interface INavigationService
     Task NavigateToMainPageAsync();
     Task NavigateToRouteDetailPageAsync();
     Task NavigateToMapPageAsync();
+    Task NavigateToRouteMapPageAsync();
     Task NavigateToScanPageAsync();
     Task NavigateToLandmarkDetailPageAsync();
     Task NavigateBackAsync();

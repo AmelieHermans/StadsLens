@@ -45,6 +45,11 @@ public class NavigationService : INavigationService
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<MapPage>());
     }
 
+    public async Task NavigateToRouteMapPageAsync()
+    {
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<RouteMapPage>());
+    }
+
     public async Task NavigateToScanPageAsync()
     {
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<ScanPage>());

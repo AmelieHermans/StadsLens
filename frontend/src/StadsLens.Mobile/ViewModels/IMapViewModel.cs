@@ -11,6 +11,8 @@ public interface IMapViewModel : IBaseViewModel
     string StartLongitude { get; set; }
     WebViewSource MapSource { get; set; }
     string ResultSummary { get; set; }
+    string VisitedLegendText { get; }
+    string NotVisitedLegendText { get; }
 
     ICommand UseCurrentLocationCommand { get; set; }
     ICommand CreateRouteCommand { get; set; }

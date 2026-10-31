@@ -29,11 +29,23 @@
   <data name="Routes_Title" xml:space="preserve"><value>Wandelroutes</value></data>
   <data name="Routes_Empty" xml:space="preserve"><value>Geen routes gevonden.</value></data>
   <data name="Routes_Landmarks" xml:space="preserve"><value>bezienswaardigheden</value></data>
+  <data name="Routes_FilterAll" xml:space="preserve"><value>Alle</value></data>
+  <data name="Routes_FilterInProgress" xml:space="preserve"><value>Bezig</value></data>
+  <data name="Routes_FilterCompleted" xml:space="preserve"><value>Voltooid</value></data>
+  <data name="Routes_SearchPlaceholder" xml:space="preserve"><value>Zoek op routenaam of beschrijving</value></data>
+  <data name="RouteDetail_Progress" xml:space="preserve"><value>{0}/{1} bezocht</value></data>
+  <data name="RouteDetail_Start" xml:space="preserve"><value>Start route</value></data>
+  <data name="RouteDetail_Continue" xml:space="preserve"><value>Ga verder</value></data>
+  <data name="RouteDetail_WalkAgain" xml:space="preserve"><value>Opnieuw wandelen</value></data>
+  <data name="RouteDetail_OpenMap" xml:space="preserve"><value>Open kaart</value></data>
+  <data name="Landmark_VisitCount" xml:space="preserve"><value>{0} bezoeken</value></data>
+  <data name="Landmark_ScanToUnlock" xml:space="preserve"><value>Scan dit gebouw om de geschiedenis te ontgrendelen.</value></data>
+  <data name="Landmark_ScanThis" xml:space="preserve"><value>Scan dit gebouw</value></data>
   <data name="RouteDetail_Map" xml:space="preserve"><value>Kaart</value></data>
   <data name="RouteDetail_Scan" xml:space="preserve"><value>Scan gebouw</value></data>
   <data name="Visits_Empty" xml:space="preserve"><value>Je hebt nog geen bezienswaardigheden bezocht.</value></data>
   <data name="Landmark_Title" xml:space="preserve"><value>Bezienswaardigheid</value></data>
-  <data name="Landmark_Visited" xml:space="preserve"><value>✔ Bezocht</value></data>
+  <data name="Landmark_Visited" xml:space="preserve"><value>Bezocht</value></data>
   <data name="Landmark_MarkVisited" xml:space="preserve"><value>Markeer als bezocht</value></data>
   <data name="Landmark_ReadAloud" xml:space="preserve"><value>Voorlezen</value></data>
   <data name="Landmark_Stop" xml:space="preserve"><value>Stop</value></data>
@@ -62,10 +74,14 @@
   <data name="Map_LocationUnknown" xml:space="preserve"><value>Je huidige locatie kon niet worden bepaald.</value></data>
   <data name="Map_InvalidDistance" xml:space="preserve"><value>Geef een geldige afstand in kilometers op.</value></data>
   <data name="Map_RouteFailed" xml:space="preserve"><value>De route kon niet worden gemaakt.</value></data>
+  <data name="Map_VisitedLegend" xml:space="preserve"><value>Bezocht</value></data>
+  <data name="Map_NotVisitedLegend" xml:space="preserve"><value>Nog te bezoeken</value></data>
+  <data name="Map_VisitedPopup" xml:space="preserve"><value>Bezocht</value></data>
+  <data name="Map_NotVisitedPopup" xml:space="preserve"><value>Nog te bezoeken</value></data>
   <data name="RouteCreate_Header" xml:space="preserve"><value>Maak je eigen wandelroute</value></data>
   <data name="RouteCreate_UseCurrentLocation" xml:space="preserve"><value>Huidige locatie gebruiken</value></data>
   <data name="RouteCreate_SearchPlaceholder" xml:space="preserve"><value>Zoek een straat, adres of plaats...</value></data>
-  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Afstand in km</value></data>
+  <data name="RouteCreate_DistancePlaceholder" xml:space="preserve"><value>Afstand</value></data>
   <data name="RouteCreate_Generate" xml:space="preserve"><value>Genereer route</value></data>
   <data name="RouteCreate_ChooseStart" xml:space="preserve"><value>Kies een startlocatie en gewenste afstand.</value></data>
   <data name="RouteCreate_Locating" xml:space="preserve"><value>Locatie bepalen...</value></data>

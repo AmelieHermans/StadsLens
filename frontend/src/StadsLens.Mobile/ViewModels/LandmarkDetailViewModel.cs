@@ -40,11 +40,17 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         set
         {
             if (SetProperty(ref isVisited, value))
+            {
                 OnPropertyChanged(nameof(IsNotVisited));
+                OnPropertyChanged(nameof(CanViewHistory));
+            }
         }
     }
 
     public bool IsNotVisited => !IsVisited;
+    public bool CanViewHistory => IsVisited;
+    public int VisitCount { get; private set; }
+    public string VisitCountText => Text("Landmark_VisitCount", VisitCount);
 
     private bool isPlaying;
 
@@ -75,8 +81,8 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
     public bool HasTranslationWarning => !string.IsNullOrEmpty(TranslationWarning);
 
     public ICommand ReadAloudCommand { get; set; } = null!;
-    public ICommand RegisterVisitCommand { get; set; } = null!;
     public ICommand GoBackCommand { get; set; } = null!;
+    public ICommand ScanThisCommand { get; set; } = null!;
 
     public LandmarkDetailViewModel(ILandmarkDataService landmarkDataService, IVisitDataService visitDataService, IUserSessionService userSession, IAudioManager audioManager, INavigationService navigationService)
     {
@@ -154,7 +160,12 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
             {
                 var visits = await _visitDataService.GetByUserAsync(_userSession.CurrentUser.Id);
                 IsVisited = visits.Any(visit => visit.LandmarkId == selected.Id);
+                VisitCount = visits.Count(visit => visit.LandmarkId == selected.Id);
             }
+            else { IsVisited = false; VisitCount = 0; }
+            OnPropertyChanged(nameof(CanViewHistory));
+            OnPropertyChanged(nameof(VisitCount));
+            OnPropertyChanged(nameof(VisitCountText));
         }
         catch (Exception ex)
         {
@@ -220,31 +231,6 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         player.Dispose();
     }
 
-    private async Task RegisterVisitAsync()
-    {
-        if (Landmark is null || _userSession.CurrentUser is null || IsVisited)
-            return;
-
-        try
-        {
-            var visit = await _visitDataService.CreateAsync(new Visit
-            {
-                UserId = _userSession.CurrentUser.Id,
-                LandmarkId = Landmark.Id
-            });
-
-            if (visit is not null)
-            {
-                IsVisited = true;
-                WeakReferenceMessenger.Default.Send(new VisitRegisteredMessage(visit));
-            }
-        }
-        catch (Exception ex)
-        {
-            ShowError(ex);
-        }
-    }
-
     // Eerst het voorlezen stoppen, anders praat de stem verder op de vorige pagina.
     private Task GoBackAsync()
     {
@@ -252,10 +238,12 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         return _navigationService.NavigateBackAsync();
     }
 
+    private Task ScanThisAsync() => _navigationService.NavigateToScanPageAsync();
+
     private void BindCommands()
     {
         GoBackCommand = new AsyncRelayCommand(GoBackAsync);
         ReadAloudCommand = new AsyncRelayCommand(ReadAloudAsync);
-        RegisterVisitCommand = new AsyncRelayCommand(RegisterVisitAsync);
+        ScanThisCommand = new AsyncRelayCommand(ScanThisAsync);
     }
 }

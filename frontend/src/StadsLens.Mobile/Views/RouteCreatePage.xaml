@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
     xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+             xmlns:behaviors="clr-namespace:StadsLens.Mobile.Behaviors"
     xmlns:models="clr-namespace:StadsLens.Mobile.Models"
     x:Class="StadsLens.Mobile.Views.RouteCreatePage"
     x:DataType="vm:IRouteCreateViewModel"
@@ -29,17 +30,28 @@
             ClearButtonVisibility="WhileEditing"
             ReturnType="Search" />
 
-        <Grid Grid.Row="3" ColumnDefinitions="130,*" ColumnSpacing="8">
-            <Entry
-                Placeholder="{loc:Translate RouteCreate_DistancePlaceholder}"
-                Text="{Binding DistanceKm}"
-                Keyboard="Numeric" />
+        <Grid Grid.Row="3" ColumnDefinitions="140,*" ColumnSpacing="10">
+            <Border Padding="8,0" Stroke="#D7DFEA" StrokeShape="RoundRectangle 8"
+                    VerticalOptions="Center" HeightRequest="48">
+                <Grid ColumnDefinitions="*,Auto" ColumnSpacing="8">
+                    <Entry Placeholder="{loc:Translate RouteCreate_DistancePlaceholder}"
+                           Text="{Binding DistanceKm}"
+                           Keyboard="Numeric"
+                           VerticalOptions="Center" />
+                    <Label Grid.Column="1" Text="km" FontAttributes="Bold" TextColor="Gray"
+                           VerticalOptions="Center" />
+                </Grid>
+            </Border>
 
             <Button
                 Grid.Column="1"
                 Text="{loc:Translate RouteCreate_Generate}"
                 Command="{Binding CreateRouteCommand}"
-                IsEnabled="{Binding IsNotBusy}" />
+                IsEnabled="{Binding IsNotBusy}"
+                FontSize="15"
+                FontAttributes="Bold"
+                Padding="18,12"
+                MinimumHeightRequest="50" />
         </Grid>
 
         <Grid Grid.Row="4">
@@ -69,6 +81,9 @@
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Landmark">
                     <Grid Padding="4,8" ColumnDefinitions="Auto,*,Auto" ColumnSpacing="8">
+                        <Grid.Behaviors>
+                            <behaviors:HandCursorBehavior />
+                        </Grid.Behaviors>
                         <Grid.GestureRecognizers>
                             <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
                                  even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
@@ -107,6 +122,9 @@
                 <CollectionView.ItemTemplate>
                     <DataTemplate x:DataType="models:LocationSuggestion">
                         <Grid Padding="12,10" ColumnDefinitions="Auto,*" ColumnSpacing="12">
+                            <Grid.Behaviors>
+                                <behaviors:HandCursorBehavior />
+                            </Grid.Behaviors>
                             <Label Text="📍" FontSize="18" VerticalOptions="Center" />
                             <Label Grid.Column="1" Text="{Binding Label}" VerticalOptions="Center" LineBreakMode="WordWrap" />
                         </Grid>
