@@ -3,6 +3,7 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:vm="clr-namespace:StadsLens.Mobile.ViewModels"
              xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+             xmlns:models="clr-namespace:StadsLens.Mobile.Models"
              x:Class="StadsLens.Mobile.Views.TimeTravelPage"
              x:DataType="vm:ITimeTravelViewModel"
              Title="{Binding Title}">
@@ -16,27 +17,30 @@
 
             <Label Text="{Binding Landmark.Name}" Style="{StaticResource Headline}" />
             <Label Text="{loc:Translate TimeTravel_Hint}" />
-            <Label Text="{loc:Translate TimeTravel_NoPhoto}" IsVisible="{Binding HasNoTodayImage}" FontSize="13" TextColor="Gray" />
+            <Label Text="{loc:Translate TimeTravel_NoHistory}" IsVisible="{Binding HasNoHistory}" FontSize="13" TextColor="Gray" />
         </VerticalStackLayout>
 
-        <!-- De drie beelden liggen op elkaar; de schuifregelaar bepaalt welk beeld doorschijnt. -->
         <Border Grid.Row="1" StrokeThickness="0" StrokeShape="RoundRectangle 16"
                     BackgroundColor="{AppThemeBinding Light=#F4F5F6, Dark=#2B2B2B}">
-            <Grid>
-                <Image Source="{Binding TodayImage}" Aspect="AspectFit" />
-                <Image Source="{Binding PastImage}" Aspect="AspectFit" Opacity="{Binding PastOpacity}" />
-                <Image Source="{Binding FutureImage}" Aspect="AspectFit" Opacity="{Binding FutureOpacity}" />
+            <!-- Alle beelden liggen op elkaar; de schuifregelaar bepaalt welk beeld doorschijnt. -->
+            <Grid BindableLayout.ItemsSource="{Binding Stops}">
+                <BindableLayout.ItemTemplate>
+                    <DataTemplate x:DataType="models:TimeTravelStop">
+                        <Image Source="{Binding Image}" Aspect="AspectFit" Opacity="{Binding Opacity}" />
+                    </DataTemplate>
+                </BindableLayout.ItemTemplate>
             </Grid>
         </Border>
 
         <VerticalStackLayout Grid.Row="2" Spacing="8">
-            <Label Text="{Binding EraText}" FontAttributes="Bold" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding CurrentDate}" FontAttributes="Bold" FontSize="22" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding CurrentCaption}" HorizontalTextAlignment="Center" />
+            <Label Text="{Binding CurrentCredit}" FontSize="12" TextColor="Gray" HorizontalTextAlignment="Center" />
 
-            <Slider Minimum="-1" Maximum="1" Value="{Binding SliderValue}" />
-            <Grid ColumnDefinitions="*,*,*">
+            <Slider Minimum="0" Maximum="{Binding SliderMaximum}" Value="{Binding SliderValue}" />
+            <Grid ColumnDefinitions="*,*">
                 <Label Text="{loc:Translate TimeTravel_Past}" FontSize="13" />
-                <Label Grid.Column="1" Text="{loc:Translate TimeTravel_Today}" FontSize="13" HorizontalTextAlignment="Center" />
-                <Label Grid.Column="2" Text="{loc:Translate TimeTravel_Future}" FontSize="13" HorizontalTextAlignment="End" />
+                <Label Grid.Column="1" Text="{loc:Translate TimeTravel_Future}" FontSize="13" HorizontalTextAlignment="End" />
             </Grid>
 
             <VerticalStackLayout Spacing="6" IsVisible="{Binding IsBusy}">

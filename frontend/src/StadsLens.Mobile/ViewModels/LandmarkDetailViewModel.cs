@@ -23,14 +23,22 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
     public Landmark? Landmark
     {
         get => landmark;
-        set
+        set => SetProperty(ref landmark, value);
+    }
+
+    private string? imagePath;
+
+    public string? ImagePath
+    {
+        get => imagePath;
+        private set
         {
-            if (SetProperty(ref landmark, value))
+            if (SetProperty(ref imagePath, value))
                 OnPropertyChanged(nameof(HasImage));
         }
     }
 
-    public bool HasImage => !string.IsNullOrWhiteSpace(Landmark?.ImageUrl);
+    public bool HasImage => ImagePath is not null;
 
     private bool isVisited;
 
@@ -177,6 +185,10 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
                 IsVisited = false;
                 VisitCount = 0;
             }
+
+            // Als laatste: zonder foto blijven de tekst en de bezoeken gewoon bruikbaar.
+            if (Landmark?.ImageUrl is not null)
+                ImagePath = await _landmarkDataService.GetImagePathAsync(Landmark.ImageUrl);
         }
         catch (Exception ex)
         {

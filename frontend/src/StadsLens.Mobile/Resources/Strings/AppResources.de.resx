@@ -92,14 +92,13 @@
   <data name="RouteCreate_Summary" xml:space="preserve"><value>Tatsächliche Gehstrecke: {0:F2} km · Geschätzte Zeit: {1:hh\:mm} · {2} Sehenswürdigkeiten</value></data>
   <data name="Landmark_TimeTravel" xml:space="preserve"><value>Durch die Zeit reisen</value></data>
   <data name="TimeTravel_Title" xml:space="preserve"><value>Durch die Zeit reisen</value></data>
-  <data name="TimeTravel_Hint" xml:space="preserve"><value>Nach links für die Vergangenheit, nach rechts für eine mögliche Zukunft.</value></data>
+  <data name="TimeTravel_Hint" xml:space="preserve"><value>Nach links weiter zurück in die Vergangenheit, nach rechts in eine mögliche Zukunft.</value></data>
   <data name="TimeTravel_Past" xml:space="preserve"><value>Vergangenheit</value></data>
-  <data name="TimeTravel_Today" xml:space="preserve"><value>Heute</value></data>
   <data name="TimeTravel_Future" xml:space="preserve"><value>Zukunft</value></data>
-  <data name="TimeTravel_EraPast" xml:space="preserve"><value>Die Vergangenheit: KI-Eindruck, kein echtes Foto</value></data>
   <data name="TimeTravel_EraToday" xml:space="preserve"><value>Heute</value></data>
   <data name="TimeTravel_EraFuture" xml:space="preserve"><value>Eine mögliche Zukunft: KI-Eindruck, niemand weiß, wie es wirklich wird</value></data>
-  <data name="TimeTravel_NoPhoto" xml:space="preserve"><value>Scanne dieses Gebäude, um dein eigenes Foto als Ausgangspunkt zu verwenden.</value></data>
-  <data name="TimeTravel_Loading" xml:space="preserve"><value>Die KI erstellt die Bilder, das kann etwas dauern...</value></data>
+  <data name="TimeTravel_NoHistory" xml:space="preserve"><value>Für dieses Gebäude haben wir kein historisches Bild mit gesichertem Motiv und Datum gefunden.</value></data>
+  <data name="TimeTravel_YourPhoto" xml:space="preserve"><value>Dein Foto</value></data>
+  <data name="TimeTravel_Loading" xml:space="preserve"><value>Bilder werden geladen und die KI-Zukunft wird erstellt, das kann etwas dauern...</value></data>
   <data name="TimeTravel_Retry" xml:space="preserve"><value>Erneut versuchen</value></data>
 </root>

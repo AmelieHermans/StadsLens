@@ -6,6 +6,7 @@ namespace StadsLens.Mobile.ViewModels;
 public interface ILandmarkDetailViewModel : IBaseViewModel
 {
     Landmark? Landmark { get; set; }
+    string? ImagePath { get; }
     bool HasImage { get; }
     bool IsVisited { get; set; }
     bool IsNotVisited { get; }

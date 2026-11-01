@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
@@ -9,12 +10,16 @@ namespace StadsLens.Mobile.ViewModels;
 
 public class TimeTravelViewModel : BaseViewModel, ITimeTravelViewModel
 {
-    private const string PastEra = "past";
-    private const string FutureEra = "future";
-
     private readonly ILandmarkDataService _landmarkDataService;
     private readonly IUserSessionService _userSession;
     private readonly INavigationService _navigationService;
+
+    private TimeTravelStop _today = new();
+    private TimeTravelStop _future = new();
+    private bool _historyLoaded;
+
+    // Op volgorde van de schuifregelaar: historische beelden (oud naar recent), vandaag, toekomst.
+    public ObservableCollection<TimeTravelStop> Stops { get; } = [];
 
     private Landmark? landmark;
 
@@ -22,36 +27,6 @@ public class TimeTravelViewModel : BaseViewModel, ITimeTravelViewModel
     {
         get => landmark;
         set => SetProperty(ref landmark, value);
-    }
-
-    private string? todayImage;
-
-    public string? TodayImage
-    {
-        get => todayImage;
-        set
-        {
-            if (SetProperty(ref todayImage, value))
-                OnPropertyChanged(nameof(HasNoTodayImage));
-        }
-    }
-
-    public bool HasNoTodayImage => TodayImage is null;
-
-    private string? pastImage;
-
-    public string? PastImage
-    {
-        get => pastImage;
-        set => SetProperty(ref pastImage, value);
-    }
-
-    private string? futureImage;
-
-    public string? FutureImage
-    {
-        get => futureImage;
-        set => SetProperty(ref futureImage, value);
     }
 
     private double sliderValue;
@@ -62,24 +37,36 @@ public class TimeTravelViewModel : BaseViewModel, ITimeTravelViewModel
         set
         {
             if (SetProperty(ref sliderValue, value))
-            {
-                OnPropertyChanged(nameof(PastOpacity));
-                OnPropertyChanged(nameof(FutureOpacity));
-                OnPropertyChanged(nameof(EraText));
-            }
+                OnStopChanged();
         }
     }
 
-    // De beelden liggen op elkaar: hoe verder de schuifregelaar staat, hoe meer dat tijdperk doorschijnt.
-    public double PastOpacity => Math.Max(0, -SliderValue);
-    public double FutureOpacity => Math.Max(0, SliderValue);
+    private double sliderMaximum = 1;
 
-    public string EraText => SliderValue switch
+    public double SliderMaximum
     {
-        <= -0.5 => Text("TimeTravel_EraPast"),
-        >= 0.5 => Text("TimeTravel_EraFuture"),
-        _ => Text("TimeTravel_EraToday")
-    };
+        get => sliderMaximum;
+        private set => SetProperty(ref sliderMaximum, value);
+    }
+
+    // De schuifregelaar loopt vloeiend; datum en bijschrift horen bij de dichtstbijzijnde stap.
+    private TimeTravelStop? CurrentStop
+    {
+        get
+        {
+            if (Stops.Count == 0)
+                return null;
+
+            return Stops[Math.Clamp((int)Math.Round(SliderValue), 0, Stops.Count - 1)];
+        }
+    }
+
+    public string CurrentDate => CurrentStop?.DateText ?? string.Empty;
+    public string CurrentCaption => CurrentStop?.Caption ?? string.Empty;
+    public string CurrentCredit => CurrentStop?.Credit ?? string.Empty;
+
+    // Enkel zeggen dat er geen beelden zijn als het ophalen ook echt gelukt is.
+    public bool HasNoHistory => _historyLoaded && Stops.Count == 2;
 
     public ICommand LoadImagesCommand { get; set; } = null!;
     public ICommand GoBackCommand { get; set; } = null!;
@@ -104,7 +91,26 @@ public class TimeTravelViewModel : BaseViewModel, ITimeTravelViewModel
 
         Landmark = message.Value;
         Title = message.Value.Name;
-        TodayImage = _userSession.GetScanPhoto(message.Value.Id) ?? message.Value.ImageUrl;
+
+        var scanPhoto = _userSession.GetScanPhoto(message.Value.Id);
+        _today = new TimeTravelStop
+        {
+            Image = scanPhoto,
+            DateText = Text("TimeTravel_EraToday"),
+            Credit = scanPhoto is not null ? Text("TimeTravel_YourPhoto") : message.Value.ImageCredit ?? string.Empty
+        };
+        _future = new TimeTravelStop
+        {
+            DateText = Text("TimeTravel_Future"),
+            Caption = Text("TimeTravel_EraFuture")
+        };
+
+        Stops.Clear();
+        Stops.Add(_today);
+        Stops.Add(_future);
+        SliderValue = 0;
+        OnStopChanged();
+
         LoadImagesCommand.Execute(null);
     }
 
@@ -118,21 +124,14 @@ public class TimeTravelViewModel : BaseViewModel, ITimeTravelViewModel
         try
         {
             IsBusy = true;
-            var photoPath = _userSession.GetScanPhoto(Landmark.Id);
-            var past = _landmarkDataService.GetTimeTravelImageAsync(Landmark.Id, PastEra, photoPath);
 
-            // Met een scanfoto vertrekken beide beelden van die foto en kunnen ze tegelijk gemaakt worden.
-            // Zonder foto vertrekt de toekomst van het verleden, anders passen de beelden niet op elkaar.
-            if (photoPath is null)
-            {
-                await ShowWhenReadyAsync(past, path => PastImage = path);
-                photoPath = PastImage;
-            }
+            // Mislukt één stap, dan blijven de andere gewoon bruikbaar.
+            await TryAsync(LoadHistoryAsync);
+            await TryAsync(LoadTodayAsync);
 
-            var future = _landmarkDataService.GetTimeTravelImageAsync(Landmark.Id, FutureEra, photoPath);
-
-            await ShowWhenReadyAsync(past, path => PastImage = path);
-            await ShowWhenReadyAsync(future, path => FutureImage = path);
+            // De AI vertrekt van het echte gebouw: de eigen scanfoto of anders de foto van vandaag.
+            if (_future.Image is null)
+                await TryAsync(LoadFutureAsync);
         }
         finally
         {
@@ -140,17 +139,73 @@ public class TimeTravelViewModel : BaseViewModel, ITimeTravelViewModel
         }
     }
 
-    // Mislukt één beeld, dan blijft het andere gewoon bruikbaar.
-    private async Task ShowWhenReadyAsync(Task<string> image, Action<string> show)
+    private async Task LoadHistoryAsync()
+    {
+        if (_historyLoaded)
+            return;
+
+        var images = (await _landmarkDataService.GetHistoricalImagesAsync(Landmark!.Id, _userSession.Language)).ToList();
+
+        var stops = new List<TimeTravelStop>();
+        foreach (var image in images)
+        {
+            stops.Add(new TimeTravelStop
+            {
+                Image = await _landmarkDataService.GetImagePathAsync(image.ImageUrl),
+                DateText = image.DateLabel,
+                Caption = image.Caption,
+                Credit = image.Credit
+            });
+        }
+
+        // De gebruiker kan intussen al geschoven hebben: op dezelfde stap blijven staan.
+        var currentValue = SliderValue;
+        for (var i = 0; i < stops.Count; i++)
+            Stops.Insert(i, stops[i]);
+
+        _historyLoaded = true;
+
+        // Eerst het maximum, anders kapt de schuifregelaar de nieuwe waarde af.
+        SliderMaximum = Stops.Count - 1;
+        SliderValue = currentValue + stops.Count;
+        OnStopChanged();
+    }
+
+    private async Task LoadTodayAsync()
+    {
+        if (_today.Image is null && Landmark!.ImageUrl is not null)
+        {
+            _today.Image = await _landmarkDataService.GetImagePathAsync(Landmark.ImageUrl);
+        }
+    }
+
+    private async Task LoadFutureAsync()
+    {
+        _future.Image = await _landmarkDataService.GetFutureImageAsync(Landmark!.Id, _today.Image);
+    }
+
+    private async Task TryAsync(Func<Task> load)
     {
         try
         {
-            show(await image);
+            await load();
         }
         catch (Exception ex)
         {
             ShowError(ex);
         }
+    }
+
+    private void OnStopChanged()
+    {
+        // De beelden liggen op elkaar: tussen twee stappen vloeien ze in elkaar over.
+        for (var i = 0; i < Stops.Count; i++)
+            Stops[i].Opacity = Math.Max(0, 1 - Math.Abs(SliderValue - i));
+
+        OnPropertyChanged(nameof(CurrentDate));
+        OnPropertyChanged(nameof(CurrentCaption));
+        OnPropertyChanged(nameof(CurrentCredit));
+        OnPropertyChanged(nameof(HasNoHistory));
     }
 
     private void BindCommands()

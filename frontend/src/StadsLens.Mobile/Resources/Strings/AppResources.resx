@@ -92,14 +92,13 @@
   <data name="RouteCreate_Summary" xml:space="preserve"><value>Werkelijke wandelafstand: {0:F2} km · Geschatte tijd: {1:hh\:mm} · {2} bezienswaardigheden</value></data>
   <data name="Landmark_TimeTravel" xml:space="preserve"><value>Reis door de tijd</value></data>
   <data name="TimeTravel_Title" xml:space="preserve"><value>Reis door de tijd</value></data>
-  <data name="TimeTravel_Hint" xml:space="preserve"><value>Schuif naar links voor het verleden, naar rechts voor een mogelijke toekomst.</value></data>
+  <data name="TimeTravel_Hint" xml:space="preserve"><value>Schuif naar links om verder terug in de tijd te gaan, naar rechts voor een mogelijke toekomst.</value></data>
   <data name="TimeTravel_Past" xml:space="preserve"><value>Verleden</value></data>
-  <data name="TimeTravel_Today" xml:space="preserve"><value>Vandaag</value></data>
   <data name="TimeTravel_Future" xml:space="preserve"><value>Toekomst</value></data>
-  <data name="TimeTravel_EraPast" xml:space="preserve"><value>Het verleden: AI-impressie, geen echte foto</value></data>
   <data name="TimeTravel_EraToday" xml:space="preserve"><value>Vandaag</value></data>
   <data name="TimeTravel_EraFuture" xml:space="preserve"><value>Een mogelijke toekomst: AI-impressie, niemand weet hoe het echt wordt</value></data>
-  <data name="TimeTravel_NoPhoto" xml:space="preserve"><value>Scan dit gebouw om je eigen foto als startpunt te gebruiken.</value></data>
-  <data name="TimeTravel_Loading" xml:space="preserve"><value>De AI maakt de beelden, dit kan even duren...</value></data>
+  <data name="TimeTravel_NoHistory" xml:space="preserve"><value>Voor dit gebouw vonden we geen historisch beeld waarvan gebouw en jaartal vaststaan.</value></data>
+  <data name="TimeTravel_YourPhoto" xml:space="preserve"><value>Jouw foto</value></data>
+  <data name="TimeTravel_Loading" xml:space="preserve"><value>Beelden ophalen en de AI-toekomst maken, dit kan even duren...</value></data>
   <data name="TimeTravel_Retry" xml:space="preserve"><value>Opnieuw proberen</value></data>
 </root>

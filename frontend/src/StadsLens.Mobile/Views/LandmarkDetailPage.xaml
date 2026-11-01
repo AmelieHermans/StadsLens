@@ -13,10 +13,12 @@
                     Command="{Binding GoBackCommand}"
                     Style="{StaticResource BackButton}" />
 
-            <Border HeightRequest="220" StrokeThickness="0" StrokeShape="RoundRectangle 16"
-                    IsVisible="{Binding HasImage}">
-                <Image Source="{Binding Landmark.ImageUrl}" Aspect="AspectFill" />
-            </Border>
+            <VerticalStackLayout Spacing="4" IsVisible="{Binding HasImage}">
+                <Border HeightRequest="220" StrokeThickness="0" StrokeShape="RoundRectangle 16">
+                    <Image Source="{Binding ImagePath}" Aspect="AspectFill" />
+                </Border>
+                <Label Text="{Binding Landmark.ImageCredit}" FontSize="12" TextColor="Gray" />
+            </VerticalStackLayout>
 
             <VerticalStackLayout Spacing="8">
                 <Label Text="{Binding Landmark.Name}" Style="{StaticResource Headline}" />

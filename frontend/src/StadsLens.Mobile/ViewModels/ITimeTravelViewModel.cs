@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Windows.Input;
 using StadsLens.Mobile.Models;
 
@@ -6,16 +7,16 @@ namespace StadsLens.Mobile.ViewModels;
 public interface ITimeTravelViewModel : IBaseViewModel
 {
     Landmark? Landmark { get; set; }
-    string? TodayImage { get; set; }
-    string? PastImage { get; set; }
-    string? FutureImage { get; set; }
-    bool HasNoTodayImage { get; }
 
-    // De schuifregelaar: -1 = verleden, 0 = vandaag, 1 = toekomst.
+    // De schuifregelaar: links de oudste historische beelden, dan vandaag, helemaal rechts de toekomst.
     double SliderValue { get; set; }
-    double PastOpacity { get; }
-    double FutureOpacity { get; }
-    string EraText { get; }
+    double SliderMaximum { get; }
+
+    ObservableCollection<TimeTravelStop> Stops { get; }
+    string CurrentDate { get; }
+    string CurrentCaption { get; }
+    string CurrentCredit { get; }
+    bool HasNoHistory { get; }
 
     ICommand LoadImagesCommand { get; set; }
     ICommand GoBackCommand { get; set; }
