@@ -60,6 +60,11 @@ public class NavigationService : INavigationService
         await Navigation.PushAsync(_serviceProvider.GetRequiredService<LandmarkDetailPage>());
     }
 
+    public async Task NavigateToTimeTravelPageAsync()
+    {
+        await Navigation.PushAsync(_serviceProvider.GetRequiredService<TimeTravelPage>());
+    }
+
     public async Task NavigateBackAsync()
     {
         if (Navigation.NavigationStack.Count > 1)

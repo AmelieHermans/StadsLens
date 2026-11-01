@@ -8,12 +8,13 @@ public interface IRouteDetailViewModel : IBaseViewModel
 {
     Route? SelectedRoute { get; set; }
     ObservableCollection<Landmark> Landmarks { get; set; }
+    Landmark? SelectedLandmark { get; set; }
     int VisitedLandmarkCount { get; }
     double Progress { get; }
     string ProgressText { get; }
     string PrimaryActionText { get; }
     bool IsRouteComplete { get; }
-    WebViewSource MapPreviewSource { get; }
+    string MapPreviewHtml { get; }
 
     ICommand LoadLandmarksCommand { get; set; }
     ICommand GoToMapCommand { get; set; }

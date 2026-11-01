@@ -32,6 +32,7 @@ public class MappingProfile : Profile
         // Landmark binnen een route: de volgorde komt van de koppeling.
         CreateMap<RouteLandmark, LandmarkResponse>()
             .IncludeMembers(src => src.Landmark);
+        CreateMap<HistoricalImage, HistoricalImageResponse>();
         CreateMap<User, UserResponse>();
 
         // LandmarkName wordt automatisch gevuld via Landmark.Name (flattening).

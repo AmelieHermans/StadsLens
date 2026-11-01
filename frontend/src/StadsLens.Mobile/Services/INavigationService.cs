@@ -12,5 +12,6 @@ public interface INavigationService
     Task NavigateToRouteMapPageAsync();
     Task NavigateToScanPageAsync();
     Task NavigateToLandmarkDetailPageAsync();
+    Task NavigateToTimeTravelPageAsync();
     Task NavigateBackAsync();
 }

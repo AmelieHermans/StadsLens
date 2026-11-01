@@ -26,6 +26,13 @@ public class UserSessionService : IUserSessionService
 
     public void Clear() => CurrentUser = null;
 
+    private readonly Dictionary<int, string> _scanPhotos = new();
+
+    public void SetScanPhoto(int landmarkId, string photoPath) => _scanPhotos[landmarkId] = photoPath;
+
+    public string? GetScanPhoto(int landmarkId) =>
+        _scanPhotos.TryGetValue(landmarkId, out var photoPath) && File.Exists(photoPath) ? photoPath : null;
+
     // De instellingen worden bewaard op het toestel, zodat ze na het herstarten van de app blijven.
     public string Language { get; private set; } = Preferences.Default.Get(LanguageKey, "nl");
 

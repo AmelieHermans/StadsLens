@@ -13,6 +13,12 @@ public class LandmarkConfiguration : IEntityTypeConfiguration<Landmark>
         builder.Property(l => l.CustomVisionTag).IsRequired().HasMaxLength(100);
         builder.HasIndex(l => l.CustomVisionTag).IsUnique();
 
+        // Landmark 1 -> n HistoricalImage
+        builder.HasMany(l => l.HistoricalImages)
+            .WithOne(i => i.Landmark)
+            .HasForeignKey(i => i.LandmarkId)
+            .OnDelete(DeleteBehavior.Cascade);
+
         // Landmark 1 -> n Visit
         builder.HasMany(l => l.Visits)
             .WithOne(v => v.Landmark)

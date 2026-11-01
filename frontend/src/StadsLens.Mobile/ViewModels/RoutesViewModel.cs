@@ -12,6 +12,7 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
 {
     private readonly IRouteDataService _routeDataService;
     private readonly IVisitDataService _visitDataService;
+    private readonly ILandmarkDataService _landmarkDataService;
     private readonly IUserSessionService _userSession;
     private readonly INavigationService _navigationService;
     private ObservableCollection<Route> routes = new();
@@ -19,8 +20,26 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
     private string selectedStatus = "all";
     private string searchText = string.Empty;
 
-    public ObservableCollection<Route> Routes { get => routes; set => SetProperty(ref routes, value); }
-    public ObservableCollection<Route> VisibleRoutes { get => visibleRoutes; private set => SetProperty(ref visibleRoutes, value); }
+    public ObservableCollection<Route> Routes
+    {
+        get => routes;
+        set => SetProperty(ref routes, value);
+    }
+
+    public ObservableCollection<Route> VisibleRoutes
+    {
+        get => visibleRoutes;
+        private set => SetProperty(ref visibleRoutes, value);
+    }
+
+    private Route? selectedRoute;
+
+    public Route? SelectedRoute
+    {
+        get => selectedRoute;
+        set => SetProperty(ref selectedRoute, value);
+    }
+
     public bool ShowStatusFilter => Routes.Count > 4;
     public string SearchText
     {
@@ -39,17 +58,37 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
     public ICommand GoToRouteDetailCommand { get; set; } = null!;
     public ICommand SelectStatusCommand { get; set; } = null!;
 
-    public RoutesViewModel(IRouteDataService routeDataService, IVisitDataService visitDataService, IUserSessionService userSession, INavigationService navigationService)
+    public RoutesViewModel(IRouteDataService routeDataService, IVisitDataService visitDataService, ILandmarkDataService landmarkDataService, IUserSessionService userSession, INavigationService navigationService)
     {
         _routeDataService = routeDataService;
         _visitDataService = visitDataService;
+        _landmarkDataService = landmarkDataService;
         _userSession = userSession;
         _navigationService = navigationService;
         BindCommands();
         LoadRoutesCommand.Execute(null);
-        Messenger.Register<RoutesViewModel, LanguageChangedMessage>(this, (r, _) => { OnPropertyChanged(nameof(AllStatusText)); OnPropertyChanged(nameof(InProgressStatusText)); OnPropertyChanged(nameof(CompletedStatusText)); LoadRoutesCommand.Execute(null); });
-        Messenger.Register<RoutesViewModel, VisitRegisteredMessage>(this, (r, _) => r.LoadRoutesCommand.Execute(null));
-        Messenger.Register<RoutesViewModel, UserLoggedInMessage>(this, (r, _) => r.LoadRoutesCommand.Execute(null));
+
+        Messenger.Register<RoutesViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
+        Messenger.Register<RoutesViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+        Messenger.Register<RoutesViewModel, UserLoggedInMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    public void Receive(LanguageChangedMessage message)
+    {
+        OnPropertyChanged(nameof(AllStatusText));
+        OnPropertyChanged(nameof(InProgressStatusText));
+        OnPropertyChanged(nameof(CompletedStatusText));
+        LoadRoutesCommand.Execute(null);
+    }
+
+    public void Receive(VisitRegisteredMessage message)
+    {
+        LoadRoutesCommand.Execute(null);
+    }
+
+    public void Receive(UserLoggedInMessage message)
+    {
+        LoadRoutesCommand.Execute(null);
     }
 
     private async Task LoadRoutesAsync()
@@ -67,7 +106,7 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
             {
                 route.VisitedLandmarkCount = route.Landmarks?.Select(l => l.Id).Distinct().Count(visitedIds.Contains) ?? 0;
                 route.ProgressText = Text("RouteDetail_Progress", route.VisitedLandmarkCount, route.LandmarkCount);
-                route.ImageUrl ??= CoverFor(route.City);
+                route.ImageUrl = await GetCoverPathAsync(route);
             }
             loadedRoutes = loadedRoutes.OrderBy(r => r.Name).ToList();
             Routes = new ObservableCollection<Route>(loadedRoutes);
@@ -94,25 +133,40 @@ public class RoutesViewModel : BaseViewModel, IRoutesViewModel
 
     private void SelectStatus(string? status) { if (!string.IsNullOrWhiteSpace(status)) SelectedStatus = status; }
 
-    private async Task GoToRouteDetailAsync(Route? route)
+    private async Task GoToRouteDetailAsync()
     {
-        if (route is null) return;
+        var route = SelectedRoute;
+        if (route is null)
+            return;
+
+        // Selectie meteen wissen, anders opent een tweede tik op dezelfde route niets meer.
+        SelectedRoute = null;
+
         await _navigationService.NavigateToRouteDetailPageAsync();
         WeakReferenceMessenger.Default.Send(new RouteSelectedMessage(route));
     }
 
-    private static string CoverFor(string city) => city.ToLowerInvariant() switch
+    // De foto van de eerste bezienswaardigheid op de route. Lukt het ophalen niet, dan blijft de route bruikbaar zonder foto.
+    private async Task<string?> GetCoverPathAsync(Route route)
     {
-        "lier" => "https://images.unsplash.com/photo-1519608487953-e999c86e7455?auto=format&fit=crop&w=1200&q=80",
-        "herentals" => "https://images.unsplash.com/photo-1511818966892-d7d671e672a2?auto=format&fit=crop&w=1200&q=80",
-        "olen" => "https://images.unsplash.com/photo-1477959858617-67f85cf4f1df?auto=format&fit=crop&w=1200&q=80",
-        _ => "https://images.unsplash.com/photo-1514890547357-a9ee288728e0?auto=format&fit=crop&w=1200&q=80"
-    };
+        var imageUrl = route.ImageUrl ?? route.Landmarks?.FirstOrDefault(l => l.ImageUrl is not null)?.ImageUrl;
+        if (imageUrl is null)
+            return null;
+
+        try
+        {
+            return await _landmarkDataService.GetImagePathAsync(imageUrl);
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException)
+        {
+            return null;
+        }
+    }
 
     private void BindCommands()
     {
         LoadRoutesCommand = new AsyncRelayCommand(LoadRoutesAsync);
-        GoToRouteDetailCommand = new AsyncRelayCommand<Route>(GoToRouteDetailAsync);
+        GoToRouteDetailCommand = new AsyncRelayCommand(GoToRouteDetailAsync);
         SelectStatusCommand = new RelayCommand<string>(SelectStatus);
     }
 }
