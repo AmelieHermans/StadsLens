@@ -98,19 +98,27 @@ public class LandmarksController : ControllerBase
         }
     }
 
-    // Tijdreis: een AI-impressie van het gebouw in het verleden of in een mogelijke toekomst.
-    // De foto van de scan is optioneel; zonder foto werkt de AI enkel met de beschrijving.
-    [HttpPost("{id:int}/timetravel/{era}")]
-    [RequestSizeLimit(MaxImageSize)]
-    public async Task<IActionResult> GetTimeTravelImage(int id, string era, IFormFile? image = null, CancellationToken cancellationToken = default)
+    // Tijdreis naar het verleden: echte historische beelden, van oud naar recent.
+    [HttpGet("{id:int}/historical-images")]
+    public async Task<ActionResult<IEnumerable<HistoricalImageResponse>>> GetHistoricalImages(int id, [FromQuery] string? language = null, CancellationToken cancellationToken = default)
     {
-        if (!TimeTravelEras.IsSupported(era))
-            return BadRequest(new { message = $"Tijdperk '{era}' wordt niet ondersteund. Gebruik '{TimeTravelEras.Past}' of '{TimeTravelEras.Future}'." });
+        language = RequestLanguage.Resolve(Request, language);
+        if (!Languages.IsSupported(language))
+            return UnsupportedLanguage(language);
 
+        return Ok(await _landmarkService.GetHistoricalImagesAsync(id, language, cancellationToken));
+    }
+
+    // Tijdreis naar de toekomst: een AI-impressie van het gebouw.
+    // De foto is optioneel; zonder foto werkt de AI enkel met de beschrijving.
+    [HttpPost("{id:int}/timetravel/future")]
+    [RequestSizeLimit(MaxImageSize)]
+    public async Task<IActionResult> GetTimeTravelImage(int id, IFormFile? image = null, CancellationToken cancellationToken = default)
+    {
         try
         {
             await using var photo = image?.OpenReadStream();
-            var result = await _landmarkService.GetTimeTravelImageAsync(id, era, photo, image?.FileName, cancellationToken);
+            var result = await _landmarkService.GetTimeTravelImageAsync(id, photo, image?.FileName, cancellationToken);
             return result is null ? NotFound() : File(result, "image/png");
         }
         catch (Exception exception) when (exception is HttpRequestException or InvalidOperationException)

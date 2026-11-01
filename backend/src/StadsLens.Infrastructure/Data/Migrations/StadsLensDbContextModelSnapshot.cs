@@ -22,6 +22,43 @@ namespace StadsLens.Infrastructure.Data.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("StadsLens.Domain.Entities.HistoricalImage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Caption")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Credit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("DateLabel")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("LandmarkId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Year")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LandmarkId");
+
+                    b.ToTable("HistoricalImages");
+                });
+
             modelBuilder.Entity("StadsLens.Domain.Entities.Landmark", b =>
                 {
                     b.Property<int>("Id")
@@ -37,6 +74,9 @@ namespace StadsLens.Infrastructure.Data.Migrations
 
                     b.Property<string>("History")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ImageCredit")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("ImageUrl")
@@ -170,6 +210,17 @@ namespace StadsLens.Infrastructure.Data.Migrations
                     b.ToTable("Visits");
                 });
 
+            modelBuilder.Entity("StadsLens.Domain.Entities.HistoricalImage", b =>
+                {
+                    b.HasOne("StadsLens.Domain.Entities.Landmark", "Landmark")
+                        .WithMany("HistoricalImages")
+                        .HasForeignKey("LandmarkId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Landmark");
+                });
+
             modelBuilder.Entity("StadsLens.Domain.Entities.RouteLandmark", b =>
                 {
                     b.HasOne("StadsLens.Domain.Entities.Landmark", "Landmark")
@@ -210,6 +261,8 @@ namespace StadsLens.Infrastructure.Data.Migrations
 
             modelBuilder.Entity("StadsLens.Domain.Entities.Landmark", b =>
                 {
+                    b.Navigation("HistoricalImages");
+
                     b.Navigation("RouteLandmarks");
 
                     b.Navigation("Visits");

@@ -79,14 +79,32 @@ public class LandmarkService : ILandmarkService
         return await _speechService.SynthesizeAsync($"{landmark.Name}. {landmark.History}", landmark.Language, cancellationToken);
     }
 
-    public async Task<byte[]?> GetTimeTravelImageAsync(int id, string era, Stream? photo, string? fileName, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<HistoricalImageResponse>> GetHistoricalImagesAsync(int id, string language = Languages.Default, CancellationToken cancellationToken = default)
+    {
+        var images = _mapper.Map<List<HistoricalImageResponse>>(await _landmarkRepository.GetHistoricalImagesAsync(id));
+
+        var texts = images.SelectMany(image => new[] { image.DateLabel, image.Caption }).ToList();
+        var translated = await _translator.TranslateAsync(texts, language, cancellationToken);
+        if (translated is null)
+            return images;
+
+        for (var i = 0; i < images.Count; i++)
+        {
+            images[i].DateLabel = translated[2 * i];
+            images[i].Caption = translated[2 * i + 1];
+        }
+
+        return images;
+    }
+
+    public async Task<byte[]?> GetTimeTravelImageAsync(int id, Stream? photo, string? fileName, CancellationToken cancellationToken = default)
     {
         // Rechtstreeks uit de database: de prompt hoeft niet vertaald te worden.
         var landmark = await _landmarkRepository.GetByIdAsync(id);
         if (landmark is null)
             return null;
 
-        var prompt = TimeTravelPrompt.Create(landmark.Name, landmark.History, era, hasPhoto: photo is not null);
+        var prompt = TimeTravelPrompt.Create(landmark.Name, landmark.History, hasPhoto: photo is not null);
         return photo is null
             ? await _imageGenerationService.GenerateAsync(prompt, cancellationToken)
             : await _imageGenerationService.EditAsync(photo, fileName ?? "photo.jpg", prompt, cancellationToken);

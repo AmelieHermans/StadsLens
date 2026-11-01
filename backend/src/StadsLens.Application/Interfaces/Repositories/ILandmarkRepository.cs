@@ -9,4 +9,7 @@ public interface ILandmarkRepository
     Task<IEnumerable<Landmark>> GetAllLandmarks();
     Task<Landmark?> GetByIdAsync(int id);
     Task<Landmark?> GetByCustomVisionTagAsync(string tag);
+
+    // Van oud naar recent.
+    Task<IEnumerable<HistoricalImage>> GetHistoricalImagesAsync(int landmarkId);
 }

@@ -49,4 +49,13 @@ public class LandmarkRepository : ILandmarkRepository
             .AsNoTracking()
             .FirstOrDefaultAsync(l => l.CustomVisionTag == tag);
     }
+
+    public async Task<IEnumerable<HistoricalImage>> GetHistoricalImagesAsync(int landmarkId)
+    {
+        return await _context.HistoricalImages
+            .Where(i => i.LandmarkId == landmarkId)
+            .OrderBy(i => i.Year)
+            .AsNoTracking()
+            .ToListAsync();
+    }
 }
