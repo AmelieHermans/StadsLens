@@ -8,6 +8,7 @@ public interface IRoutesViewModel : IBaseViewModel
 {
     ObservableCollection<Route> Routes { get; set; }
     ObservableCollection<Route> VisibleRoutes { get; }
+    Route? SelectedRoute { get; set; }
     bool ShowStatusFilter { get; }
     string SearchText { get; set; }
     string SelectedStatus { get; set; }

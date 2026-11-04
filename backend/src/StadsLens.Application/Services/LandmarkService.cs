@@ -15,14 +15,16 @@ public class LandmarkService : ILandmarkService
     private readonly ContentTranslator _translator;
     private readonly ISpeechService _speechService;
     private readonly IImageRecognitionService _imageRecognitionService;
+    private readonly IImageGenerationService _imageGenerationService;
     private readonly IMapper _mapper;
 
-    public LandmarkService(ILandmarkRepository landmarkRepository, ContentTranslator translator, ISpeechService speechService, IImageRecognitionService imageRecognitionService, IMapper mapper)
+    public LandmarkService(ILandmarkRepository landmarkRepository, ContentTranslator translator, ISpeechService speechService, IImageRecognitionService imageRecognitionService, IImageGenerationService imageGenerationService, IMapper mapper)
     {
         _landmarkRepository = landmarkRepository;
         _translator = translator;
         _speechService = speechService;
         _imageRecognitionService = imageRecognitionService;
+        _imageGenerationService = imageGenerationService;
         _mapper = mapper;
     }
 
@@ -75,6 +77,37 @@ public class LandmarkService : ILandmarkService
 
         // Voorlezen in de taal waarin de tekst effectief staat (bij een mislukte vertaling is dat Nederlands).
         return await _speechService.SynthesizeAsync($"{landmark.Name}. {landmark.History}", landmark.Language, cancellationToken);
+    }
+
+    public async Task<IEnumerable<HistoricalImageResponse>> GetHistoricalImagesAsync(int id, string language = Languages.Default, CancellationToken cancellationToken = default)
+    {
+        var images = _mapper.Map<List<HistoricalImageResponse>>(await _landmarkRepository.GetHistoricalImagesAsync(id));
+
+        var texts = images.SelectMany(image => new[] { image.DateLabel, image.Caption }).ToList();
+        var translated = await _translator.TranslateAsync(texts, language, cancellationToken);
+        if (translated is null)
+            return images;
+
+        for (var i = 0; i < images.Count; i++)
+        {
+            images[i].DateLabel = translated[2 * i];
+            images[i].Caption = translated[2 * i + 1];
+        }
+
+        return images;
+    }
+
+    public async Task<byte[]?> GetTimeTravelImageAsync(int id, Stream? photo, string? fileName, CancellationToken cancellationToken = default)
+    {
+        // Rechtstreeks uit de database: de prompt hoeft niet vertaald te worden.
+        var landmark = await _landmarkRepository.GetByIdAsync(id);
+        if (landmark is null)
+            return null;
+
+        var prompt = TimeTravelPrompt.Create(landmark.Name, landmark.History, hasPhoto: photo is not null);
+        return photo is null
+            ? await _imageGenerationService.GenerateAsync(prompt, cancellationToken)
+            : await _imageGenerationService.EditAsync(photo, fileName ?? "photo.jpg", prompt, cancellationToken);
     }
 
     // De database is in het Nederlands; voor een andere taal worden naam en geschiedenis vertaald,

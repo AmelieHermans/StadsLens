@@ -16,19 +16,55 @@ public class MapViewModel : BaseViewModel, IMapViewModel
     private readonly IVisitDataService _visitDataService;
     private readonly IUserSessionService _userSession;
     private readonly INavigationService _navigationService;
+    private readonly IGeolocation _geolocation;
 
     private Route? selectedRoute;
-    public Route? SelectedRoute { get => selectedRoute; set => SetProperty(ref selectedRoute, value); }
+
+    public Route? SelectedRoute
+    {
+        get => selectedRoute;
+        set => SetProperty(ref selectedRoute, value);
+    }
+
     private string distanceKm = "2";
-    public string DistanceKm { get => distanceKm; set => SetProperty(ref distanceKm, value); }
+
+    public string DistanceKm
+    {
+        get => distanceKm;
+        set => SetProperty(ref distanceKm, value);
+    }
+
     private string startLatitude = string.Empty;
-    public string StartLatitude { get => startLatitude; set => SetProperty(ref startLatitude, value); }
+
+    public string StartLatitude
+    {
+        get => startLatitude;
+        set => SetProperty(ref startLatitude, value);
+    }
+
     private string startLongitude = string.Empty;
-    public string StartLongitude { get => startLongitude; set => SetProperty(ref startLongitude, value); }
-    private WebViewSource mapSource = new HtmlWebViewSource { Html = CreateEmptyMapHtml() };
-    public WebViewSource MapSource { get => mapSource; set => SetProperty(ref mapSource, value); }
+
+    public string StartLongitude
+    {
+        get => startLongitude;
+        set => SetProperty(ref startLongitude, value);
+    }
+
+    private string mapHtml = CreateEmptyMapHtml();
+
+    public string MapHtml
+    {
+        get => mapHtml;
+        set => SetProperty(ref mapHtml, value);
+    }
+
     private string resultSummary = string.Empty;
-    public string ResultSummary { get => resultSummary; set => SetProperty(ref resultSummary, value); }
+
+    public string ResultSummary
+    {
+        get => resultSummary;
+        set => SetProperty(ref resultSummary, value);
+    }
 
     public string VisitedLegendText => Text("Map_VisitedLegend");
     public string NotVisitedLegendText => Text("Map_NotVisitedLegend");
@@ -36,30 +72,30 @@ public class MapViewModel : BaseViewModel, IMapViewModel
     public ICommand CreateRouteCommand { get; set; } = null!;
     public ICommand GoBackCommand { get; set; } = null!;
 
-    public MapViewModel(IRouteDataService routeDataService, IVisitDataService visitDataService, IUserSessionService userSession, INavigationService navigationService)
+    public MapViewModel(IRouteDataService routeDataService, IVisitDataService visitDataService, IUserSessionService userSession, INavigationService navigationService, IGeolocation geolocation)
     {
         _routeDataService = routeDataService;
         _visitDataService = visitDataService;
         _userSession = userSession;
         _navigationService = navigationService;
+        _geolocation = geolocation;
         Title = Text("Map_Title");
         BindCommands();
-        Messenger.Register<MapViewModel, RouteSelectedMessage>(this, (r, m) =>
-        {
-            r.Receive(m);
-            _ = r.LoadRouteMapAsync(m.Value);
-        });
-        Messenger.Register<MapViewModel, VisitRegisteredMessage>(this, (r, message) =>
-        {
-            if (r.SelectedRoute is not null)
-                _ = r.LoadRouteMapAsync(r.SelectedRoute);
-        });
+        Messenger.Register<MapViewModel, RouteSelectedMessage>(this, (r, m) => r.Receive(m));
+        Messenger.Register<MapViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    public void Receive(VisitRegisteredMessage message)
+    {
+        if (SelectedRoute is not null)
+            _ = LoadRouteMapAsync(SelectedRoute);
     }
 
     public void Receive(RouteSelectedMessage message)
     {
         SelectedRoute = message.Value;
         Title = Text("Map_TitleWithRoute", message.Value.Name);
+        _ = LoadRouteMapAsync(message.Value);
     }
 
     private async Task LoadRouteMapAsync(Route route)
@@ -87,7 +123,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
         ErrorMessage = string.Empty;
         try
         {
-            var location = await Geolocation.Default.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
+            var location = await _geolocation.GetLocationAsync(new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
             if (location is null) { ErrorMessage = Text("Map_LocationUnknown"); return; }
             StartLatitude = location.Latitude.ToString(CultureInfo.InvariantCulture);
             StartLongitude = location.Longitude.ToString(CultureInfo.InvariantCulture);
@@ -123,7 +159,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
             ? new HashSet<int>()
             : (await _visitDataService.GetByUserAsync(_userSession.CurrentUser.Id)).Select(v => v.LandmarkId).ToHashSet();
         ResultSummary = $"{plan.DistanceMeters / 1000:0.0} km · {TimeSpan.FromSeconds(plan.DurationSeconds):hh\\:mm} · {plan.Landmarks.Count} landmarks" + (plan.IsEstimated ? " (schatting)" : string.Empty);
-        MapSource = new HtmlWebViewSource { Html = BuildMapHtml(plan, visitedIds, Text("Map_VisitedPopup"), Text("Map_NotVisitedPopup")) };
+        MapHtml = BuildMapHtml(plan, visitedIds, Text("Map_VisitedPopup"), Text("Map_NotVisitedPopup"));
     }
 
     private void BindCommands()

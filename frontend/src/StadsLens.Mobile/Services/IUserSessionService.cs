@@ -9,6 +9,10 @@ public interface IUserSessionService
     void SetUser(User user);
     void Clear();
 
+    // De foto van de laatste scan per bezienswaardigheid: het "vandaag"-beeld in de tijdreis.
+    void SetScanPhoto(int landmarkId, string photoPath);
+    string? GetScanPhoto(int landmarkId);
+
     // De gekozen taal voor de app en de bezienswaardigheden ("nl", "en", "fr" of "de").
     string Language { get; }
     void SetLanguage(string language);

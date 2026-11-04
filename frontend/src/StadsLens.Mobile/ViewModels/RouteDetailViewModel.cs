@@ -35,12 +35,20 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
         set => SetProperty(ref landmarks, value);
     }
 
+    private Landmark? selectedLandmark;
+
+    public Landmark? SelectedLandmark
+    {
+        get => selectedLandmark;
+        set => SetProperty(ref selectedLandmark, value);
+    }
+
     public int VisitedLandmarkCount => Landmarks.Count(l => l.IsVisited);
     public double Progress => Landmarks.Count == 0 ? 0 : (double)VisitedLandmarkCount / Landmarks.Count;
     public string ProgressText => Text("RouteDetail_Progress", VisitedLandmarkCount, Landmarks.Count);
     public bool IsRouteComplete => Landmarks.Count > 0 && VisitedLandmarkCount == Landmarks.Count;
     public string PrimaryActionText => Text(IsRouteComplete ? "RouteDetail_WalkAgain" : VisitedLandmarkCount > 0 ? "RouteDetail_Continue" : "RouteDetail_Start");
-    public WebViewSource MapPreviewSource => new HtmlWebViewSource { Html = BuildMapPreview(Landmarks) };
+    public string MapPreviewHtml => BuildMapPreview(Landmarks);
 
     public ICommand LoadLandmarksCommand { get; set; } = null!;
     public ICommand GoToMapCommand { get; set; } = null!;
@@ -62,7 +70,12 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
 
         Messenger.Register<RouteDetailViewModel, RouteSelectedMessage>(this, (r, m) => r.Receive(m));
         Messenger.Register<RouteDetailViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
-        Messenger.Register<RouteDetailViewModel, VisitRegisteredMessage>(this, (r, _) => r.LoadLandmarksCommand.Execute(null));
+        Messenger.Register<RouteDetailViewModel, VisitRegisteredMessage>(this, (r, m) => r.Receive(m));
+    }
+
+    public void Receive(VisitRegisteredMessage message)
+    {
+        LoadLandmarksCommand.Execute(null);
     }
 
     // Andere taal: de route (naam, beschrijving) en haar bezienswaardigheden vertaald opnieuw ophalen.
@@ -152,7 +165,7 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
         OnPropertyChanged(nameof(ProgressText));
         OnPropertyChanged(nameof(IsRouteComplete));
         OnPropertyChanged(nameof(PrimaryActionText));
-        OnPropertyChanged(nameof(MapPreviewSource));
+        OnPropertyChanged(nameof(MapPreviewHtml));
     }
 
     private async Task GoToMapAsync()
@@ -169,10 +182,14 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
     private Task PrimaryRouteActionAsync() => GoToMapAsync();
 
     // Eerst navigeren (dan bestaat het ViewModel van de detailpagina), daarna de landmark doorsturen.
-    private async Task GoToLandmarkDetailAsync(Landmark? landmark)
+    private async Task GoToLandmarkDetailAsync()
     {
+        var landmark = SelectedLandmark;
         if (landmark is null)
             return;
+
+        // Selectie meteen wissen, anders opent een tweede tik op dezelfde landmark niets meer.
+        SelectedLandmark = null;
 
         await _navigationService.NavigateToLandmarkDetailPageAsync();
         WeakReferenceMessenger.Default.Send(new LandmarkSelectedMessage(landmark));
@@ -184,7 +201,7 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
         LoadLandmarksCommand = new AsyncRelayCommand(LoadLandmarksAsync);
         GoToMapCommand = new AsyncRelayCommand(GoToMapAsync);
         GoToScanCommand = new AsyncRelayCommand(GoToScanAsync);
-        GoToLandmarkDetailCommand = new AsyncRelayCommand<Landmark>(GoToLandmarkDetailAsync);
+        GoToLandmarkDetailCommand = new AsyncRelayCommand(GoToLandmarkDetailAsync);
         PrimaryRouteActionCommand = new AsyncRelayCommand(PrimaryRouteActionAsync);
     }
 

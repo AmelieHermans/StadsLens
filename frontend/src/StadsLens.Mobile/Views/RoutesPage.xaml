@@ -10,7 +10,10 @@
              Title="{loc:Translate Routes_Title}">
 
     <RefreshView Command="{Binding LoadRoutesCommand}" IsRefreshing="{Binding IsRefreshing}">
-        <CollectionView ItemsSource="{Binding VisibleRoutes}" SelectionMode="None">
+        <CollectionView ItemsSource="{Binding VisibleRoutes}"
+                        SelectionMode="Single"
+                        SelectedItem="{Binding SelectedRoute}"
+                        SelectionChangedCommand="{Binding GoToRouteDetailCommand}">
             <CollectionView.Header>
                 <VerticalStackLayout Spacing="8" Margin="16,8,16,0">
                     <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" />
@@ -31,13 +34,6 @@
                         <Border.Behaviors>
                             <behaviors:HandCursorBehavior />
                         </Border.Behaviors>
-                        <Border.GestureRecognizers>
-                            <!-- Geen gecompileerde binding (x:DataType={x:Null}): bij het teruggaan wordt de lijst afgebroken en is de ViewModel-voorouder
-                                 even weg; de gegenereerde code gaf dan een NullReferenceException, een gewone binding geeft gewoon geen waarde. -->
-                            <TapGestureRecognizer
-                                Command="{Binding Source={RelativeSource AncestorType={x:Type vm:IRoutesViewModel}}, Path=GoToRouteDetailCommand, x:DataType={x:Null}}"
-                                CommandParameter="{Binding .}" />
-                        </Border.GestureRecognizers>
                         <Grid ColumnDefinitions="*,120" HeightRequest="160" ColumnSpacing="0">
                             <VerticalStackLayout Grid.Column="0" Padding="16,10" Spacing="5" VerticalOptions="Center">
                                 <Label Text="{Binding Name}" FontAttributes="Bold" FontSize="18" />

@@ -90,4 +90,15 @@
   <data name="RouteCreate_ChooseSuggestion" xml:space="preserve"><value>Search for an address and pick a suggestion, or turn on 'Current location'.</value></data>
   <data name="RouteCreate_Calculating" xml:space="preserve"><value>Calculating walking route...</value></data>
   <data name="RouteCreate_Summary" xml:space="preserve"><value>Actual walking distance: {0:F2} km · Estimated time: {1:hh\:mm} · {2} sights</value></data>
+  <data name="Landmark_TimeTravel" xml:space="preserve"><value>Travel through time</value></data>
+  <data name="TimeTravel_Title" xml:space="preserve"><value>Travel through time</value></data>
+  <data name="TimeTravel_Hint" xml:space="preserve"><value>Slide left to go further back in time, right for a possible future.</value></data>
+  <data name="TimeTravel_Past" xml:space="preserve"><value>Past</value></data>
+  <data name="TimeTravel_Future" xml:space="preserve"><value>Future</value></data>
+  <data name="TimeTravel_EraToday" xml:space="preserve"><value>Today</value></data>
+  <data name="TimeTravel_EraFuture" xml:space="preserve"><value>A possible future: AI impression, nobody knows how it will really turn out</value></data>
+  <data name="TimeTravel_NoHistory" xml:space="preserve"><value>We found no historical image of this building with a confirmed subject and date.</value></data>
+  <data name="TimeTravel_YourPhoto" xml:space="preserve"><value>Your photo</value></data>
+  <data name="TimeTravel_Loading" xml:space="preserve"><value>Fetching images and creating the AI future, this can take a while...</value></data>
+  <data name="TimeTravel_Retry" xml:space="preserve"><value>Try again</value></data>
 </root>

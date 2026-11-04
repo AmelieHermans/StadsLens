@@ -16,6 +16,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
     private readonly ILandmarkDataService _landmarkDataService;
     private readonly IRoutingService _routingService;
     private readonly ILocationSearchService _locationSearchService;
+    private readonly IGeolocation _geolocation;
     private readonly INavigationService _navigationService;
 
     private CancellationTokenSource? _searchCts;
@@ -127,21 +128,18 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         set => SetProperty(ref resultSummary, value);
     }
 
-    private WebViewSource mapSource = new HtmlWebViewSource
-    {
-        Html = """
+    private string mapHtml = """
         <html>
         <body style="font-family:sans-serif;padding:20px">
             <p>Je gegenereerde wandelroute verschijnt hier.</p>
         </body>
         </html>
-        """
-    };
+        """;
 
-    public WebViewSource MapSource
+    public string MapHtml
     {
-        get => mapSource;
-        set => SetProperty(ref mapSource, value);
+        get => mapHtml;
+        set => SetProperty(ref mapHtml, value);
     }
 
     private ObservableCollection<Landmark> routeLandmarks = new();
@@ -152,6 +150,14 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         set => SetProperty(ref routeLandmarks, value);
     }
 
+    private Landmark? selectedLandmark;
+
+    public Landmark? SelectedLandmark
+    {
+        get => selectedLandmark;
+        set => SetProperty(ref selectedLandmark, value);
+    }
+
     public ICommand CreateRouteCommand { get; set; } = null!;
     public ICommand GoToLandmarkDetailCommand { get; set; } = null!;
 
@@ -159,11 +165,13 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         ILandmarkDataService landmarkDataService,
         IRoutingService routingService,
         ILocationSearchService locationSearchService,
-        INavigationService navigationService)
+        INavigationService navigationService,
+        IGeolocation geolocation)
     {
         _landmarkDataService = landmarkDataService;
         _routingService = routingService;
         _locationSearchService = locationSearchService;
+        _geolocation = geolocation;
         _navigationService = navigationService;
 
         BindCommands();
@@ -188,7 +196,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
 
         try
         {
-            var location = await Geolocation.Default.GetLocationAsync(
+            var location = await _geolocation.GetLocationAsync(
                 new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
 
             if (location is null)
@@ -298,7 +306,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
             foreach (var landmark in route.Landmarks)
                 RouteLandmarks.Add(landmark);
 
-            MapSource = new HtmlWebViewSource { Html = route.MapHtml };
+            MapHtml = route.MapHtml;
 
             ResultSummary = Text("RouteCreate_Summary", route.DistanceKm, TimeSpan.FromMinutes(route.DurationMinutes), RouteLandmarks.Count);
         }
@@ -314,10 +322,14 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
     }
 
     // Eerst navigeren (dan bestaat het ViewModel van de detailpagina), daarna de landmark doorsturen.
-    private async Task GoToLandmarkDetailAsync(Landmark? landmark)
+    private async Task GoToLandmarkDetailAsync()
     {
+        var landmark = SelectedLandmark;
         if (landmark is null)
             return;
+
+        // Selectie meteen wissen, anders opent een tweede tik op dezelfde landmark niets meer.
+        SelectedLandmark = null;
 
         await _navigationService.NavigateToLandmarkDetailPageAsync();
         WeakReferenceMessenger.Default.Send(new LandmarkSelectedMessage(landmark));
@@ -326,6 +338,6 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
     private void BindCommands()
     {
         CreateRouteCommand = new AsyncRelayCommand(CreateRouteAsync);
-        GoToLandmarkDetailCommand = new AsyncRelayCommand<Landmark>(GoToLandmarkDetailAsync);
+        GoToLandmarkDetailCommand = new AsyncRelayCommand(GoToLandmarkDetailAsync);
     }
 }

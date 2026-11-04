@@ -19,8 +19,9 @@ public interface IRouteCreateViewModel : IBaseViewModel
     bool IsAddressEnabled { get; }
 
     string ResultSummary { get; set; }
-    WebViewSource MapSource { get; set; }
+    string MapHtml { get; set; }
     ObservableCollection<Landmark> RouteLandmarks { get; set; }
+    Landmark? SelectedLandmark { get; set; }
 
     ICommand CreateRouteCommand { get; set; }
     ICommand GoToLandmarkDetailCommand { get; set; }

@@ -23,14 +23,22 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
     public Landmark? Landmark
     {
         get => landmark;
-        set
+        set => SetProperty(ref landmark, value);
+    }
+
+    private string? imagePath;
+
+    public string? ImagePath
+    {
+        get => imagePath;
+        private set
         {
-            if (SetProperty(ref landmark, value))
+            if (SetProperty(ref imagePath, value))
                 OnPropertyChanged(nameof(HasImage));
         }
     }
 
-    public bool HasImage => !string.IsNullOrWhiteSpace(Landmark?.ImageUrl);
+    public bool HasImage => ImagePath is not null;
 
     private bool isVisited;
 
@@ -49,7 +57,19 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
 
     public bool IsNotVisited => !IsVisited;
     public bool CanViewHistory => IsVisited;
-    public int VisitCount { get; private set; }
+
+    private int visitCount;
+
+    public int VisitCount
+    {
+        get => visitCount;
+        private set
+        {
+            if (SetProperty(ref visitCount, value))
+                OnPropertyChanged(nameof(VisitCountText));
+        }
+    }
+
     public string VisitCountText => Text("Landmark_VisitCount", VisitCount);
 
     private bool isPlaying;
@@ -83,6 +103,7 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
     public ICommand ReadAloudCommand { get; set; } = null!;
     public ICommand GoBackCommand { get; set; } = null!;
     public ICommand ScanThisCommand { get; set; } = null!;
+    public ICommand GoToTimeTravelCommand { get; set; } = null!;
 
     public LandmarkDetailViewModel(ILandmarkDataService landmarkDataService, IVisitDataService visitDataService, IUserSessionService userSession, IAudioManager audioManager, INavigationService navigationService)
     {
@@ -98,37 +119,34 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
         Messenger.Register<LandmarkDetailViewModel, LandmarkSelectedMessage>(this, (r, m) => r.Receive(m));
         Messenger.Register<LandmarkDetailViewModel, LandmarkRecognizedMessage>(this, (r, m) => r.Receive(m));
         Messenger.Register<LandmarkDetailViewModel, LanguageChangedMessage>(this, (r, m) => r.Receive(m));
-
-        newest = new WeakReference<LandmarkDetailViewModel>(this);
     }
 
-    // Gesloten detailpagina's blijven bestaan (en messages ontvangen) tot de garbage collector ze opruimt.
-    // Enkel de nieuwste ViewModel hoort bij de pagina die net geopend is, dus enkel die reageert.
-    private static WeakReference<LandmarkDetailViewModel>? newest;
-
-    private bool IsNewest => newest is not null && newest.TryGetTarget(out var viewModel) && ReferenceEquals(viewModel, this);
+    // Elke pagina hoort bij één landmark. Meteen afmelden: gesloten pagina's blijven bestaan
+    // tot de garbage collector ze opruimt en mogen de volgende landmark niet meer ontvangen.
+    private void StopListeningForLandmarks()
+    {
+        Messenger.Unregister<LandmarkSelectedMessage>(this);
+        Messenger.Unregister<LandmarkRecognizedMessage>(this);
+    }
 
     // Gekozen in een lijst.
     public void Receive(LandmarkSelectedMessage message)
     {
-        if (IsNewest)
-            _ = LoadLandmarkAsync(message.Value, readAloud: false);
+        StopListeningForLandmarks();
+        _ = LoadLandmarkAsync(message.Value, readAloud: false);
     }
 
     // Herkend met de camera (het bezoek is al geregistreerd door de ScanViewModel).
     // Staat "Tekst voorlezen" aan in de instellingen, dan meteen voorlezen.
     public void Receive(LandmarkRecognizedMessage message)
     {
-        if (IsNewest)
-            _ = LoadLandmarkAsync(message.Value, readAloud: _userSession.AutoReadAloud);
+        StopListeningForLandmarks();
+        _ = LoadLandmarkAsync(message.Value, readAloud: _userSession.AutoReadAloud);
     }
 
     // Andere taal gekozen in de instellingen: de tekst opnieuw ophalen.
     public void Receive(LanguageChangedMessage message)
     {
-        if (!IsNewest)
-            return;
-
         OnPropertyChanged(nameof(ReadAloudText));
         if (Landmark is not null)
             _ = LoadLandmarkAsync(Landmark, readAloud: false);
@@ -162,10 +180,15 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
                 IsVisited = visits.Any(visit => visit.LandmarkId == selected.Id);
                 VisitCount = visits.Count(visit => visit.LandmarkId == selected.Id);
             }
-            else { IsVisited = false; VisitCount = 0; }
-            OnPropertyChanged(nameof(CanViewHistory));
-            OnPropertyChanged(nameof(VisitCount));
-            OnPropertyChanged(nameof(VisitCountText));
+            else
+            {
+                IsVisited = false;
+                VisitCount = 0;
+            }
+
+            // Als laatste: zonder foto blijven de tekst en de bezoeken gewoon bruikbaar.
+            if (Landmark?.ImageUrl is not null)
+                ImagePath = await _landmarkDataService.GetImagePathAsync(Landmark.ImageUrl);
         }
         catch (Exception ex)
         {
@@ -240,10 +263,22 @@ public class LandmarkDetailViewModel : BaseViewModel, ILandmarkDetailViewModel
 
     private Task ScanThisAsync() => _navigationService.NavigateToScanPageAsync();
 
+    // Eerst navigeren (dan bestaat het ViewModel van de tijdreispagina), daarna de landmark doorsturen.
+    private async Task GoToTimeTravelAsync()
+    {
+        if (Landmark is null)
+            return;
+
+        StopAudio();
+        await _navigationService.NavigateToTimeTravelPageAsync();
+        WeakReferenceMessenger.Default.Send(new TimeTravelRequestedMessage(Landmark));
+    }
+
     private void BindCommands()
     {
         GoBackCommand = new AsyncRelayCommand(GoBackAsync);
         ReadAloudCommand = new AsyncRelayCommand(ReadAloudAsync);
         ScanThisCommand = new AsyncRelayCommand(ScanThisAsync);
+        GoToTimeTravelCommand = new AsyncRelayCommand(GoToTimeTravelAsync);
     }
 }

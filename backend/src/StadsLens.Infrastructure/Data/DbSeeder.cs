@@ -241,6 +241,9 @@ public static class DbSeeder
         await UpsertLandmarksAsync(context, olen);
         await context.SaveChangesAsync();
 
+        await SyncImagesAsync(context);
+        await context.SaveChangesAsync();
+
         // ============================================================
         // ROUTES
         // ============================================================
@@ -269,6 +272,11 @@ public static class DbSeeder
             "Een wandeling van de Grote Markt langs de oude stadsversterking naar de Sint-Gummaruskerk.",
             "Lier", stadhuisLier, gevangenenpoort, zimmertoren, sintGummarus);
 
+        await context.SaveChangesAsync();
+
+        // Deze route start ook aan de kathedraal; met de Brusselpoort is ze te onderscheiden van Historisch Mechelen.
+        var brusselpoortRoute = await context.Routes.FirstAsync(r => r.Name == "Van de kathedraal tot de Brusselpoort");
+        brusselpoortRoute.ImageUrl = brusselpoort.ImageUrl;
         await context.SaveChangesAsync();
     }
 
@@ -324,6 +332,38 @@ public static class DbSeeder
                 existing.Latitude = landmark.Latitude;
                 existing.Longitude = landmark.Longitude;
                 existing.CustomVisionTag = landmark.CustomVisionTag;
+            }
+        }
+    }
+
+    // Zet de beelden uit de catalogus in de database, zodat correcties ook in een bestaande database terechtkomen.
+    private static async Task SyncImagesAsync(StadsLensDbContext context)
+    {
+        context.HistoricalImages.RemoveRange(context.HistoricalImages);
+
+        var landmarks = await context.Landmarks.ToListAsync();
+        foreach (var landmark in landmarks)
+        {
+            if (LandmarkImageCatalog.Today.TryGetValue(landmark.Name, out var today))
+            {
+                landmark.ImageUrl = today.ImageUrl;
+                landmark.ImageCredit = today.Credit;
+            }
+
+            if (!LandmarkImageCatalog.Historical.TryGetValue(landmark.Name, out var images))
+                continue;
+
+            foreach (var image in images)
+            {
+                context.HistoricalImages.Add(new HistoricalImage
+                {
+                    LandmarkId = landmark.Id,
+                    Year = image.Year,
+                    DateLabel = image.DateLabel,
+                    Caption = image.Caption,
+                    ImageUrl = image.ImageUrl,
+                    Credit = image.Credit
+                });
             }
         }
     }

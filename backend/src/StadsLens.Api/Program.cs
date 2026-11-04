@@ -36,6 +36,9 @@ if (app.Environment.IsDevelopment())
 
 // Geen HTTPS-redirect: Ngrok verzorgt HTTPS naar buiten toe.
 
+// De foto's en historische beelden van de landmarks (wwwroot/images/landmarks).
+app.UseStaticFiles();
+
 app.UseAuthorization();
 
 app.MapControllers();

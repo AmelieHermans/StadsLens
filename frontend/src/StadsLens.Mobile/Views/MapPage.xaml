@@ -18,7 +18,11 @@
             <HorizontalStackLayout Spacing="5"><Ellipse WidthRequest="12" HeightRequest="12" Fill="#16834A" /><Label Text="{Binding VisitedLegendText}" FontSize="12" VerticalOptions="Center" /></HorizontalStackLayout>
             <HorizontalStackLayout Spacing="5"><Ellipse WidthRequest="12" HeightRequest="12" Fill="#1464F4" /><Label Text="{Binding NotVisitedLegendText}" FontSize="12" VerticalOptions="Center" /></HorizontalStackLayout>
         </HorizontalStackLayout>
-        <WebView Grid.Row="4" Source="{Binding MapSource}" />
+        <WebView Grid.Row="4">
+            <WebView.Source>
+                <HtmlWebViewSource Html="{Binding MapHtml}" />
+            </WebView.Source>
+        </WebView>
         <VerticalStackLayout Grid.Row="5" Spacing="4"><Label Text="{Binding ResultSummary}" /><Button Text="{loc:Translate Map_CreateRoute}" Command="{Binding CreateRouteCommand}" IsEnabled="{Binding IsNotBusy}" /></VerticalStackLayout>
         <Label Text="{Binding ErrorMessage}" IsVisible="{Binding HasError}" Style="{StaticResource ErrorText}" Grid.Row="6" />
     </Grid>

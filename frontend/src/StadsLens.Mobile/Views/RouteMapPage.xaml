@@ -8,7 +8,11 @@
              Title="{Binding Title}"
              Shell.NavBarIsVisible="False">
     <Grid>
-        <WebView Source="{Binding MapSource}" />
+        <WebView>
+            <WebView.Source>
+                <HtmlWebViewSource Html="{Binding MapHtml}" />
+            </WebView.Source>
+        </WebView>
         <Button Text="{loc:Translate Common_Back}"
                 Command="{Binding GoBackCommand}"
                 HorizontalOptions="Start"

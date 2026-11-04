@@ -15,6 +15,9 @@ public class Landmark
     public string CustomVisionTag { get; set; } = string.Empty;
 
     public string? ImageUrl { get; set; }
+    public string? ImageCredit { get; set; }
+
+    public ICollection<HistoricalImage> HistoricalImages { get; set; } = new List<HistoricalImage>();
 
     public ICollection<RouteLandmark> RouteLandmarks { get; set; } = new List<RouteLandmark>();
 
