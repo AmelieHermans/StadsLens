@@ -5,8 +5,13 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:views="clr-namespace:StadsLens.Mobile.Views"
     xmlns:loc="clr-namespace:StadsLens.Mobile.Helpers"
+    xmlns:behaviors="clr-namespace:StadsLens.Mobile.Behaviors"
     Title="StadsLens"
     Shell.FlyoutBehavior="Disabled">
+
+    <Shell.Behaviors>
+        <behaviors:ShellHandCursorBehavior />
+    </Shell.Behaviors>
 
     <ShellContent
         Route="login"

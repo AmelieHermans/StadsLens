@@ -26,7 +26,7 @@ public class LandmarkRepository : ILandmarkRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Landmark>> GetAllLandmarks()
+    public async Task<IEnumerable<Landmark>> GetAllAsync()
     {
         return await _context.Landmarks
             .Include(l => l.RouteLandmarks)

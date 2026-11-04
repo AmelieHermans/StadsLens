@@ -17,7 +17,7 @@ public class UserDataService : ApiService<User>, IUserDataService
             return null;
 
         if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException(await ReadErrorMessageAsync(response, "Inloggen is mislukt"));
+            throw CreateError(response, "Error_LoginFailed");
 
         return await response.Content.ReadFromJsonAsync<User>();
     }
@@ -29,9 +29,9 @@ public class UserDataService : ApiService<User>, IUserDataService
             return null;
 
         if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException(await ReadErrorMessageAsync(response, "Account aanmaken is mislukt"));
+            throw CreateError(response, "Error_RegisterFailed");
 
         return await response.Content.ReadFromJsonAsync<User>()
-            ?? throw new InvalidOperationException("Account aanmaken is mislukt.");
+            ?? throw CreateError(response, "Error_RegisterFailed");
     }
 }

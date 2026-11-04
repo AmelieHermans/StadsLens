@@ -27,6 +27,7 @@ public class ScanViewModel : BaseViewModel, IScanViewModel
     private readonly IUserSessionService _userSession;
     private readonly INavigationService _navigationService;
     private readonly IMediaPicker _mediaPicker;
+    private readonly IFilePicker _filePicker;
     private readonly ILogger<ScanViewModel> _logger;
 
     private string? photoPath;
@@ -79,13 +80,14 @@ public class ScanViewModel : BaseViewModel, IScanViewModel
     public ICommand OpenLandmarkCommand { get; set; } = null!;
     public ICommand GoBackCommand { get; set; } = null!;
 
-    public ScanViewModel(ILandmarkDataService landmarkDataService, IVisitDataService visitDataService, IUserSessionService userSession, INavigationService navigationService, IMediaPicker mediaPicker, ILogger<ScanViewModel> logger)
+    public ScanViewModel(ILandmarkDataService landmarkDataService, IVisitDataService visitDataService, IUserSessionService userSession, INavigationService navigationService, IMediaPicker mediaPicker, IFilePicker filePicker, ILogger<ScanViewModel> logger)
     {
         _landmarkDataService = landmarkDataService;
         _visitDataService = visitDataService;
         _userSession = userSession;
         _navigationService = navigationService;
         _mediaPicker = mediaPicker;
+        _filePicker = filePicker;
         _logger = logger;
 
         BindCommands();
@@ -108,7 +110,7 @@ public class ScanViewModel : BaseViewModel, IScanViewModel
 #endif
     }
 
-    private Task PickPhotoAsync() => ScanAsync(() => FilePicker.Default.PickAsync(new PickOptions
+    private Task PickPhotoAsync() => ScanAsync(() => _filePicker.PickAsync(new PickOptions
     {
         PickerTitle = Text("Scan_PickerTitle"),
         FileTypes = FilePickerFileType.Images

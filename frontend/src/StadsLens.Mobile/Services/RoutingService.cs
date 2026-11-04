@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Constants;
+using StadsLens.Mobile.Exceptions;
 
 namespace StadsLens.Mobile.Services;
 
@@ -27,8 +28,7 @@ public class RoutingService : IRoutingService
         CancellationToken cancellationToken = default)
     {
         if (targetDistanceKm <= 0)
-            throw new ArgumentException(
-                "De gewenste afstand moet groter zijn dan nul.");
+            throw new LocalizedException("Map_InvalidDistance");
 
         var candidates = landmarks
             .Where(l =>
@@ -47,8 +47,7 @@ public class RoutingService : IRoutingService
             .ToList();
 
         if (candidates.Count == 0)
-            throw new InvalidOperationException(
-                "Er zijn geen landmarks beschikbaar om een route te maken.");
+            throw new LocalizedException("Error_NoLandmarks");
 
         // Schat de afstand over wandelpaden.
         // De factor 1,35 is slechts een heuristische schatting.
@@ -126,9 +125,8 @@ public class RoutingService : IRoutingService
             var body = await response.Content.ReadAsStringAsync(
                 cancellationToken);
 
-            throw new HttpRequestException(
-                $"Router gaf HTTP {(int)response.StatusCode} " +
-                $"({response.ReasonPhrase}). Antwoord: {body}");
+            System.Diagnostics.Debug.WriteLine($"Router gaf HTTP {(int)response.StatusCode}: {body}");
+            throw new LocalizedException("Map_RouteFailed");
         }
 
         var result = await response.Content.ReadFromJsonAsync<OsrmResponse>(
@@ -137,8 +135,7 @@ public class RoutingService : IRoutingService
         var route = result?.Routes?.FirstOrDefault();
 
         if (route?.Geometry?.Coordinates is null)
-            throw new InvalidOperationException(
-                "De wandelroute kon niet worden berekend.");
+            throw new LocalizedException("Map_RouteFailed");
 
         var mapHtml = CreateMapHtml(
             startLatitude,

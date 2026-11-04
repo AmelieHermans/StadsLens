@@ -73,6 +73,7 @@ public static class MauiProgram
         services.AddSingleton<IVisitDataService, VisitDataService>();
         services.AddSingleton(AudioManager.Current);
         services.AddSingleton(MediaPicker.Default);
+        services.AddSingleton(FilePicker.Default);
         services.AddSingleton(Geolocation.Default);
 
         // Nieuwe service voor het genereren van wandelroutes

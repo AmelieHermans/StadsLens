@@ -3,6 +3,7 @@ using System.Globalization;
 using System.Windows.Input;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
+using StadsLens.Mobile.Exceptions;
 using StadsLens.Mobile.Messages;
 using StadsLens.Mobile.Models;
 using StadsLens.Mobile.Services;
@@ -200,7 +201,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
                 new GeolocationRequest(GeolocationAccuracy.Medium, TimeSpan.FromSeconds(10)));
 
             if (location is null)
-                throw new InvalidOperationException(Text("Map_LocationUnknown"));
+                throw new LocalizedException("Map_LocationUnknown");
 
             // De gebruiker kan de switch intussen al terug uitgezet hebben.
             if (UseCurrentLocation)
@@ -210,7 +211,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         {
             // Zonder locatie heeft de switch geen zin: terug uitzetten zodat de gebruiker een adres kan typen.
             UseCurrentLocation = false;
-            ErrorMessage = ex.Message;
+            ShowError(ex);
         }
     }
 
@@ -313,7 +314,7 @@ public class RouteCreateViewModel : BaseViewModel, IRouteCreateViewModel
         catch (Exception ex)
         {
             ResultSummary = Text("Map_RouteFailed");
-            ErrorMessage = ex.Message;
+            ShowError(ex);
         }
         finally
         {

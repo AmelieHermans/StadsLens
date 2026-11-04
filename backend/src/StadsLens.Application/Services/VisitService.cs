@@ -9,12 +9,16 @@ namespace StadsLens.Application.Services;
 public class VisitService : IVisitService
 {
     private readonly IVisitRepository _visitRepository;
+    private readonly IUserRepository _userRepository;
+    private readonly ILandmarkRepository _landmarkRepository;
     private readonly IMapper _mapper;
     private readonly ContentTranslator _translator;
 
-    public VisitService(IVisitRepository visitRepository, IMapper mapper, ContentTranslator translator)
+    public VisitService(IVisitRepository visitRepository, IUserRepository userRepository, ILandmarkRepository landmarkRepository, IMapper mapper, ContentTranslator translator)
     {
         _visitRepository = visitRepository;
+        _userRepository = userRepository;
+        _landmarkRepository = landmarkRepository;
         _mapper = mapper;
         _translator = translator;
     }
@@ -34,8 +38,12 @@ public class VisitService : IVisitService
         return visits;
     }
 
-    public async Task<VisitResponse> CreateAsync(CreateVisitRequest request)
+    // null als de gebruiker of de landmark niet bestaat.
+    public async Task<VisitResponse?> CreateAsync(CreateVisitRequest request)
     {
+        if (await _userRepository.GetByIdAsync(request.UserId) is null || await _landmarkRepository.GetByIdAsync(request.LandmarkId) is null)
+            return null;
+
         var visit = new Visit
         {
             UserId = request.UserId,

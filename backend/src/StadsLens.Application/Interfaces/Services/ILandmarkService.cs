@@ -6,7 +6,7 @@ namespace StadsLens.Application.Interfaces.Services;
 public interface ILandmarkService
 {
     Task<IEnumerable<LandmarkResponse>> GetByRouteIdAsync(int routeId, string language = Languages.Default, CancellationToken cancellationToken = default);
-    Task<IEnumerable<LandmarkResponse>> GetAllLandmarks(string language = Languages.Default, CancellationToken cancellationToken = default);
+    Task<IEnumerable<LandmarkResponse>> GetAllAsync(string language = Languages.Default, CancellationToken cancellationToken = default);
     Task<LandmarkResponse?> GetByIdAsync(int id, string language = Languages.Default, CancellationToken cancellationToken = default);
     Task<LandmarkResponse?> GetByCustomVisionTagAsync(string tag, string language = Languages.Default, CancellationToken cancellationToken = default);
 

@@ -19,13 +19,13 @@ public class LandmarksController : ControllerBase
     }
 
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<LandmarkResponse>>> GetAllLandmarks([FromQuery] string? language, CancellationToken cancellationToken)
+    public async Task<ActionResult<IEnumerable<LandmarkResponse>>> GetAll([FromQuery] string? language, CancellationToken cancellationToken)
     {
         language = RequestLanguage.Resolve(Request, language);
         if (!Languages.IsSupported(language))
             return UnsupportedLanguage(language);
 
-        return Ok(await _landmarkService.GetAllLandmarks(language, cancellationToken));
+        return Ok(await _landmarkService.GetAllAsync(language, cancellationToken));
     }
 
     // Naam en geschiedenis in de taal uit ?language= of de Accept-Language-header (Azure AI Translator).

@@ -1,4 +1,6 @@
+using System.Net;
 using System.Net.Http.Json;
+using StadsLens.Mobile.Exceptions;
 using StadsLens.Mobile.Models;
 
 namespace StadsLens.Mobile.Services;
@@ -43,8 +45,12 @@ public class LandmarkDataService : ApiService<Landmark>, ILandmarkDataService
         content.Add(new StreamContent(photo), "image", fileName);
 
         using HttpResponseMessage response = await _httpClient.PostAsync($"{_endpoint}/recognize?language={language}", content);
+        // 400/413: de foto is leeg of te groot voor Custom Vision (max. 4 MB).
+        if (response.StatusCode is HttpStatusCode.BadRequest or HttpStatusCode.RequestEntityTooLarge)
+            throw new LocalizedException("Error_PhotoInvalid");
+
         if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException(await ReadErrorMessageAsync(response, "Herkennen is mislukt"));
+            throw CreateError(response, "Error_RecognizeFailed");
 
         return await response.Content.ReadFromJsonAsync<Recognition>() ?? new Recognition();
     }
@@ -89,7 +95,7 @@ public class LandmarkDataService : ApiService<Landmark>, ILandmarkDataService
 
         using HttpResponseMessage response = await _httpClient.PostAsync($"{_endpoint}/{id}/timetravel/future", content);
         if (!response.IsSuccessStatusCode)
-            throw new InvalidOperationException(await ReadErrorMessageAsync(response, "De afbeelding maken is mislukt"));
+            throw CreateError(response, "Error_ImageFailed");
 
         await File.WriteAllBytesAsync(imagePath, await response.Content.ReadAsByteArrayAsync());
         return imagePath;

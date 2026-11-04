@@ -10,7 +10,19 @@
   <data name="Tab_Visits" xml:space="preserve"><value>Visites</value></data>
   <data name="Tab_Settings" xml:space="preserve"><value>Paramètres</value></data>
   <data name="Tab_CreateRoute" xml:space="preserve"><value>Créer un itinéraire</value></data>
-  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Impossible de joindre le serveur. L'API est-elle lancée ? ({0})</value></data>
+  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Impossible de joindre le serveur. Vérifiez votre connexion internet.</value></data>
+  <data name="Error_ServerError" xml:space="preserve"><value>Le serveur a renvoyé une erreur ({0}). Réessayez plus tard.</value></data>
+  <data name="Error_Timeout" xml:space="preserve"><value>Le serveur ne répond pas à temps. Réessayez.</value></data>
+  <data name="Error_Permission" xml:space="preserve"><value>StadsLens n'a pas l'autorisation pour cela. Autorisez-la dans les réglages de votre appareil.</value></data>
+  <data name="Error_FeatureUnavailable" xml:space="preserve"><value>Cette fonction n'est pas prise en charge ou est désactivée sur cet appareil.</value></data>
+  <data name="Error_Unexpected" xml:space="preserve"><value>Une erreur s'est produite. Réessayez.</value></data>
+  <data name="Error_AiFailed" xml:space="preserve"><value>Le service d'IA n'a pas répondu. Réessayez plus tard.</value></data>
+  <data name="Error_PhotoInvalid" xml:space="preserve"><value>La photo est vide ou dépasse 4 Mo.</value></data>
+  <data name="Error_RecognizeFailed" xml:space="preserve"><value>La reconnaissance a échoué ({0}).</value></data>
+  <data name="Error_LoginFailed" xml:space="preserve"><value>La connexion a échoué ({0}).</value></data>
+  <data name="Error_RegisterFailed" xml:space="preserve"><value>La création du compte a échoué ({0}).</value></data>
+  <data name="Error_ImageFailed" xml:space="preserve"><value>La création de l'image a échoué ({0}).</value></data>
+  <data name="Error_NoLandmarks" xml:space="preserve"><value>Il n'y a aucun site pour créer un itinéraire.</value></data>
   <data name="Login_Tagline" xml:space="preserve"><value>Découvrez la ville à travers votre appareil photo.</value></data>
   <data name="Login_Name" xml:space="preserve"><value>Nom</value></data>
   <data name="Login_Password" xml:space="preserve"><value>Mot de passe</value></data>
@@ -76,6 +88,8 @@
   <data name="Map_RouteFailed" xml:space="preserve"><value>L'itinéraire n'a pas pu être créé.</value></data>
   <data name="Map_VisitedLegend" xml:space="preserve"><value>Visité</value></data>
   <data name="Map_NotVisitedLegend" xml:space="preserve"><value>À visiter</value></data>
+  <data name="Map_LandmarkCount" xml:space="preserve"><value>{0} sites</value></data>
+  <data name="Map_Estimated" xml:space="preserve"><value>(estimation)</value></data>
   <data name="Map_VisitedPopup" xml:space="preserve"><value>Visité</value></data>
   <data name="Map_NotVisitedPopup" xml:space="preserve"><value>À visiter</value></data>
   <data name="RouteCreate_Header" xml:space="preserve"><value>Créez votre propre itinéraire à pied</value></data>

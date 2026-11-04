@@ -10,7 +10,19 @@
   <data name="Tab_Visits" xml:space="preserve"><value>Visits</value></data>
   <data name="Tab_Settings" xml:space="preserve"><value>Settings</value></data>
   <data name="Tab_CreateRoute" xml:space="preserve"><value>Create route</value></data>
-  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Cannot reach the server. Is the API running? ({0})</value></data>
+  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Cannot reach the server. Check your internet connection.</value></data>
+  <data name="Error_ServerError" xml:space="preserve"><value>The server returned an error ({0}). Please try again later.</value></data>
+  <data name="Error_Timeout" xml:space="preserve"><value>The server is not responding in time. Please try again.</value></data>
+  <data name="Error_Permission" xml:space="preserve"><value>StadsLens does not have permission for this. Allow it in your device settings.</value></data>
+  <data name="Error_FeatureUnavailable" xml:space="preserve"><value>This is not supported or turned off on this device.</value></data>
+  <data name="Error_Unexpected" xml:space="preserve"><value>Something went wrong. Please try again.</value></data>
+  <data name="Error_AiFailed" xml:space="preserve"><value>The AI service did not respond. Please try again later.</value></data>
+  <data name="Error_PhotoInvalid" xml:space="preserve"><value>The photo is empty or larger than 4 MB.</value></data>
+  <data name="Error_RecognizeFailed" xml:space="preserve"><value>Recognition failed ({0}).</value></data>
+  <data name="Error_LoginFailed" xml:space="preserve"><value>Signing in failed ({0}).</value></data>
+  <data name="Error_RegisterFailed" xml:space="preserve"><value>Creating the account failed ({0}).</value></data>
+  <data name="Error_ImageFailed" xml:space="preserve"><value>Creating the image failed ({0}).</value></data>
+  <data name="Error_NoLandmarks" xml:space="preserve"><value>There are no landmarks to create a route with.</value></data>
   <data name="Login_Tagline" xml:space="preserve"><value>Discover the city through your camera.</value></data>
   <data name="Login_Name" xml:space="preserve"><value>Name</value></data>
   <data name="Login_Password" xml:space="preserve"><value>Password</value></data>
@@ -76,6 +88,8 @@
   <data name="Map_RouteFailed" xml:space="preserve"><value>The route could not be created.</value></data>
   <data name="Map_VisitedLegend" xml:space="preserve"><value>Visited</value></data>
   <data name="Map_NotVisitedLegend" xml:space="preserve"><value>Not visited yet</value></data>
+  <data name="Map_LandmarkCount" xml:space="preserve"><value>{0} landmarks</value></data>
+  <data name="Map_Estimated" xml:space="preserve"><value>(estimate)</value></data>
   <data name="Map_VisitedPopup" xml:space="preserve"><value>Visited</value></data>
   <data name="Map_NotVisitedPopup" xml:space="preserve"><value>Not visited yet</value></data>
   <data name="RouteCreate_Header" xml:space="preserve"><value>Create your own walking route</value></data>

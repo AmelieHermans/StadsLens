@@ -79,7 +79,12 @@ public class RouteDetailViewModel : BaseViewModel, IRouteDetailViewModel
     }
 
     // Andere taal: de route (naam, beschrijving) en haar bezienswaardigheden vertaald opnieuw ophalen.
-    public async void Receive(LanguageChangedMessage message)
+    public void Receive(LanguageChangedMessage message)
+    {
+        _ = ReloadRouteAsync();
+    }
+
+    private async Task ReloadRouteAsync()
     {
         if (SelectedRoute is null)
             return;

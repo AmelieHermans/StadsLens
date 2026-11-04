@@ -19,6 +19,9 @@ public class VisitsController : ControllerBase
     public async Task<ActionResult<VisitResponse>> Create(CreateVisitRequest request)
     {
         var visit = await _visitService.CreateAsync(request);
+        if (visit is null)
+            return BadRequest(new { message = "Onbekende gebruiker of bezienswaardigheid." });
+
         return Created($"api/visits/{visit.Id}", visit);
     }
 }

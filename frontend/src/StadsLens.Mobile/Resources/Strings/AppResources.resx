@@ -10,7 +10,19 @@
   <data name="Tab_Visits" xml:space="preserve"><value>Bezoeken</value></data>
   <data name="Tab_Settings" xml:space="preserve"><value>Instellingen</value></data>
   <data name="Tab_CreateRoute" xml:space="preserve"><value>Route creëren</value></data>
-  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Kan de server niet bereiken. Draait de API? ({0})</value></data>
+  <data name="Error_ServerUnreachable" xml:space="preserve"><value>Kan de server niet bereiken. Controleer je internetverbinding.</value></data>
+  <data name="Error_ServerError" xml:space="preserve"><value>De server gaf een fout ({0}). Probeer later opnieuw.</value></data>
+  <data name="Error_Timeout" xml:space="preserve"><value>De server antwoordt niet op tijd. Probeer opnieuw.</value></data>
+  <data name="Error_Permission" xml:space="preserve"><value>StadsLens heeft hiervoor geen toestemming. Geef toestemming in de instellingen van je toestel.</value></data>
+  <data name="Error_FeatureUnavailable" xml:space="preserve"><value>Dit wordt niet ondersteund of staat uit op dit toestel.</value></data>
+  <data name="Error_Unexpected" xml:space="preserve"><value>Er ging iets mis. Probeer opnieuw.</value></data>
+  <data name="Error_AiFailed" xml:space="preserve"><value>De AI-dienst gaf geen antwoord. Probeer later opnieuw.</value></data>
+  <data name="Error_PhotoInvalid" xml:space="preserve"><value>De foto is leeg of groter dan 4 MB.</value></data>
+  <data name="Error_RecognizeFailed" xml:space="preserve"><value>Herkennen is mislukt ({0}).</value></data>
+  <data name="Error_LoginFailed" xml:space="preserve"><value>Inloggen is mislukt ({0}).</value></data>
+  <data name="Error_RegisterFailed" xml:space="preserve"><value>Account aanmaken is mislukt ({0}).</value></data>
+  <data name="Error_ImageFailed" xml:space="preserve"><value>Het beeld maken is mislukt ({0}).</value></data>
+  <data name="Error_NoLandmarks" xml:space="preserve"><value>Er zijn geen bezienswaardigheden om een route mee te maken.</value></data>
   <data name="Login_Tagline" xml:space="preserve"><value>Ontdek de stad door je camera.</value></data>
   <data name="Login_Name" xml:space="preserve"><value>Naam</value></data>
   <data name="Login_Password" xml:space="preserve"><value>Wachtwoord</value></data>
@@ -76,6 +88,8 @@
   <data name="Map_RouteFailed" xml:space="preserve"><value>De route kon niet worden gemaakt.</value></data>
   <data name="Map_VisitedLegend" xml:space="preserve"><value>Bezocht</value></data>
   <data name="Map_NotVisitedLegend" xml:space="preserve"><value>Nog te bezoeken</value></data>
+  <data name="Map_LandmarkCount" xml:space="preserve"><value>{0} bezienswaardigheden</value></data>
+  <data name="Map_Estimated" xml:space="preserve"><value>(schatting)</value></data>
   <data name="Map_VisitedPopup" xml:space="preserve"><value>Bezocht</value></data>
   <data name="Map_NotVisitedPopup" xml:space="preserve"><value>Nog te bezoeken</value></data>
   <data name="RouteCreate_Header" xml:space="preserve"><value>Maak je eigen wandelroute</value></data>

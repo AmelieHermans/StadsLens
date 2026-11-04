@@ -1,4 +1,5 @@
 using CommunityToolkit.Mvvm.ComponentModel;
+using StadsLens.Mobile.Exceptions;
 using StadsLens.Mobile.Services;
 
 namespace StadsLens.Mobile.ViewModels;
@@ -52,12 +53,22 @@ public class BaseViewModel : ObservableRecipient, IBaseViewModel
 
     public bool HasError => !string.IsNullOrEmpty(ErrorMessage);
 
-    // Zet een begrijpelijke melding wanneer de API niet bereikbaar is of een fout teruggeeft.
+    // Zet een begrijpelijke melding in de taal van de app. Teksten van .NET of van de server tonen we nooit rechtstreeks:
+    // die staan in de taal van het toestel of in het Nederlands.
     protected void ShowError(Exception exception)
     {
-        ErrorMessage = exception is HttpRequestException
-            ? Text("Error_ServerUnreachable", exception.Message)
-            : exception.Message;
+        System.Diagnostics.Debug.WriteLine(exception);
+
+        ErrorMessage = exception switch
+        {
+            LocalizedException => exception.Message,
+            HttpRequestException { StatusCode: not null } http => Text("Error_ServerError", (int)http.StatusCode!),
+            HttpRequestException => Text("Error_ServerUnreachable"),
+            TaskCanceledException or TimeoutException => Text("Error_Timeout"),
+            PermissionException => Text("Error_Permission"),
+            FeatureNotSupportedException or FeatureNotEnabledException => Text("Error_FeatureUnavailable"),
+            _ => Text("Error_Unexpected")
+        };
     }
 
     // Een tekst in de taal van de app (Resources/Strings), eventueel met waarden ingevuld op {0}, {1}, ...

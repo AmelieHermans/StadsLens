@@ -34,9 +34,9 @@ public class LandmarkService : ILandmarkService
         return await TranslateAsync(_mapper.Map<List<LandmarkResponse>>(landmarks), language, cancellationToken);
     }
 
-    public async Task<IEnumerable<LandmarkResponse>> GetAllLandmarks(string language = Languages.Default, CancellationToken cancellationToken = default)
+    public async Task<IEnumerable<LandmarkResponse>> GetAllAsync(string language = Languages.Default, CancellationToken cancellationToken = default)
     {
-        var landmarks = await _landmarkRepository.GetAllLandmarks();
+        var landmarks = await _landmarkRepository.GetAllAsync();
         return await TranslateAsync(_mapper.Map<List<LandmarkResponse>>(landmarks), language, cancellationToken);
     }
 

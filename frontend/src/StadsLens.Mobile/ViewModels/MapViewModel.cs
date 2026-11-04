@@ -158,7 +158,7 @@ public class MapViewModel : BaseViewModel, IMapViewModel
         var visitedIds = _userSession.CurrentUser is null
             ? new HashSet<int>()
             : (await _visitDataService.GetByUserAsync(_userSession.CurrentUser.Id)).Select(v => v.LandmarkId).ToHashSet();
-        ResultSummary = $"{plan.DistanceMeters / 1000:0.0} km · {TimeSpan.FromSeconds(plan.DurationSeconds):hh\\:mm} · {plan.Landmarks.Count} landmarks" + (plan.IsEstimated ? " (schatting)" : string.Empty);
+        ResultSummary = $"{plan.DistanceMeters / 1000:0.0} km · {TimeSpan.FromSeconds(plan.DurationSeconds):hh\\:mm} · {Text("Map_LandmarkCount", plan.Landmarks.Count)}" + (plan.IsEstimated ? " " + Text("Map_Estimated") : string.Empty);
         MapHtml = BuildMapHtml(plan, visitedIds, Text("Map_VisitedPopup"), Text("Map_NotVisitedPopup"));
     }
 

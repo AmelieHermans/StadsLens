@@ -1,5 +1,6 @@
+using System.Net;
 using System.Net.Http.Json;
-using System.Text.Json;
+using StadsLens.Mobile.Exceptions;
 
 namespace StadsLens.Mobile.Services;
 
@@ -49,24 +50,10 @@ public abstract class ApiService<T> : IApiService<T> where T : class
         return response.IsSuccessStatusCode;
     }
 
-    // De backend stuurt bij een fout meestal { "message": "..." } mee, maar niet altijd (bv. 413).
-    protected static async Task<string> ReadErrorMessageAsync(HttpResponseMessage response, string fallback)
-    {
-        try
-        {
-            var error = await response.Content.ReadFromJsonAsync<ErrorResponse>();
-            if (!string.IsNullOrWhiteSpace(error?.Message))
-                return error.Message;
-        }
-        catch (Exception ex) when (ex is JsonException or NotSupportedException)
-        {
-        }
-
-        return $"{fallback} ({(int)response.StatusCode}).";
-    }
-
-    private sealed class ErrorResponse
-    {
-        public string? Message { get; set; }
-    }
+    // De backend antwoordt in het Nederlands; de gebruiker krijgt een tekst in de taal van de app.
+    // 502 = de Azure AI-dienst achter de API gaf geen antwoord.
+    protected static LocalizedException CreateError(HttpResponseMessage response, string fallbackKey) =>
+        response.StatusCode == HttpStatusCode.BadGateway
+            ? new LocalizedException("Error_AiFailed")
+            : new LocalizedException(fallbackKey, (int)response.StatusCode);
 }
