@@ -4,7 +4,7 @@ public static class ApiSettings
 {
     // Vul de URL van jullie Ngrok-tunnel in (ngrok http 5158) om op een echt toestel te testen.
     // Leeg laten = rechtstreeks naar de lokale API (dotnet run --launch-profile http).
-    public const string NgrokUrl = "";
+    public const string NgrokUrl = "https://busload-rinse-moody.ngrok-free.dev";
 
     private const int LocalPort = 5158;
 
